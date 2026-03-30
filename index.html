@@ -507,6 +507,13 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 @media(max-width:900px){.eu-map-layout{grid-template-columns:1fr}.eu-panel{position:static;min-height:auto}}
 @media(max-width:760px){.eu-map-in{padding:38px 16px}}
 
+/* ── ROTATING TAGLINE ── */
+.hero-tagline-wrap{height:1.6rem;overflow:hidden;margin-bottom:20px;display:flex;justify-content:center}
+.hero-tagline{font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);animation:tagFade 8s ease-in-out infinite;text-align:center}
+@keyframes tagFade{0%,8%{opacity:0;transform:translateY(6px)}15%,85%{opacity:1;transform:translateY(0)}92%,100%{opacity:0;transform:translateY(-6px)}}
+.foot-tagline{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:18px;min-height:1.2rem;animation:tagFadeLight 8s ease-in-out infinite}
+@keyframes tagFadeLight{0%,8%{opacity:0}15%,85%{opacity:1}92%,100%{opacity:0}}
+
 /* ═══════════════════════════════════════
    GLOSARIO
 ═══════════════════════════════════════ */
@@ -609,11 +616,11 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
       <span class="nl on" data-v="home"            onclick="goView('home')">Inicio</span>
       <span class="nl"    data-v="sentencias"       onclick="goView('sentencias')">Sentencias</span>
       <span class="nl"    data-v="directivas"       onclick="goView('directivas')">Directivas</span>
-      <span class="nl"    data-v="medioambiente"    onclick="goView('medioambiente')">🌿 Medio Ambiente</span>
-      <span class="nl"    data-v="opinion"          onclick="goView('opinion')">✍️ Opinión</span>
+      <span class="nl"    data-v="medioambiente"    onclick="goView('medioambiente')">Medio Ambiente</span>
+      <span class="nl"    data-v="opinion"          onclick="goView('opinion')">Opinión</span>
       <span class="nl"    data-v="otros"            onclick="goView('otros')">Otros</span>
-      <span class="nl"    data-v="glosario"         onclick="goView('glosario')">📚 Glosario</span>
-      <span class="nl"    data-v="comunidad"        onclick="goView('comunidad')">💬 Comunidad</span>
+      <span class="nl"    data-v="glosario"         onclick="goView('glosario')">§ Glosario</span>
+      <span class="nl"    data-v="comunidad"        onclick="goView('comunidad')">› Comunidad</span>
       <span class="nl"    data-v="about"            onclick="goView('about')">Sobre nosotros</span>
     </nav>
     <div class="nav-r">
@@ -645,15 +652,15 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
     <button class="ico-btn" onclick="closeMobileMenu()">✕</button>
   </div>
   <div class="mobile-nav-links">
-    <span class="mnl" data-v="home"         onclick="goView('home');closeMobileMenu()">🏠 Inicio</span>
-    <span class="mnl" data-v="sentencias"   onclick="goView('sentencias');closeMobileMenu()">⚖️ Sentencias</span>
-    <span class="mnl" data-v="directivas"   onclick="goView('directivas');closeMobileMenu()">📜 Directivas</span>
-    <span class="mnl" data-v="medioambiente" onclick="goView('medioambiente');closeMobileMenu()">🌿 Medio Ambiente</span>
-    <span class="mnl" data-v="opinion"      onclick="goView('opinion');closeMobileMenu()">✍️ Artículos de Opinión</span>
-    <span class="mnl" data-v="otros"        onclick="goView('otros');closeMobileMenu()">📁 Otros</span>
-    <span class="mnl" data-v="glosario"    onclick="goView('glosario');closeMobileMenu()">📚 Glosario UE</span>
-    <span class="mnl" data-v="comunidad"   onclick="goView('comunidad');closeMobileMenu()">💬 Comunidad</span>
-    <span class="mnl" data-v="about"        onclick="goView('about');closeMobileMenu()">👥 Sobre nosotros</span>
+    <span class="mnl" data-v="home"         onclick="goView('home');closeMobileMenu()">Inicio</span>
+    <span class="mnl" data-v="sentencias"   onclick="goView('sentencias');closeMobileMenu()">Sentencias</span>
+    <span class="mnl" data-v="directivas"   onclick="goView('directivas');closeMobileMenu()">Directivas</span>
+    <span class="mnl" data-v="medioambiente" onclick="goView('medioambiente');closeMobileMenu()">Medio Ambiente</span>
+    <span class="mnl" data-v="opinion"      onclick="goView('opinion');closeMobileMenu()">Opinión</span>
+    <span class="mnl" data-v="otros"        onclick="goView('otros');closeMobileMenu()">Otros</span>
+    <span class="mnl" data-v="glosario"    onclick="goView('glosario');closeMobileMenu()">§ Glosario</span>
+    <span class="mnl" data-v="comunidad"   onclick="goView('comunidad');closeMobileMenu()">› Comunidad</span>
+    <span class="mnl" data-v="about"        onclick="goView('about');closeMobileMenu()">Sobre nosotros</span>
   </div>
 </div>
 
@@ -663,6 +670,7 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
     <div class="hero-mesh"></div>
     <div class="eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
     <div class="hero-pill">🇪🇺 Unión Europea · Derecho accesible</div>
+    <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">El Derecho Europeo como espacio de debate</div></div>
     <h1 id="heroTitle">Sentencias y directivas,<br/><em>sin tecnicismos</em></h1>
     <p class="hero-p" id="heroDesc">Analizamos los actos jurídicos de la Unión Europea de forma objetiva y comprensible. Saber qué dice Bruselas no debería requerir un título en derecho.</p>
     <div class="hero-btns">
@@ -931,14 +939,14 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
 
     <!-- Admin tabs -->
     <div class="adm-tabs">
-      <button class="adm-tab on" onclick="showAdmTab('articles',this)">📝 Artículos</button>
-      <button class="adm-tab"    onclick="showAdmTab('about',this)">📋 Sobre nosotros</button>
-      <button class="adm-tab"    onclick="showAdmTab('team',this)">👥 Equipo</button>
-      <button class="adm-tab"    onclick="showAdmTab('editors',this)">👤 Editores</button>
-      <button class="adm-tab"    onclick="showAdmTab('glossary',this)">📚 Glosario</button>
-      <button class="adm-tab"    onclick="showAdmTab('comments',this)">💬 Comentarios</button>
-      <button class="adm-tab"    onclick="showAdmTab('customize',this)">🎨 Personalizar</button>
-      <button class="adm-tab"    onclick="showAdmTab('password',this)">🔑 Contraseña</button>
+      <button class="adm-tab on" onclick="showAdmTab('articles',this)">Artículos</button>
+      <button class="adm-tab"    onclick="showAdmTab('about',this)">Sobre nosotros</button>
+      <button class="adm-tab"    onclick="showAdmTab('team',this)">Equipo</button>
+      <button class="adm-tab"    onclick="showAdmTab('editors',this)">Editores</button>
+      <button class="adm-tab"    onclick="showAdmTab('glossary',this)">§ Glosario</button>
+      <button class="adm-tab"    onclick="showAdmTab('comments',this)">› Comentarios</button>
+      <button class="adm-tab"    onclick="showAdmTab('customize',this)">Personalizar</button>
+      <button class="adm-tab"    onclick="showAdmTab('password',this)">Contraseña</button>
     </div>
 
     <!-- ── ARTÍCULOS ── -->
@@ -1159,21 +1167,32 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
     <div id="adm-editors" class="hide">
       <div class="fc">
         <div class="fc-title">Editores del blog</div>
-        <p style="font-size:.83rem;color:var(--muted);margin-bottom:18px;line-height:1.6">Añade más personas que puedan acceder al panel de administración con su propio usuario y contraseña. Tú eres siempre el <strong>Administrador principal</strong>.</p>
+        <p style="font-size:.83rem;color:var(--muted);margin-bottom:6px;line-height:1.6">Crea cuentas para tus colaboradores. Cada editor accede con su propio email y contraseña y tiene acceso completo al panel.</p>
+        <div style="background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.3);border-radius:8px;padding:10px 14px;font-size:.76rem;color:var(--gold);margin-bottom:18px;line-height:1.6">
+          ⚠️ Para que los editores accedan sin confirmar email, activa <strong>«Auto-confirm users»</strong> en Supabase → Authentication → Settings.
+        </div>
         <div class="editors-list" id="editorsList"></div>
         <div class="fc-title" style="margin-bottom:16px;margin-top:8px">Añadir nuevo editor</div>
         <div class="fg">
           <div class="fgrp">
-            <label class="flbl">Nombre del editor</label>
+            <label class="flbl">Nombre del editor *</label>
             <input class="fin" id="newEditorName" type="text" placeholder="Ej: María García"/>
           </div>
           <div class="fgrp">
-            <label class="flbl">Contraseña del editor</label>
+            <label class="flbl">Email del editor *</label>
+            <input class="fin" id="newEditorEmail" type="email" placeholder="maria@ejemplo.com"/>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Contraseña *</label>
             <input class="fin" id="newEditorPw" type="password" placeholder="Mínimo 6 caracteres"/>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Confirmar contraseña *</label>
+            <input class="fin" id="newEditorPw2" type="password" placeholder="Repite la contraseña"/>
           </div>
         </div>
         <div class="f-actions" style="margin-top:16px">
-          <button class="btn-pub" onclick="addEditor()">+ Añadir editor</button>
+          <button class="btn-pub" id="addEditorBtn" onclick="addEditor()">+ Crear cuenta de editor</button>
         </div>
       </div>
     </div>
@@ -1364,6 +1383,7 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
 <footer>
   <div class="foot-inner">
     <div class="foot-logo">El Despacho <em>de Overton</em></div>
+    <div class="foot-tagline" id="footTagline">Escribe. Debate. Impacta.</div>
     <p class="foot-txt">Derecho de la Unión Europea explicado de forma objetiva y accesible para todos los ciudadanos europeos.</p>
 
     <!-- Redes sociales -->
@@ -2008,23 +2028,72 @@ function renderSaved(){
     </div>`).join('');
 }
 
+/* ── ROTATING PHRASES ── */
+const HERO_PHRASES = [
+  'El Derecho Europeo como espacio de debate',
+  'Interpretar Europa es construirla',
+  'La integración europea empieza en las ideas',
+  'El Derecho vive en su interpretación',
+  'La Unión Europea también se piensa',
+  'Del aula al pensamiento jurídico',
+  'Reflexión crítica sobre el Derecho de la Unión',
+  'Jóvenes juristas, nuevas perspectivas',
+  'Construyendo Europa desde el análisis',
+  'El Derecho como conversación',
+  'Publica tu idea',
+  'Escribe. Debate. Impacta.',
+  'Haz que tu opinión cuente',
+  'Únete al debate europeo',
+  'Da el paso: publica',
+  'Convierte tu argumento en influencia',
+  'Tu artículo empieza aquí',
+  'Europa necesita tu voz',
+  'No solo estudies Derecho, créalo',
+  'Sube tu punto de vista'
+];
+const FOOT_PHRASES = [
+  'Escribe. Debate. Impacta.',
+  'Europa necesita tu voz',
+  'Tu artículo empieza aquí',
+  'Convierte tu argumento en influencia',
+  'Da el paso: publica',
+  'Únete al debate europeo',
+  'Haz que tu opinión cuente',
+  'No solo estudies Derecho, créalo',
+  'Sube tu punto de vista',
+  'Publica tu idea'
+];
+let heroPhraseIdx = 0, footPhraseIdx = 0;
+function startRotatingPhrases(){
+  const heroEl = document.getElementById('heroTagline');
+  const footEl = document.getElementById('footTagline');
+  setInterval(()=>{
+    heroPhraseIdx = (heroPhraseIdx + 1) % HERO_PHRASES.length;
+    if(heroEl){ heroEl.style.animation='none'; heroEl.offsetHeight; heroEl.textContent=HERO_PHRASES[heroPhraseIdx]; heroEl.style.animation=''; }
+  }, 8000);
+  setInterval(()=>{
+    footPhraseIdx = (footPhraseIdx + 1) % FOOT_PHRASES.length;
+    if(footEl){ footEl.style.animation='none'; footEl.offsetHeight; footEl.textContent=FOOT_PHRASES[footPhraseIdx]; footEl.style.animation=''; }
+  }, 8000);
+}
+
 /* ── EDITORS ── */
 function renderEditors(){
   const editors=getEditors();
   const el=document.getElementById('editorsList');
-  // Always show main admin first
+  if(!el) return;
   let html=`<div class="editor-item">
     <div class="editor-info">
-      <div class="editor-name">Tú <span class="badge-admin">Administrador</span></div>
-      <div class="editor-role">Acceso completo · Contraseña principal</div>
+      <div class="editor-name">Tú <span class="badge-admin">Administrador principal</span></div>
+      <div class="editor-role">Acceso completo · Cuenta Supabase Auth</div>
     </div>
   </div>`;
   if(editors.length){
     html+=editors.map((e,i)=>`
       <div class="editor-item">
         <div class="editor-info">
-          <div class="editor-name">${e.name}</div>
-          <div class="editor-role">Editor · Puede publicar y editar artículos</div>
+          <div class="editor-name">${esc(e.name)}</div>
+          <div class="editor-role">${esc(e.email)} · Editor con acceso completo</div>
         </div>
         <div class="sav-acts">
           <button class="btn-del" onclick="removeEditor(${i})">Eliminar</button>
@@ -2033,23 +2102,32 @@ function renderEditors(){
   }
   el.innerHTML=html;
 }
-function addEditor(){
-  const name=document.getElementById('newEditorName').value.trim();
-  const pw=document.getElementById('newEditorPw').value.trim();
-  if(!name){ toast('⚠️ Escribe el nombre del editor','red'); return; }
-  if(pw.length<6){ toast('⚠️ La contraseña debe tener mínimo 6 caracteres','red'); return; }
-  if(pw===getPw()){ toast('⚠️ Esa contraseña ya la usa el administrador','red'); return; }
+async function addEditor(){
+  const name  = document.getElementById('newEditorName').value.trim();
+  const email = document.getElementById('newEditorEmail').value.trim();
+  const pw    = document.getElementById('newEditorPw').value.trim();
+  const pw2   = document.getElementById('newEditorPw2').value.trim();
+  if(!name)              { showToast('Escribe el nombre del editor','error'); return; }
+  if(!email||!email.includes('@')){ showToast('Introduce un email válido','error'); return; }
+  if(pw.length<6)        { showToast('La contraseña debe tener mínimo 6 caracteres','error'); return; }
+  if(pw!==pw2)           { showToast('Las contraseñas no coinciden','error'); return; }
+  const btn=document.getElementById('addEditorBtn');
+  btn.disabled=true; btn.textContent='Creando cuenta…';
+  const {error} = await db.auth.signUp({ email, password: pw });
+  btn.disabled=false; btn.textContent='+ Crear cuenta de editor';
+  if(error){ showToast('Error: '+error.message,'error'); return; }
   const editors=getEditors();
-  if(editors.find(e=>e.pw===pw)){ toast('⚠️ Esa contraseña ya está en uso','red'); return; }
-  editors.push({name,pw});
+  editors.push({name, email});
   saveEditors(editors);
   document.getElementById('newEditorName').value='';
+  document.getElementById('newEditorEmail').value='';
   document.getElementById('newEditorPw').value='';
+  document.getElementById('newEditorPw2').value='';
   renderEditors();
-  toast(`✅ Editor "${name}" añadido`,'gold');
+  showToast(`Cuenta creada para ${name}. Si el email requiere confirmación, el editor recibirá un correo.`);
 }
 function removeEditor(i){
-  if(!confirm('¿Eliminar este editor? Perderá el acceso al panel.')) return;
+  if(!confirm('¿Eliminar este editor de la lista? Nota: su cuenta Supabase Auth sigue activa. Para revocar el acceso completamente, elimínala desde el panel de Supabase → Authentication → Users.')) return;
   const editors=getEditors();
   const name=editors[i]?.name;
   editors.splice(i,1);
@@ -2800,6 +2878,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
   renderTeamPublic();
   updateStats();
   renderGrid();
+  startRotatingPhrases();
 })();
 
 </script>
