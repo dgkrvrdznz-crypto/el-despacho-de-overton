@@ -55,7 +55,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--fb);background:var(--bg);color:var(--text);line-height:1.7;transition:background .35s,color .35s;min-height:100vh}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);line-height:1.7;transition:background .35s,color .35s;min-height:100vh;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 button{font-family:var(--fb);cursor:pointer}
 textarea,input,select{font-family:var(--fb)}
@@ -655,7 +655,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .glos-cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px}
 .glos-chip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:all .18s}
 .glos-chip:hover,.glos-chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.glos-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.glos-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow-x:auto;box-shadow:var(--sh)}
 .glos-table{width:100%;border-collapse:collapse}
 .glos-table thead tr{background:var(--surf2)}
 .glos-table th{padding:12px 18px;text-align:left;font-size:.71rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);border-bottom:1px solid var(--border)}
@@ -677,36 +677,100 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .adm-glos-actions{display:flex;gap:6px;flex-shrink:0}
 
 /* ═══════════════════════════════════════
-   COMUNIDAD / COMENTARIOS
+   COMUNIDAD / FORO
 ═══════════════════════════════════════ */
 .com-wrap{max-width:820px;margin:0 auto;padding:48px 24px 72px}
-.com-head{margin-bottom:32px}
-.com-form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px;box-shadow:var(--sh);margin-bottom:40px}
-.com-form-title{font-family:var(--fh);font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:4px}
-.com-form-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px}
-.com-name-row{display:flex;gap:12px;margin-bottom:14px}
+.com-head{margin-bottom:24px}
 .com-in{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 15px;font-size:.86rem;color:var(--text);outline:none;transition:border-color .2s}
 .com-in:focus{border-color:var(--blue-mid)}
-.com-ta{resize:vertical;min-height:100px}
-.com-submit-row{display:flex;justify-content:flex-end;margin-top:14px}
-.comments-list{display:grid;gap:16px}
-.comment-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);position:relative}
-.comment-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.comment-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#fff;flex-shrink:0}
-.comment-meta{flex:1}
-.comment-name{font-weight:700;font-size:.88rem;color:var(--text)}
-.comment-date{font-size:.71rem;color:var(--faint)}
-.comment-body{font-size:.86rem;color:var(--text);line-height:1.7;white-space:pre-wrap}
-.comment-del{position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(214,64,64,.3);border-radius:6px;color:#d64040;font-size:.7rem;padding:3px 8px;cursor:pointer;opacity:0;transition:opacity .2s}
-.comment-card:hover .comment-del{opacity:1}
+.com-ta{resize:vertical;min-height:90px}
+
+/* Channel tabs */
+.forum-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.forum-tab{padding:9px 22px;border-radius:8px;font-size:.82rem;font-weight:600;border:2px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .2s}
+.forum-tab.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* New post form */
+.com-form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh);margin-bottom:28px}
+.com-form-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin-bottom:14px}
+.com-name-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.com-submit-row{display:flex;justify-content:flex-end;margin-top:12px;gap:8px;align-items:center}
+.com-anon-note{font-size:.72rem;color:var(--faint);flex:1}
+
+/* Thread cards */
+.forum-list{display:flex;flex-direction:column;gap:12px}
+.thread-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh)}
+.thread-main{padding:18px 20px}
+.thread-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.thread-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;color:#fff;flex-shrink:0}
+.thread-meta{flex:1;min-width:0}
+.thread-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.thread-date{font-size:.68rem;color:var(--faint)}
+.thread-body{font-size:.87rem;color:var(--text);line-height:1.75;white-space:pre-wrap;word-break:break-word;margin-bottom:12px}
+.thread-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.thread-vote{display:flex;align-items:center;gap:5px;background:var(--surf2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:.76rem;color:var(--muted);cursor:pointer;transition:all .18s;user-select:none}
+.thread-vote:hover,.thread-vote.voted{background:rgba(26,79,140,.18);border-color:var(--blue);color:var(--blue)}
+.thread-vote .vc{font-weight:700}
+.thread-reply-btn{font-size:.74rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .18s}
+.thread-reply-btn:hover{border-color:var(--blue);color:var(--blue)}
+.thread-del-btn{font-size:.72rem;color:#d64040;background:none;border:1px solid rgba(214,64,64,.25);border-radius:20px;padding:4px 10px;cursor:pointer;margin-left:auto;transition:all .18s;display:none}
+.thread-card:hover .thread-del-btn{display:inline-flex}
+
+/* Replies */
+.replies-block{border-top:1px solid var(--border);background:var(--surf2);border-radius:0 0 var(--r) var(--r)}
+.reply-item{padding:14px 20px 14px 54px;border-bottom:1px solid var(--border);position:relative}
+.reply-item:last-child{border-bottom:none}
+.reply-item::before{content:'↳';position:absolute;left:24px;top:16px;color:var(--faint);font-size:.9rem}
+.reply-hd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.reply-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#fff;flex-shrink:0}
+.reply-name{font-weight:700;font-size:.8rem;color:var(--text)}
+.reply-date{font-size:.65rem;color:var(--faint)}
+.reply-body{font-size:.83rem;color:var(--text);line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.reply-del{font-size:.68rem;color:#d64040;background:none;border:1px solid rgba(214,64,64,.25);border-radius:12px;padding:2px 8px;cursor:pointer;margin-left:auto;display:none}
+.reply-item:hover .reply-del{display:inline-flex}
+.reply-actions{display:flex;align-items:center;gap:8px;margin-top:6px}
+.reply-vote{display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:14px;padding:2px 8px;cursor:pointer;transition:all .18s}
+.reply-vote:hover,.reply-vote.voted{color:var(--blue);border-color:var(--blue)}
+
+/* Inline reply form */
+.inline-reply-form{background:var(--surf2);border-top:1px solid var(--border);padding:14px 20px 14px 54px}
+.inline-reply-form textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:.82rem;color:var(--text);resize:none;min-height:72px;outline:none}
+.inline-reply-form textarea:focus{border-color:var(--blue-mid)}
+.inline-reply-form .row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.inline-reply-form input{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:.8rem;color:var(--text);outline:none}
+.btn-cancel{background:none;border:1px solid var(--border);border-radius:7px;padding:7px 14px;font-size:.78rem;color:var(--muted);cursor:pointer}
+
 .com-empty{text-align:center;padding:60px 24px;color:var(--muted);font-size:.9rem}
-.com-count{font-size:.78rem;color:var(--faint);margin-bottom:16px}
+.com-count{font-size:.76rem;color:var(--faint);margin-bottom:14px}
+.load-more-wrap{text-align:center;margin-top:24px}
+.btn-load-more{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 28px;font-size:.82rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.btn-load-more:hover{border-color:var(--blue);color:var(--blue)}
+
+/* Admin comments */
 .adm-comments-list{display:grid;gap:10px}
 .adm-comment-row{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px 18px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .adm-comment-info{flex:1;min-width:0}
 .adm-comment-name{font-weight:700;font-size:.84rem}
 .adm-comment-body{font-size:.76rem;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px}
 .adm-comment-date{font-size:.67rem;color:var(--faint);margin-top:2px}
+
+/* Mobile extra fixes */
+@media(max-width:480px){
+  .com-wrap{padding:28px 14px 56px}
+  .thread-main{padding:14px 14px}
+  .reply-item{padding:12px 14px 12px 40px}
+  .reply-item::before{left:16px}
+  .inline-reply-form{padding:12px 14px 12px 40px}
+  .forum-tab{padding:7px 14px;font-size:.76rem}
+  .thread-actions{gap:6px}
+  .stat{flex:1 1 45%;padding:10px 8px}
+  .stat-n{font-size:1.3rem}
+  .wrap{padding:22px 12px}
+  .hero{padding:40px 14px 36px}
+  .hero h1{font-size:clamp(1.6rem,8vw,2.4rem)}
+  .adm-tab{padding:6px 9px;font-size:.7rem}
+  .fc{padding:14px 12px}
+}
 
 /* ═══════════════════════════════════════
    FOOTER ACTUALIZADO
@@ -1621,30 +1685,39 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
     <div class="com-head">
       <div class="sec-head">
         <div>
-          <div class="sec-title">💬 Comunidad</div>
+          <div class="sec-title">› Comunidad</div>
           <div class="sec-bar"></div>
         </div>
       </div>
-      <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:22px">Un espacio para debatir sobre derecho europeo. Comparte tu opinión, haz preguntas o reflexiona con otros lectores. Sin registro, solo tu nombre.</p>
+      <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Dos canales para debatir sobre derecho europeo. Sin registro, solo tu nombre.</p>
     </div>
 
-    <!-- Formulario -->
+    <!-- Tabs de canal -->
+    <div class="forum-tabs">
+      <button class="forum-tab on" id="ftab-general" onclick="switchChannel('general')">💬 General</button>
+      <button class="forum-tab"    id="ftab-debate"  onclick="switchChannel('debate')">⚡ Debate</button>
+    </div>
+
+    <!-- Formulario nuevo post -->
     <div class="com-form-card">
-      <div class="com-form-title">Deja tu comentario</div>
-      <div class="com-form-sub">Solo necesitas tu nombre. Sin correo, sin contraseña.</div>
+      <div class="com-form-title">Nueva publicación</div>
       <div class="com-name-row">
-        <input class="com-in" id="comName" type="text" placeholder="Tu nombre (o apodo)…" maxlength="60" style="max-width:280px"/>
+        <input class="com-in" id="comName" type="text" placeholder="Tu nombre o apodo…" maxlength="60" style="max-width:220px"/>
       </div>
-      <textarea class="com-in com-ta" id="comBody" placeholder="¿Qué opinas? ¿Tienes alguna pregunta sobre derecho europeo?…" maxlength="1200" rows="4"></textarea>
+      <textarea class="com-in com-ta" id="comBody" placeholder="¿Qué opinas? Escribe aquí…" maxlength="1200" rows="3"></textarea>
       <div class="com-submit-row">
-        <button class="btn-gold" onclick="postComment()" id="comBtn">Publicar comentario</button>
+        <span class="com-anon-note">Sin correo ni contraseña</span>
+        <button class="btn-gold" onclick="postComment()" id="comBtn" style="font-size:.82rem;padding:9px 22px">Publicar</button>
       </div>
     </div>
 
-    <!-- Lista de comentarios -->
+    <!-- Lista -->
     <div class="com-count" id="comCount"></div>
-    <div class="comments-list" id="commentsList">
-      <div class="com-empty">Cargando comentarios…</div>
+    <div class="forum-list" id="commentsList">
+      <div class="com-empty">Cargando…</div>
+    </div>
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+      <button class="btn-load-more" onclick="loadMoreComments()">Ver más mensajes</button>
     </div>
   </div>
 </div>
@@ -1954,7 +2027,7 @@ function goView(name){
     renderGlossary();
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
-    renderComments();
+    loadComments(true);
   }
   document.querySelectorAll('.nl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
@@ -3386,83 +3459,230 @@ async function deleteGlossTerm(id){
 }
 
 /* ══════════════════════════════════════
-   COMENTARIOS
+   FORO / COMUNIDAD
 ══════════════════════════════════════ */
-async function loadComments(){
-  const {data,error}=await db.from('comments').select('*').order('created_at',{ascending:false});
-  if(error){console.error('Error cargando comentarios:',error.message);return;}
-  COMMENTS=data||[];
+let activeChannel = 'general';
+const FORUM_PAGE  = 20;
+let forumOffset   = 0;
+let forumTotal    = 0;
+
+function getForumSession(){
+  let s=localStorage.getItem('overton_forum_sid');
+  if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('overton_forum_sid',s);}
+  return s;
+}
+function getVotedKey(id){ return 'overton_vote_'+id; }
+
+function switchChannel(ch){
+  activeChannel=ch;
+  forumOffset=0;
+  document.getElementById('ftab-general').classList.toggle('on',ch==='general');
+  document.getElementById('ftab-debate').classList.toggle('on',ch==='debate');
+  loadComments(true);
 }
 
-function renderComments(){
+async function loadComments(reset=false){
+  if(reset) forumOffset=0;
+  const list=document.getElementById('commentsList');
+  if(reset && list) list.innerHTML='<div class="com-empty">Cargando…</div>';
+  const sid=getForumSession();
+  // Load top-level posts for this channel
+  const {data,error,count}=await db.from('comments')
+    .select('*',{count:'exact'})
+    .eq('channel',activeChannel)
+    .is('reply_to',null)
+    .order('created_at',{ascending:false})
+    .range(forumOffset, forumOffset+FORUM_PAGE-1);
+  if(error){console.error(error.message);return;}
+  forumTotal=count||0;
+  const parents=data||[];
+  // Load replies for visible parents
+  let replies=[];
+  if(parents.length){
+    const ids=parents.map(p=>p.id);
+    const {data:rd}=await db.from('comments').select('*').in('reply_to',ids).order('created_at',{ascending:true});
+    replies=rd||[];
+  }
+  COMMENTS=parents;
+  renderComments(parents,replies,reset);
+}
+
+function renderComments(parents,replies,reset=true){
   const list=document.getElementById('commentsList');
   const cnt=document.getElementById('comCount');
+  const moreWrap=document.getElementById('loadMoreWrap');
   if(!list) return;
-  if(!COMMENTS.length){
-    list.innerHTML='<div class="com-empty">Sé el primero en comentar. 💬</div>';
+  if(!parents.length && forumOffset===0){
+    list.innerHTML='<div class="com-empty">Sé el primero en publicar en este canal 💬</div>';
     if(cnt) cnt.textContent='';
+    if(moreWrap) moreWrap.style.display='none';
     return;
   }
-  if(cnt) cnt.textContent=`${COMMENTS.length} comentario${COMMENTS.length!==1?'s':''}`;
-  list.innerHTML=COMMENTS.map(c=>{
-    const ini=(c.name||'?')[0].toUpperCase();
-    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
-    const delBtn=loggedIn?`<button class="comment-del" onclick="deleteComment(${c.id})">🗑️ Eliminar</button>`:'';
-    return `<div class="comment-card">
-      ${delBtn}
-      <div class="comment-hd">
-        <div class="comment-avatar">${ini}</div>
-        <div class="comment-meta">
-          <div class="comment-name">${esc(c.name||'Anónimo')}</div>
-          <div class="comment-date">${fecha}</div>
+  const sid=getForumSession();
+  const total=forumTotal;
+  if(cnt) cnt.textContent=`${total} mensaje${total!==1?'s':''}`;
+  const html=parents.map(p=>{
+    const ini=(p.name||'?')[0].toUpperCase();
+    const fecha=p.created_at?new Date(p.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const votes=p.votes||0;
+    const voted=localStorage.getItem(getVotedKey(p.id));
+    const isOwn=(p.session_id&&p.session_id===sid)||loggedIn;
+    const pReplies=replies.filter(r=>r.reply_to===p.id);
+    const repliesHtml=pReplies.length?`<div class="replies-block">
+      ${pReplies.map(r=>{
+        const ri=(r.name||'?')[0].toUpperCase();
+        const rf=r.created_at?new Date(r.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
+        const rv=r.votes||0;
+        const rvoted=localStorage.getItem(getVotedKey(r.id));
+        const rOwn=(r.session_id&&r.session_id===sid)||loggedIn;
+        return `<div class="reply-item" id="reply-${r.id}">
+          <div class="reply-hd">
+            <div class="reply-avatar">${ri}</div>
+            <div class="reply-name">${esc(r.name||'Anónimo')}</div>
+            <div class="reply-date" style="margin-left:6px">${rf}</div>
+          </div>
+          <div class="reply-body">${esc(r.body||'')}</div>
+          <div class="reply-actions">
+            <button class="reply-vote${rvoted?' voted':''}" id="rv-${r.id}" onclick="voteComment(${r.id},this)">👍 <span class="vc">${rv}</span></button>
+            ${rOwn?`<button class="reply-del" onclick="deleteComment(${r.id})">Eliminar</button>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`:'';
+    return `<div class="thread-card" id="thread-${p.id}">
+      <div class="thread-main">
+        <div class="thread-hd">
+          <div class="thread-avatar">${ini}</div>
+          <div class="thread-meta">
+            <div class="thread-name">${esc(p.name||'Anónimo')}</div>
+            <div class="thread-date">${fecha}</div>
+          </div>
+        </div>
+        <div class="thread-body">${esc(p.body||'')}</div>
+        <div class="thread-actions">
+          <button class="thread-vote${voted?' voted':''}" id="tv-${p.id}" onclick="voteComment(${p.id},this)">👍 <span class="vc">${votes}</span></button>
+          <button class="thread-reply-btn" onclick="showReplyForm(${p.id},'${esc(p.name||'Anónimo')}')">Responder</button>
+          ${isOwn?`<button class="thread-del-btn" onclick="deleteComment(${p.id})">Eliminar</button>`:''}
         </div>
       </div>
-      <div class="comment-body">${esc(c.body||'')}</div>
+      ${repliesHtml}
+      <div id="reply-form-${p.id}"></div>
     </div>`;
   }).join('');
+  if(reset){
+    list.innerHTML=html;
+  } else {
+    list.insertAdjacentHTML('beforeend',html);
+  }
+  const loaded=forumOffset+parents.length;
+  if(moreWrap) moreWrap.style.display=(loaded<total)?'block':'none';
+}
+
+async function loadMoreComments(){
+  forumOffset+=FORUM_PAGE;
+  const sid=getForumSession();
+  const {data,error,count}=await db.from('comments')
+    .select('*',{count:'exact'})
+    .eq('channel',activeChannel)
+    .is('reply_to',null)
+    .order('created_at',{ascending:false})
+    .range(forumOffset,forumOffset+FORUM_PAGE-1);
+  if(error){showToast('Error cargando más','error');return;}
+  forumTotal=count||0;
+  const parents=data||[];
+  let replies=[];
+  if(parents.length){
+    const ids=parents.map(p=>p.id);
+    const {data:rd}=await db.from('comments').select('*').in('reply_to',ids).order('created_at',{ascending:true});
+    replies=rd||[];
+  }
+  renderComments(parents,replies,false);
 }
 
 async function postComment(){
   const name=document.getElementById('comName').value.trim();
   const body=document.getElementById('comBody').value.trim();
-  if(!name){showToast('Escribe tu nombre','error');return;}
-  if(!body||body.length<3){showToast('El comentario es demasiado corto','error');return;}
+  if(!name){showToast('Escribe tu nombre o apodo','error');return;}
+  if(!body||body.length<3){showToast('El mensaje es demasiado corto','error');return;}
   const btn=document.getElementById('comBtn');
   btn.disabled=true; btn.textContent='Publicando…';
-  const {error}=await db.from('comments').insert([{name,body}]);
-  btn.disabled=false; btn.textContent='Publicar comentario';
-  if(error){showToast('Error al publicar: '+error.message,'error');return;}
-  document.getElementById('comName').value='';
+  const sid=getForumSession();
+  const {error}=await db.from('comments').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
+  btn.disabled=false; btn.textContent='Publicar';
+  if(error){showToast('Error: '+error.message,'error');return;}
   document.getElementById('comBody').value='';
-  showToast('¡Comentario publicado!');
-  await loadComments();
-  renderComments();
+  showToast('¡Publicado!');
+  loadComments(true);
+}
+
+function showReplyForm(parentId, parentName){
+  // Close any open reply forms
+  document.querySelectorAll('[id^="reply-form-"]').forEach(el=>el.innerHTML='');
+  const container=document.getElementById('reply-form-'+parentId);
+  if(!container) return;
+  const sid=getForumSession();
+  const savedName=document.getElementById('comName').value.trim()||localStorage.getItem('overton_forum_name')||'';
+  container.innerHTML=`<div class="inline-reply-form">
+    <textarea id="replyBody-${parentId}" placeholder="Responde a ${esc(parentName)}…" maxlength="800" rows="3"></textarea>
+    <div class="row">
+      <input id="replyName-${parentId}" type="text" placeholder="Tu nombre…" maxlength="60" value="${esc(savedName)}"/>
+      <button class="btn-cancel" onclick="document.getElementById('reply-form-${parentId}').innerHTML=''">Cancelar</button>
+      <button class="btn-gold" style="font-size:.78rem;padding:7px 16px" onclick="postReply(${parentId})">Responder</button>
+    </div>
+  </div>`;
+  document.getElementById('replyBody-'+parentId).focus();
+}
+
+async function postReply(parentId){
+  const name=(document.getElementById('replyName-'+parentId)?.value||'').trim();
+  const body=(document.getElementById('replyBody-'+parentId)?.value||'').trim();
+  if(!name){showToast('Escribe tu nombre','error');return;}
+  if(!body||body.length<2){showToast('La respuesta es demasiado corta','error');return;}
+  const sid=getForumSession();
+  localStorage.setItem('overton_forum_name',name);
+  const {error}=await db.from('comments').insert([{name,body,channel:activeChannel,reply_to:parentId,session_id:sid,votes:0}]);
+  if(error){showToast('Error: '+error.message,'error');return;}
+  document.getElementById('reply-form-'+parentId).innerHTML='';
+  showToast('Respuesta publicada');
+  loadComments(true);
+}
+
+async function voteComment(id, btn){
+  const key=getVotedKey(id);
+  if(localStorage.getItem(key)){showToast('Ya votaste este mensaje');return;}
+  const {error}=await db.rpc('increment_comment_votes',{p_id:id});
+  if(error){showToast('Error al votar','error');return;}
+  localStorage.setItem(key,'1');
+  btn.classList.add('voted');
+  const vc=btn.querySelector('.vc');
+  if(vc) vc.textContent=parseInt(vc.textContent||0)+1;
 }
 
 async function deleteComment(id){
-  if(!confirm('¿Eliminar este comentario?')) return;
+  if(!confirm('¿Eliminar este mensaje?')) return;
   const {error}=await db.from('comments').delete().eq('id',id);
   if(error){showToast('Error al eliminar','error');return;}
-  showToast('Comentario eliminado');
-  await loadComments();
-  renderComments();
+  showToast('Mensaje eliminado');
+  loadComments(true);
   renderAdmComments();
 }
 
 async function renderAdmComments(){
-  await loadComments();
+  const {data}=await db.from('comments').select('*').order('created_at',{ascending:false}).limit(100);
   const list=document.getElementById('admCommentsList');
   if(!list) return;
-  if(!COMMENTS.length){list.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay comentarios todavía.</p>';return;}
-  list.innerHTML=COMMENTS.map(c=>{
+  if(!data||!data.length){list.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay mensajes todavía.</p>';return;}
+  list.innerHTML=data.map(c=>{
     const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const ch=c.channel||'general';
+    const tipo=c.reply_to?'↳ Respuesta':'Publicación';
     return `<div class="adm-comment-row">
       <div class="adm-comment-info">
-        <div class="adm-comment-name">${esc(c.name||'Anónimo')}</div>
+        <div class="adm-comment-name">${esc(c.name||'Anónimo')} <span style="font-size:.68rem;color:var(--faint);font-weight:400">${tipo} · ${ch}</span></div>
         <div class="adm-comment-body">${esc(c.body||'')}</div>
         <div class="adm-comment-date">${fecha}</div>
       </div>
-      <button class="btn-sm" style="color:#d64040;border-color:rgba(214,64,64,.3);flex-shrink:0" onclick="deleteComment(${c.id})">🗑️ Eliminar</button>
+      <button class="btn-sm" style="color:#d64040;border-color:rgba(214,64,64,.3);flex-shrink:0" onclick="deleteComment(${c.id})">🗑️</button>
     </div>`;
   }).join('');
 }
@@ -3490,7 +3710,6 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 (async function init(){
   await loadArts();
   await loadGlossary();
-  await loadComments();
   applyAbout();
   applyPhoto();
   applySiteSettings();
