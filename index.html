@@ -346,8 +346,9 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;margin-top:10px}
 .team-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);transition:transform .22s,box-shadow .22s}
 .team-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
-.team-photo{width:100%;overflow:hidden;background:linear-gradient(140deg,var(--blue),#0a2244);display:flex;align-items:center;justify-content:center}
-.team-photo img{width:100%;height:auto;display:block;object-fit:contain}
+.team-photo{width:100%;height:240px;overflow:hidden;background:linear-gradient(140deg,var(--blue),#0a2244);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.team-photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:top center;transition:transform .4s ease}
+.team-card:hover .team-photo img{transform:scale(1.04)}
 .team-photo-ph{font-size:4rem;opacity:.6;padding:48px 0}
 .team-info{padding:20px}
 .team-name{font-family:var(--fh);font-size:1.25rem;font-weight:700;color:var(--text);margin-bottom:4px}
@@ -439,7 +440,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .photo-upload-area{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
 .photo-upload-area:hover{border-color:var(--blue-mid);background:var(--surf2)}
 .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.photo-preview{width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:12px;display:none}
+.photo-preview{width:100%;height:200px;object-fit:cover;object-position:top center;border-radius:8px;margin-top:12px;display:none}
 .photo-preview.show{display:block}
 .upload-hint{font-size:.8rem;color:var(--faint);margin-top:6px}
 .upload-icon{font-size:2rem;margin-bottom:6px}
@@ -1341,6 +1342,15 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
               <input type="file" id="teamPhotoFile" accept="image/*" onchange="previewTeamPhoto(this)" style="display:none"/>
             </div>
             <img id="teamPhotoPreview" class="photo-preview" src="" alt="Preview"/>
+            <div id="teamPosRow" style="display:none;margin-top:10px;display:none">
+              <label class="flbl" style="margin-bottom:6px">Encuadre de la cara</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn-sm photo-pos-btn on" data-pos="top center"    onclick="setPhotoPos(this)">⬆ Arriba</button>
+                <button type="button" class="btn-sm photo-pos-btn"    data-pos="center center" onclick="setPhotoPos(this)">⬜ Centro</button>
+                <button type="button" class="btn-sm photo-pos-btn"    data-pos="bottom center" onclick="setPhotoPos(this)">⬇ Abajo</button>
+              </div>
+            </div>
+            <input type="hidden" id="tPhotoPos" value="top center"/>
             <button class="btn-sm" id="removeTeamPhotoBtn" style="display:none;margin-top:8px;color:#d64040;border-color:rgba(214,64,64,.3)" onclick="removeTeamPhoto()">✕ Eliminar foto</button>
           </div>
           <div class="fgrp">
@@ -2971,8 +2981,13 @@ function editTeamMember(id){
   document.getElementById('tLinkedin').value=m.linkedin||'';
   if(m.photo){
     const prev=document.getElementById('teamPhotoPreview');
+    const pos=m.photoPos||'top center';
     prev.src=m.photo; prev.classList.add('show');
+    prev.style.objectPosition=pos;
+    document.getElementById('tPhotoPos').value=pos;
     document.getElementById('removeTeamPhotoBtn').style.display='inline-block';
+    document.getElementById('teamPosRow').style.display='block';
+    document.querySelectorAll('.photo-pos-btn').forEach(b=>b.classList.toggle('on',b.dataset.pos===pos));
   }
   document.getElementById('teamFormCard').scrollIntoView({behavior:'smooth'});
 }
@@ -2989,13 +3004,24 @@ function resetTeamForm(){
   ['tName','tRole','tSpec','tBio','tLinkedin'].forEach(id=>{ document.getElementById(id).value=''; });
   removeTeamPhoto();
 }
+function setPhotoPos(btn){
+  document.querySelectorAll('.photo-pos-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const pos=btn.dataset.pos;
+  document.getElementById('tPhotoPos').value=pos;
+  const prev=document.getElementById('teamPhotoPreview');
+  if(prev) prev.style.objectPosition=pos;
+}
 function previewTeamPhoto(input){
   const file=input.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=e=>{
     const prev=document.getElementById('teamPhotoPreview');
     prev.src=e.target.result; prev.classList.add('show');
+    const pos=document.getElementById('tPhotoPos').value||'top center';
+    prev.style.objectPosition=pos;
     document.getElementById('removeTeamPhotoBtn').style.display='inline-block';
+    document.getElementById('teamPosRow').style.display='block';
   };
   reader.readAsDataURL(file);
 }
@@ -3004,6 +3030,9 @@ function removeTeamPhoto(){
   prev.src=''; prev.classList.remove('show');
   document.getElementById('removeTeamPhotoBtn').style.display='none';
   document.getElementById('teamPhotoFile').value='';
+  document.getElementById('teamPosRow').style.display='none';
+  document.getElementById('tPhotoPos').value='top center';
+  document.querySelectorAll('.photo-pos-btn').forEach((b,i)=>b.classList.toggle('on',i===0));
 }
 function saveTeamMember(){
   const name=document.getElementById('tName').value.trim();
@@ -3013,6 +3042,7 @@ function saveTeamMember(){
   const member={
     id: teamEditingId||Date.now(),
     name, photo,
+    photoPos: document.getElementById('tPhotoPos').value||'top center',
     role:     document.getElementById('tRole').value.trim(),
     spec:     document.getElementById('tSpec').value.trim(),
     bio:      document.getElementById('tBio').value.trim(),
@@ -3041,7 +3071,7 @@ function renderTeamPublic(){
   el.innerHTML=members.map(m=>`
     <div class="team-card">
       <div class="team-photo">
-        ${m.photo?`<img src="${m.photo}" alt="${m.name}"/>`:`<div class="team-photo-ph">👤</div>`}
+        ${m.photo?`<img src="${m.photo}" alt="${m.name}" style="object-position:${m.photoPos||'top center'}"/>`:`<div class="team-photo-ph">👤</div>`}
       </div>
       <div class="team-info">
         <div class="team-name">${m.name}</div>
