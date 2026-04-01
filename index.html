@@ -107,11 +107,11 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 /* ═══════════════════════════════════════
    HERO
 ═══════════════════════════════════════ */
-.hero{padding:96px 24px 76px;text-align:center;position:relative;overflow:hidden;min-height:560px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.hero{padding:96px 24px 76px;text-align:center;position:relative;overflow:hidden;min-height:560px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(160deg,#0A2244 0%,#1A4F8C 55%,#0D3068 100%)}
 .hero-slides{position:absolute;inset:0;z-index:0}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 2s ease;will-change:opacity}
 .hero-slide.active{opacity:1}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(5,15,40,.88) 0%,rgba(10,34,80,.78) 50%,rgba(5,18,50,.86) 100%);z-index:1}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(10,34,68,.62) 0%,rgba(26,79,140,.52) 50%,rgba(13,48,104,.60) 100%);z-index:1}
 .hero-mesh{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 70% 60% at 75% 50%,rgba(201,162,39,.10),transparent 70%),radial-gradient(ellipse 50% 80% at 10% 80%,rgba(45,109,181,.15),transparent 60%);pointer-events:none}
 .hero-content{position:relative;z-index:3;width:100%;max-width:860px;margin:0 auto}
 .hero-caption{position:absolute;bottom:16px;right:20px;z-index:4;font-size:.6rem;color:rgba(255,255,255,.28);letter-spacing:.12em;text-transform:uppercase}
@@ -712,6 +712,25 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .com-in:focus{border-color:var(--blue-mid)}
 .com-ta{resize:vertical;min-height:90px}
 
+/* Comunidad inline debate */
+.com-debate-inline{background:linear-gradient(135deg,#0C2D5C,#1A4F8C);border-radius:var(--r);padding:24px 26px;margin-bottom:20px;text-align:center}
+.com-debate-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(201,162,39,.2);border:1px solid rgba(201,162,39,.4);color:var(--gold-lt);font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:12px}
+.com-debate-q{font-family:var(--fh);font-size:clamp(1rem,2.5vw,1.4rem);font-weight:700;color:#fff;line-height:1.35;margin-bottom:18px}
+.com-debate-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.com-debate-res .debate-bar-wrap{background:rgba(255,255,255,.1);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;max-width:400px;margin-left:auto;margin-right:auto}
+.com-debate-res .debate-stats{display:flex;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.6);max-width:400px;margin:0 auto}
+/* Comunidad inline newsletter */
+.com-nl-inline{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-bottom:28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.com-nl-icon{font-size:2rem;flex-shrink:0}
+.com-nl-text{flex:1;min-width:160px}
+.com-nl-title{font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:2px}
+.com-nl-sub{font-size:.75rem;color:var(--faint)}
+.com-nl-form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.com-nl-in{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:.84rem;color:var(--text);outline:none;transition:border-color .2s;min-width:180px}
+.com-nl-in:focus{border-color:var(--blue-mid)}
+/* Comunidad section title */
+.com-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
+[data-theme=dark] .com-section-title{color:#7AB8E8}
 /* Channel tabs */
 .forum-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
 .forum-tab{padding:9px 22px;border-radius:8px;font-size:.82rem;font-weight:600;border:2px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .2s}
@@ -1174,14 +1193,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
         <div class="sec-title" id="secTitle">Últimas <em>publicaciones</em></div>
         <div class="sec-bar"></div>
       </div>
-    </div>
-    <div class="tabs" id="tabsRow">
-      <div class="tab on-all" data-t="all"          onclick="setTab(this,'all')"><span class="tab-dot td-a"></span>Todo</div>
-      <div class="tab"        data-t="sentencia"     onclick="setTab(this,'sentencia')"><span class="tab-dot td-s"></span>⚖️ Sentencias</div>
-      <div class="tab"        data-t="directiva"     onclick="setTab(this,'directiva')"><span class="tab-dot td-d"></span>📜 Directivas</div>
-      <div class="tab"        data-t="medioambiente" onclick="setTab(this,'medioambiente')"><span class="tab-dot td-ma"></span>🌿 Medio Ambiente</div>
-      <div class="tab"        data-t="opinion"       onclick="setTab(this,'opinion')"><span class="tab-dot td-op"></span>✍️ Opinión</div>
-      <div class="tab"        data-t="otro"          onclick="setTab(this,'otro')"><span class="tab-dot td-o"></span>📁 Otros</div>
     </div>
     <div class="chips" id="chipsRow"></div>
     <div class="grid" id="grid"></div>
@@ -1799,6 +1810,33 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Dos canales para debatir sobre derecho europeo. Sin registro, solo tu nombre.</p>
     </div>
 
+    <!-- ── DEBATE DE LA SEMANA (inline) ── -->
+    <div class="com-debate-inline" id="comDebateInline" style="display:none">
+      <div class="com-debate-pill">⚡ Debate de la Semana</div>
+      <div class="com-debate-q" id="comDebateQ"></div>
+      <div class="com-debate-btns" id="comDebateBtns"></div>
+      <div class="com-debate-res" id="comDebateRes" style="display:none">
+        <div class="debate-bar-wrap"><div class="debate-bar-yes" id="comDebateBarYes"></div></div>
+        <div class="debate-stats"><span id="comDebateStatY"></span><span id="comDebateStatN"></span></div>
+      </div>
+    </div>
+
+    <!-- ── NEWSLETTER (inline) ── -->
+    <div class="com-nl-inline">
+      <div class="com-nl-icon">📬</div>
+      <div class="com-nl-text">
+        <div class="com-nl-title">Recibe los análisis en tu correo</div>
+        <div class="com-nl-sub">Sin spam · Solo derecho europeo</div>
+      </div>
+      <div class="com-nl-form">
+        <input class="com-nl-in" id="comNlEmail" type="email" placeholder="tu@email.com"/>
+        <button class="btn-gold" onclick="subscribeEmailInline()" style="font-size:.8rem;padding:9px 18px;white-space:nowrap">Suscribirme</button>
+      </div>
+    </div>
+
+    <!-- ── SEPARADOR ── -->
+    <div class="com-section-title">💬 Foro de la comunidad</div>
+
     <!-- Tabs de canal -->
     <div class="forum-tabs">
       <button class="forum-tab on" id="ftab-general" onclick="switchChannel('general')">💬 General</button>
@@ -2170,6 +2208,7 @@ function goView(name){
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
     loadComments(true);
+    setTimeout(loadDebateInline, 300);
   }
   document.querySelectorAll('.nl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
@@ -2185,17 +2224,12 @@ function scrollToGrid(){
 /* ── TABS ── */
 function setTab(el,key){
   activeTab=key;
-  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('on-all','on-s','on-d','on-ma','on-op','on-o')});
-  const map={all:'on-all',sentencia:'on-s',directiva:'on-d',medioambiente:'on-ma',opinion:'on-op',otro:'on-o'};
-  el.classList.add(map[key]||'on-all');
   renderGrid();
 }
 function setTabKey(key){
   activeTab=key;
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.classList.remove('on-all','on-s','on-d','on-ma','on-op','on-o');
-    if(t.dataset.t===key){const m={all:'on-all',sentencia:'on-s',directiva:'on-d',medioambiente:'on-ma',opinion:'on-op',otro:'on-o'};t.classList.add(m[key]||'on-all')}
-  });
+  // Las pestañas de tipo fueron eliminadas — solo actualizamos activeTab y rerenderizamos
+  renderGrid();
 }
 
 /* ── CHIPS ── */
@@ -3652,23 +3686,44 @@ async function loadComments(reset=false){
   if(reset) forumOffset=0;
   const list=document.getElementById('commentsList');
   if(reset && list) list.innerHTML='<div class="com-empty">Cargando…</div>';
-  const sid=getForumSession();
-  // Load top-level posts for this channel
-  const {data,error,count}=await db.from('comments')
+
+  // Intento 1: query completa con channel y reply_to
+  let result = await db.from('comments')
     .select('*',{count:'exact'})
     .eq('channel',activeChannel)
     .is('reply_to',null)
     .order('created_at',{ascending:false})
     .range(forumOffset, forumOffset+FORUM_PAGE-1);
-  if(error){console.error(error.message);return;}
-  forumTotal=count||0;
-  const parents=data||[];
-  // Load replies for visible parents
+
+  // Si falla (columnas no existen), intento 2: solo ordenar por fecha
+  if(result.error){
+    console.warn('Forum query full failed:',result.error.message,'. Trying simple query…');
+    result = await db.from('comments')
+      .select('*',{count:'exact'})
+      .order('created_at',{ascending:false})
+      .range(forumOffset, forumOffset+FORUM_PAGE-1);
+  }
+
+  if(result.error){
+    console.error('Forum load error:',result.error);
+    if(list) list.innerHTML=`<div class="com-empty" style="color:#d64040;line-height:1.7">
+      ⚠️ <strong>Error de base de datos</strong><br>
+      <small>${result.error.message}</small><br>
+      <small style="opacity:.7">Ejecuta el SQL de setup en Supabase (ver consola)</small>
+    </div>`;
+    console.error('SQL SETUP NECESARIO:\nALTER TABLE comments ADD COLUMN IF NOT EXISTS reply_to bigint REFERENCES comments(id) ON DELETE CASCADE, ADD COLUMN IF NOT EXISTS channel text DEFAULT \'general\', ADD COLUMN IF NOT EXISTS session_id text, ADD COLUMN IF NOT EXISTS votes int DEFAULT 0;\nCREATE OR REPLACE FUNCTION increment_comment_votes(p_id bigint) RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN UPDATE comments SET votes=votes+1 WHERE id=p_id; END; $$;\nDROP POLICY IF EXISTS "anon_select_comments" ON comments; CREATE POLICY "anon_select_comments" ON comments FOR SELECT TO anon USING (true);\nDROP POLICY IF EXISTS "anon_insert_comments" ON comments; CREATE POLICY "anon_insert_comments" ON comments FOR INSERT TO anon WITH CHECK (true);\nDROP POLICY IF EXISTS "anon_delete_own" ON comments; CREATE POLICY "anon_delete_own" ON comments FOR DELETE TO anon USING (true);');
+    return;
+  }
+
+  forumTotal = result.count||0;
+  const parents = result.data||[];
+
+  // Cargar respuestas solo si la columna reply_to existe
   let replies=[];
   if(parents.length){
     const ids=parents.map(p=>p.id);
-    const {data:rd}=await db.from('comments').select('*').in('reply_to',ids).order('created_at',{ascending:true});
-    replies=rd||[];
+    const {data:rd,error:re}=await db.from('comments').select('*').in('reply_to',ids).order('created_at',{ascending:true});
+    if(!re) replies=rd||[];
   }
   COMMENTS=parents;
   renderComments(parents,replies,reset);
@@ -3774,11 +3829,31 @@ async function postComment(){
   const btn=document.getElementById('comBtn');
   btn.disabled=true; btn.textContent='Publicando…';
   const sid=getForumSession();
-  const {error}=await db.from('comments').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
+
+  // Intento 1: insert completo con todos los campos
+  let result=await db.from('comments').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
+
+  // Si falla (columnas no existen), intento 2: solo name y body
+  if(result.error){
+    console.warn('Insert full failed:',result.error.message,'. Trying minimal insert…');
+    result=await db.from('comments').insert([{name,body}]);
+  }
+
   btn.disabled=false; btn.textContent='Publicar';
-  if(error){showToast('Error: '+error.message,'error');return;}
+
+  if(result.error){
+    console.error('Post comment error:',result.error);
+    // Mostrar error visible en el foro además del toast
+    const list=document.getElementById('commentsList');
+    const errDiv=document.createElement('div');
+    errDiv.style.cssText='background:rgba(214,64,64,.1);border:1px solid rgba(214,64,64,.3);border-radius:8px;padding:14px;margin-bottom:12px;color:#d64040;font-size:.82rem';
+    errDiv.innerHTML='⚠️ Error al publicar: <strong>'+result.error.message+'</strong>';
+    if(list) list.prepend(errDiv);
+    showToast('Error al publicar','error');
+    return;
+  }
   document.getElementById('comBody').value='';
-  showToast('¡Publicado!');
+  showToast('¡Publicado! ✓');
   loadComments(true);
 }
 
@@ -3868,6 +3943,42 @@ async function subscribeEmail(){
   }
   document.getElementById('nlEmail').value='';
   showToast('¡Suscripción confirmada! 🎉');
+}
+
+async function subscribeEmailInline(){
+  const email=(document.getElementById('comNlEmail')?.value||'').trim();
+  if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
+  const {error}=await db.from('subscribers').insert([{email}]);
+  if(error){
+    if(error.code==='23505'){showToast('Este email ya está suscrito');}
+    else {showToast('Error: '+error.message,'error');}
+    return;
+  }
+  document.getElementById('comNlEmail').value='';
+  showToast('¡Suscripción confirmada! 🎉');
+}
+
+function loadDebateInline(){
+  // Rellena el bloque de debate inline en comunidad con los mismos datos del debate principal
+  const q=document.getElementById('debateQ');
+  const inlineBlock=document.getElementById('comDebateInline');
+  if(!q||!inlineBlock) return;
+  const questionText=q.textContent||q.innerText;
+  if(!questionText||questionText.trim()==='') return;
+  document.getElementById('comDebateQ').textContent=questionText;
+  // Copiar botones del debate principal
+  const mainBtns=document.getElementById('debateBtns');
+  const inlineBtns=document.getElementById('comDebateBtns');
+  if(mainBtns&&inlineBtns){
+    inlineBtns.innerHTML=mainBtns.innerHTML.replace(/onclick="/g,'onclick="comDebateVote(this,');
+  }
+  inlineBlock.style.display='block';
+}
+
+function comDebateVote(btn,type){
+  // Delega al voto principal
+  const mainBtns=document.querySelectorAll('.debate-vote-btn');
+  mainBtns.forEach(b=>{ if((type==='yes'&&b.classList.contains('yes'))||(type==='no'&&b.classList.contains('no'))) b.click(); });
 }
 
 /* helper */
