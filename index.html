@@ -3688,7 +3688,7 @@ async function loadComments(reset=false){
   if(reset && list) list.innerHTML='<div class="com-empty">Cargando…</div>';
 
   // Intento 1: query completa con channel y reply_to
-  let result = await db.from('comments')
+  let result = await db.from('forum_posts')
     .select('*',{count:'exact'})
     .eq('channel',activeChannel)
     .is('reply_to',null)
@@ -3698,7 +3698,7 @@ async function loadComments(reset=false){
   // Si falla (columnas no existen), intento 2: solo ordenar por fecha
   if(result.error){
     console.warn('Forum query full failed:',result.error.message,'. Trying simple query…');
-    result = await db.from('comments')
+    result = await db.from('forum_posts')
       .select('*',{count:'exact'})
       .order('created_at',{ascending:false})
       .range(forumOffset, forumOffset+FORUM_PAGE-1);
@@ -3711,7 +3711,7 @@ async function loadComments(reset=false){
       <small>${result.error.message}</small><br>
       <small style="opacity:.7">Ejecuta el SQL de setup en Supabase (ver consola)</small>
     </div>`;
-    console.error('SQL SETUP NECESARIO:\nALTER TABLE comments ADD COLUMN IF NOT EXISTS reply_to bigint REFERENCES comments(id) ON DELETE CASCADE, ADD COLUMN IF NOT EXISTS channel text DEFAULT \'general\', ADD COLUMN IF NOT EXISTS session_id text, ADD COLUMN IF NOT EXISTS votes int DEFAULT 0;\nCREATE OR REPLACE FUNCTION increment_comment_votes(p_id bigint) RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN UPDATE comments SET votes=votes+1 WHERE id=p_id; END; $$;\nDROP POLICY IF EXISTS "anon_select_comments" ON comments; CREATE POLICY "anon_select_comments" ON comments FOR SELECT TO anon USING (true);\nDROP POLICY IF EXISTS "anon_insert_comments" ON comments; CREATE POLICY "anon_insert_comments" ON comments FOR INSERT TO anon WITH CHECK (true);\nDROP POLICY IF EXISTS "anon_delete_own" ON comments; CREATE POLICY "anon_delete_own" ON comments FOR DELETE TO anon USING (true);');
+    console.error('SQL SETUP NECESARIO:\nALTER TABLE comments ADD COLUMN IF NOT EXISTS reply_to bigint REFERENCES comments(id) ON DELETE CASCADE, ADD COLUMN IF NOT EXISTS channel text DEFAULT \'general\', ADD COLUMN IF NOT EXISTS session_id text, ADD COLUMN IF NOT EXISTS votes int DEFAULT 0;\nCREATE OR REPLACE FUNCTION increment_forum_votes(p_id bigint) RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN UPDATE comments SET votes=votes+1 WHERE id=p_id; END; $$;\nDROP POLICY IF EXISTS "anon_select_comments" ON comments; CREATE POLICY "anon_select_comments" ON comments FOR SELECT TO anon USING (true);\nDROP POLICY IF EXISTS "anon_insert_comments" ON comments; CREATE POLICY "anon_insert_comments" ON comments FOR INSERT TO anon WITH CHECK (true);\nDROP POLICY IF EXISTS "anon_delete_own" ON comments; CREATE POLICY "anon_delete_own" ON comments FOR DELETE TO anon USING (true);');
     return;
   }
 
@@ -3722,7 +3722,7 @@ async function loadComments(reset=false){
   let replies=[];
   if(parents.length){
     const ids=parents.map(p=>p.id);
-    const {data:rd,error:re}=await db.from('comments').select('*').in('reply_to',ids).order('created_at',{ascending:true});
+    const {data:rd,error:re}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
     if(!re) replies=rd||[];
   }
   COMMENTS=parents;
@@ -3803,7 +3803,7 @@ function renderComments(parents,replies,reset=true){
 async function loadMoreComments(){
   forumOffset+=FORUM_PAGE;
   const sid=getForumSession();
-  const {data,error,count}=await db.from('comments')
+  const {data,error,count}=await db.from('forum_posts')
     .select('*',{count:'exact'})
     .eq('channel',activeChannel)
     .is('reply_to',null)
@@ -3815,7 +3815,7 @@ async function loadMoreComments(){
   let replies=[];
   if(parents.length){
     const ids=parents.map(p=>p.id);
-    const {data:rd}=await db.from('comments').select('*').in('reply_to',ids).order('created_at',{ascending:true});
+    const {data:rd}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
     replies=rd||[];
   }
   renderComments(parents,replies,false);
@@ -3831,12 +3831,12 @@ async function postComment(){
   const sid=getForumSession();
 
   // Intento 1: insert completo con todos los campos
-  let result=await db.from('comments').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
+  let result=await db.from('forum_posts').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
 
   // Si falla (columnas no existen), intento 2: solo name y body
   if(result.error){
     console.warn('Insert full failed:',result.error.message,'. Trying minimal insert…');
-    result=await db.from('comments').insert([{name,body}]);
+    result=await db.from('forum_posts').insert([{name,body}]);
   }
 
   btn.disabled=false; btn.textContent='Publicar';
@@ -3882,7 +3882,7 @@ async function postReply(parentId){
   if(!body||body.length<2){showToast('La respuesta es demasiado corta','error');return;}
   const sid=getForumSession();
   localStorage.setItem('overton_forum_name',name);
-  const {error}=await db.from('comments').insert([{name,body,channel:activeChannel,reply_to:parentId,session_id:sid,votes:0}]);
+  const {error}=await db.from('forum_posts').insert([{name,body,channel:activeChannel,reply_to:parentId,session_id:sid,votes:0}]);
   if(error){showToast('Error: '+error.message,'error');return;}
   document.getElementById('reply-form-'+parentId).innerHTML='';
   showToast('Respuesta publicada');
@@ -3892,7 +3892,7 @@ async function postReply(parentId){
 async function voteComment(id, btn){
   const key=getVotedKey(id);
   if(localStorage.getItem(key)){showToast('Ya votaste este mensaje');return;}
-  const {error}=await db.rpc('increment_comment_votes',{p_id:id});
+  const {error}=await db.rpc('increment_forum_votes',{p_id:id});
   if(error){showToast('Error al votar','error');return;}
   localStorage.setItem(key,'1');
   btn.classList.add('voted');
@@ -3902,7 +3902,7 @@ async function voteComment(id, btn){
 
 async function deleteComment(id){
   if(!confirm('¿Eliminar este mensaje?')) return;
-  const {error}=await db.from('comments').delete().eq('id',id);
+  const {error}=await db.from('forum_posts').delete().eq('id',id);
   if(error){showToast('Error al eliminar','error');return;}
   showToast('Mensaje eliminado');
   loadComments(true);
@@ -3910,7 +3910,7 @@ async function deleteComment(id){
 }
 
 async function renderAdmComments(){
-  const {data}=await db.from('comments').select('*').order('created_at',{ascending:false}).limit(100);
+  const {data}=await db.from('forum_posts').select('*').order('created_at',{ascending:false}).limit(100);
   const list=document.getElementById('admCommentsList');
   if(!list) return;
   if(!data||!data.length){list.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay mensajes todavía.</p>';return;}
