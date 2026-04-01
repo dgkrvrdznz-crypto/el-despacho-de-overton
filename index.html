@@ -24,20 +24,29 @@
   --gold:      #C9A227;
   --gold-lt:   #E2BA48;
   --gold-dim:  rgba(201,162,39,.13);
+  --eu-gold:   #FFCC00;
   --blue:      #1A4F8C;
   --blue-mid:  #2D6DB5;
   --blue-lt:   #5B9FD8;
+  --blue-deep: #0A2244;
+  --blue-rich: #0D3068;
+  --blue-navy: #050F1E;
   --sky:       #C6DDF5;
-  --bg:        #F3F7FC;
+  --bg:        #F0F5FB;
+  --bg2:       #E8EFF8;
   --surface:   #FFFFFF;
   --surf2:     #EBF2FB;
-  --border:    #CDD9EE;
-  --text:      #0E1C2F;
-  --muted:     #546A85;
-  --faint:     #8DA5C0;
+  --surf3:     #DDE9F7;
+  --border:    #C8D5EC;
+  --border2:   #B8C9E4;
+  --text:      #0A1828;
+  --muted:     #4A6280;
+  --faint:     #7D9BBB;
   --r:         11px;
-  --sh:        0 2px 18px rgba(26,79,140,.08);
-  --sh-lg:     0 12px 50px rgba(26,79,140,.16);
+  --r-lg:      16px;
+  --sh:        0 2px 16px rgba(10,34,68,.07), 0 1px 4px rgba(10,34,68,.04);
+  --sh-md:     0 6px 28px rgba(10,34,68,.11), 0 2px 8px rgba(10,34,68,.05);
+  --sh-lg:     0 16px 56px rgba(10,34,68,.18), 0 4px 16px rgba(10,34,68,.08);
   --fh:        'Cormorant Garamond',Georgia,serif;
   --fb:        'Outfit',sans-serif;
 }
@@ -98,8 +107,14 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 /* ═══════════════════════════════════════
    HERO
 ═══════════════════════════════════════ */
-.hero{background:linear-gradient(140deg,#091E3A 0%,#1A4F8C 55%,#0C2D5C 100%);padding:84px 24px 68px;text-align:center;position:relative;overflow:hidden}
-.hero-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 75% 50%,rgba(201,162,39,.13),transparent 70%),radial-gradient(ellipse 50% 80% at 10% 80%,rgba(45,109,181,.2),transparent 60%);pointer-events:none}
+.hero{padding:96px 24px 76px;text-align:center;position:relative;overflow:hidden;min-height:560px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.hero-slides{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 2s ease;will-change:opacity}
+.hero-slide.active{opacity:1}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(5,15,40,.88) 0%,rgba(10,34,80,.78) 50%,rgba(5,18,50,.86) 100%);z-index:1}
+.hero-mesh{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 70% 60% at 75% 50%,rgba(201,162,39,.10),transparent 70%),radial-gradient(ellipse 50% 80% at 10% 80%,rgba(45,109,181,.15),transparent 60%);pointer-events:none}
+.hero-content{position:relative;z-index:3;width:100%;max-width:860px;margin:0 auto}
+.hero-caption{position:absolute;bottom:16px;right:20px;z-index:4;font-size:.6rem;color:rgba(255,255,255,.28);letter-spacing:.12em;text-transform:uppercase}
 .eu-stars{font-size:1.1rem;letter-spacing:.28rem;margin-bottom:18px;opacity:.65;animation:twink 3s ease-in-out infinite alternate}
 @keyframes twink{from{opacity:.45}to{opacity:.85}}
 .hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.38);color:var(--gold-lt);font-size:.69rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:22px}
@@ -111,6 +126,17 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 .btn-gold:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,162,39,.35)}
 .btn-ghost{background:transparent;color:rgba(255,255,255,.85);font-weight:500;font-size:.84rem;padding:13px 28px;border-radius:8px;border:1.5px solid rgba(255,255,255,.25);transition:all .2s}
 .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.45)}
+
+/* ═══════════════════════════════════════
+   SECONDARY CATEGORY NAV
+═══════════════════════════════════════ */
+.cat-nav{position:sticky;top:66px;z-index:84;background:var(--surface);border-bottom:2px solid var(--border);box-shadow:0 2px 8px rgba(10,34,68,.04)}
+.cat-nav-in{max-width:1180px;margin:0 auto;padding:0 22px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.cat-nav-in::-webkit-scrollbar{display:none}
+.cat-lnk{padding:13px 18px;font-size:.74rem;font-weight:600;letter-spacing:.06em;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:color .18s,border-color .18s;margin-bottom:-2px;text-transform:uppercase}
+.cat-lnk:hover{color:var(--blue)}
+.cat-lnk.on{color:var(--blue);border-bottom-color:var(--blue)}
+[data-theme=dark] .cat-lnk.on{color:#7AB8E8;border-bottom-color:#7AB8E8}
 
 /* ═══════════════════════════════════════
    STAT BAR
@@ -774,26 +800,70 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 }
 
 /* ═══════════════════════════════════════
-   FOOTER ACTUALIZADO
+   FOOTER — NUEVO
 ═══════════════════════════════════════ */
-footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 24px 32px;text-align:center}
-.foot-inner{max-width:860px;margin:0 auto}
-.foot-logo{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--blue);margin-bottom:8px}
-[data-theme=dark] .foot-logo{color:#7AB8E8}
-.foot-logo em{color:var(--gold);font-style:normal}
-.foot-txt{font-size:.84rem;color:var(--muted);max-width:520px;margin:0 auto 20px}
-.foot-social{display:flex;justify-content:center;gap:12px;margin-bottom:28px}
-.foot-soc-btn{width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;transition:all .2s;text-decoration:none}
-.foot-soc-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff;transform:translateY(-2px)}
-.foot-newsletter{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;max-width:480px;margin:0 auto 28px;box-shadow:var(--sh)}
-.foot-nl-title{font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:4px}
-.foot-nl-sub{font-size:.76rem;color:var(--muted);margin-bottom:14px}
-.foot-nl-row{display:flex;gap:8px}
-.foot-nl-in{flex:1;background:var(--surf2);border:1px solid var(--border);border-radius:7px;padding:9px 14px;font-size:.83rem;color:var(--text);outline:none;transition:border-color .2s}
-.foot-nl-in:focus{border-color:var(--blue-mid)}
-.foot-divider{width:40px;height:2px;background:var(--border);margin:0 auto 16px}
-.foot-disc{font-size:.68rem;color:var(--faint);max-width:580px;margin:0 auto}
-@media(max-width:640px){.foot-nl-row{flex-direction:column}.glos-table th:nth-child(3),.glos-table td:nth-child(3){display:none}}
+.foot-new{background:var(--blue-navy);color:#fff}
+
+/* Newsletter band */
+.foot-nl-band{background:var(--blue-deep);border-top:1px solid rgba(255,255,255,.07);padding:32px 24px}
+.foot-nl-band-in{max-width:1000px;margin:0 auto;display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+.foot-nl-band-title{font-family:var(--fh);font-size:1.2rem;font-weight:600;color:#fff;margin-bottom:3px}
+.foot-nl-band-sub{font-size:.78rem;color:rgba(255,255,255,.45)}
+.foot-nl-row{display:flex;gap:8px;flex:1}
+.foot-nl-in{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:9px 14px;font-size:.83rem;color:#fff;outline:none;transition:border-color .2s}
+.foot-nl-in::placeholder{color:rgba(255,255,255,.35)}
+.foot-nl-in:focus{border-color:rgba(255,255,255,.4)}
+
+/* Main grid */
+.foot-grid-wrap{max-width:1100px;margin:0 auto;padding:56px 24px 48px}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:56px}
+.foot-logo-new{font-family:var(--fh);font-size:1.55rem;font-weight:700;color:#fff;margin-bottom:12px}
+.foot-logo-new em{color:var(--eu-gold);font-style:normal}
+.foot-brand-txt{font-size:.8rem;color:rgba(255,255,255,.42);line-height:1.8;margin-bottom:20px;max-width:320px}
+.foot-socials{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;align-items:center}
+.foot-soc-new{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;text-decoration:none}
+.foot-soc-new:hover{background:var(--blue);border-color:var(--blue-mid);color:#fff;transform:translateY(-2px)}
+.foot-stats-row{display:flex;gap:28px}
+.foot-stat-n{font-family:var(--fh);font-size:1.8rem;font-weight:700;color:var(--eu-gold);line-height:1}
+.foot-stat-l{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-top:3px}
+.foot-col-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,255,255,.3);margin-bottom:16px}
+.foot-lnk{display:block;font-size:.82rem;color:rgba(255,255,255,.52);margin-bottom:11px;cursor:pointer;transition:color .18s}
+.foot-lnk:hover{color:#fff}
+
+/* EU stars band */
+.foot-eu-band{border-top:1px solid rgba(255,255,255,.07);padding:22px 0;text-align:center}
+.foot-eu-stars{font-size:.85rem;letter-spacing:.6em;color:var(--eu-gold);opacity:.7}
+
+/* Bottom bar */
+.foot-bottom-bar{border-top:1px solid rgba(255,255,255,.07);padding:16px 24px}
+.foot-bottom-in{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.foot-copy{font-size:.68rem;color:rgba(255,255,255,.22)}
+.foot-legal{display:flex;gap:20px}
+.foot-legal-lnk{font-size:.68rem;color:rgba(255,255,255,.28);transition:color .18s}
+.foot-legal-lnk:hover{color:rgba(255,255,255,.7)}
+
+/* Responsive footer */
+@media(max-width:760px){
+  .foot-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .foot-col-brand{grid-column:1/-1}
+  .foot-nl-band-in{flex-direction:column;gap:16px}
+  .foot-nl-row{width:100%}
+}
+@media(max-width:480px){
+  .foot-grid{grid-template-columns:1fr;gap:28px}
+  .foot-grid-wrap{padding:36px 16px 32px}
+}
+@media(max-width:640px){.glos-table th:nth-child(3),.glos-table td:nth-child(3){display:none}}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-20px);transition:opacity .65s ease,transform .65s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+
+/* Card depth upgrade */
+.card{transition:transform .22s,box-shadow .22s,border-color .22s}
+.card:hover{transform:translateY(-5px);box-shadow:var(--sh-md);border-color:rgba(26,79,140,.18)}
 </style>
 </head>
 <body>
@@ -839,6 +909,20 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
   </div>
 </header>
 
+<!-- ════════════════════ CATEGORY NAV ════════════════════ -->
+<nav class="cat-nav" id="catNav">
+  <div class="cat-nav-in">
+    <span class="cat-lnk on" data-v="home"          onclick="catNavClick('home')">Todo</span>
+    <span class="cat-lnk"   data-v="sentencias"     onclick="catNavClick('sentencias')">Sentencias</span>
+    <span class="cat-lnk"   data-v="directivas"     onclick="catNavClick('directivas')">Directivas</span>
+    <span class="cat-lnk"   data-v="medioambiente"  onclick="catNavClick('medioambiente')">Medio Ambiente</span>
+    <span class="cat-lnk"   data-v="opinion"        onclick="catNavClick('opinion')">Opinión</span>
+    <span class="cat-lnk"   data-v="otros"          onclick="catNavClick('otros')">Otros</span>
+    <span class="cat-lnk"   data-v="glosario"       onclick="catNavClick('glosario')">§ Glosario</span>
+    <span class="cat-lnk"   data-v="comunidad"      onclick="catNavClick('comunidad')">› Comunidad</span>
+  </div>
+</nav>
+
 <!-- ════════════════════ MOBILE NAV ════════════════════ -->
 <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileMenu()"></div>
 <div class="mobile-nav" id="mobileNav">
@@ -862,16 +946,29 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
 <!-- ════════════════════ HERO ════════════════════ -->
 <div id="view-home">
   <section class="hero">
-    <div class="hero-mesh"></div>
-    <div class="eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
-    <div class="hero-pill">🇪🇺 Unión Europea · Derecho accesible</div>
-    <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">El Derecho Europeo como espacio de debate</div></div>
-    <h1 id="heroTitle">Sentencias y directivas,<br/><em>sin tecnicismos</em></h1>
-    <p class="hero-p" id="heroDesc">Analizamos los actos jurídicos de la Unión Europea de forma objetiva y comprensible. Saber qué dice Bruselas no debería requerir un título en derecho.</p>
-    <div class="hero-btns">
-      <button class="btn-gold" onclick="scrollToGrid()">Ver publicaciones</button>
-      <button class="btn-ghost" onclick="goView('about')">¿Qué es este blog?</button>
+    <!-- Background slideshow -->
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide active" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/2019_European_Parliament_Strasbourg_Hemicycle_%28cropped%29.jpg/1280px-2019_European_Parliament_Strasbourg_Hemicycle_%28cropped%29.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Berlaymont_from_Schuman_Roundabout_%28DSCF7103%29.jpg/1280px-Berlaymont_from_Schuman_Roundabout_%28DSCF7103%29.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Court_of_Justice_of_the_European_Union_%28CJEU%29%2C_Luxembourg_%28cropped%29.jpg/1280px-Court_of_Justice_of_the_European_Union_%28CJEU%29%2C_Luxembourg_%28cropped%29.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/European_Council_building%2C_Justus_Lipsius.jpg/1280px-European_Council_building%2C_Justus_Lipsius.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flags_of_the_European_Union_and_of_the_Member_States_of_the_EU.jpg/1280px-Flags_of_the_European_Union_and_of_the_Member_States_of_the_EU.jpg')"></div>
     </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-mesh"></div>
+    <!-- Content -->
+    <div class="hero-content">
+      <div class="eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+      <div class="hero-pill">🇪🇺 Unión Europea · Derecho accesible</div>
+      <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">El Derecho Europeo como espacio de debate</div></div>
+      <h1 id="heroTitle">Sentencias y directivas,<br/><em>sin tecnicismos</em></h1>
+      <p class="hero-p" id="heroDesc">Analizamos los actos jurídicos de la Unión Europea de forma objetiva y comprensible. Saber qué dice Bruselas no debería requerir un título en derecho.</p>
+      <div class="hero-btns">
+        <button class="btn-gold" onclick="scrollToGrid()">Ver publicaciones</button>
+        <button class="btn-ghost" onclick="goView('about')">¿Qué es este blog?</button>
+      </div>
+    </div>
+    <div class="hero-caption" id="heroCaption">Parlamento Europeo · Estrasburgo</div>
   </section>
 
   <!-- STAT BAR -->
@@ -1733,57 +1830,92 @@ footer{background:var(--surf2);border-top:1px solid var(--border);padding:48px 2
 </div>
 
 <!-- ════════════════════ FOOTER ════════════════════ -->
-<footer>
-  <div class="foot-inner">
-    <div class="foot-logo">El Despacho <em>de Overton</em></div>
-    <div class="foot-tagline" id="footTagline">Escribe. Debate. Impacta.</div>
-    <p class="foot-txt">Derecho de la Unión Europea explicado de forma objetiva y accesible para todos los ciudadanos europeos.</p>
-
-    <!-- Redes sociales -->
-    <div class="foot-social">
-      <a class="foot-soc-btn" href="#" title="Twitter / X" aria-label="Twitter">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </a>
-      <a class="foot-soc-btn" href="#" title="Instagram" aria-label="Instagram">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <a class="foot-soc-btn" href="#" title="LinkedIn" aria-label="LinkedIn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-      </a>
-    </div>
-
-    <!-- Newsletter -->
-    <div class="foot-newsletter">
-      <div class="foot-nl-title">📬 Newsletter</div>
-      <div class="foot-nl-sub">Recibe nuestros análisis directamente en tu bandeja de entrada. Sin spam.</div>
-      <div class="foot-nl-row">
+<footer class="foot-new">
+  <!-- Newsletter band -->
+  <div class="foot-nl-band">
+    <div class="foot-nl-band-in">
+      <div>
+        <div class="foot-nl-band-title">📬 Recibe el análisis que importa</div>
+        <div class="foot-nl-band-sub">Sin spam. Solo derecho europeo.</div>
+      </div>
+      <div class="foot-nl-row" style="max-width:380px;flex:1">
         <input class="foot-nl-in" id="nlEmail" type="email" placeholder="tu@email.com"/>
-        <button class="btn-gold" onclick="subscribeEmail()" style="white-space:nowrap;font-size:.82rem;padding:9px 18px">Suscribirme</button>
+        <button class="btn-gold" onclick="subscribeEmail()" style="white-space:nowrap;font-size:.8rem;padding:9px 18px">Suscribirme</button>
       </div>
     </div>
-
-    <!-- Sponsors -->
-    <div class="sponsors-sec" id="sponsorsSec" style="padding:24px 0 0">
-      <div class="sponsors-lbl">Colaboradores</div>
-      <div class="sponsors-row" id="sponsorsRow"><span style="font-size:.75rem;color:var(--faint)">Sé el primero en colaborar con nosotros</span></div>
-      <p class="sponsors-cta">¿Tu despacho, editorial o facultad quiere aparecer aquí? <a href="mailto:hola@eldespachodeoverton.es">Escríbenos</a></p>
-    </div>
-
-    <div class="foot-divider"></div>
-
-    <!-- Donación + newsletter link -->
-    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
-      <a href="https://ko-fi.com" target="_blank" rel="noopener" class="foot-soc-btn" title="Apóyanos en Ko-fi" style="width:auto;border-radius:20px;padding:7px 16px;gap:6px;font-size:.74rem;font-weight:600">
-        ☕ Apóyanos
-      </a>
-      <button onclick="scrollToNewsletter()" class="foot-soc-btn" style="width:auto;border-radius:20px;padding:7px 16px;gap:6px;font-size:.74rem;font-weight:600;border:1px solid var(--border)">
-        📬 Newsletter
-      </button>
-    </div>
-
-    <div class="foot-divider"></div>
-    <p class="foot-disc">Contenido divulgativo. No constituye asesoramiento jurídico. Para consultas legales, acuda a un profesional del derecho.</p>
   </div>
+
+  <!-- Main grid -->
+  <div class="foot-grid-wrap">
+    <div class="foot-grid">
+      <!-- Col 1: Brand -->
+      <div class="foot-col foot-col-brand">
+        <div class="foot-logo-new">El Despacho <em>de Overton</em></div>
+        <p class="foot-brand-txt">Derecho de la Unión Europea explicado de forma objetiva y accesible. Análisis de sentencias, directivas e instituciones europeas.</p>
+        <div class="foot-socials">
+          <a class="foot-soc-new" href="#" title="X / Twitter" aria-label="Twitter">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a class="foot-soc-new" href="#" title="Instagram" aria-label="Instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a class="foot-soc-new" href="#" title="LinkedIn" aria-label="LinkedIn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a class="foot-soc-new" href="https://ko-fi.com" target="_blank" rel="noopener" title="Ko-fi" style="font-size:.72rem;width:auto;padding:0 12px;border-radius:20px;gap:5px">☕ Apóyanos</a>
+        </div>
+        <!-- Live stats -->
+        <div class="foot-stats-row">
+          <div><div class="foot-stat-n" id="fStArts">—</div><div class="foot-stat-l">Artículos</div></div>
+          <div><div class="foot-stat-n" id="fStGlos">—</div><div class="foot-stat-l">Términos</div></div>
+          <div><div class="foot-stat-n" id="fStSubs">—</div><div class="foot-stat-l">Lectores</div></div>
+        </div>
+      </div>
+
+      <!-- Col 2: Secciones -->
+      <div class="foot-col">
+        <div class="foot-col-title">Secciones</div>
+        <span class="foot-lnk" onclick="goView('sentencias')">Sentencias TJUE</span>
+        <span class="foot-lnk" onclick="goView('directivas')">Directivas UE</span>
+        <span class="foot-lnk" onclick="goView('medioambiente')">Medio Ambiente</span>
+        <span class="foot-lnk" onclick="goView('opinion')">Opinión</span>
+        <span class="foot-lnk" onclick="goView('otros')">Otros</span>
+        <span class="foot-lnk" onclick="goView('glosario')">§ Glosario jurídico</span>
+        <span class="foot-lnk" onclick="goView('comunidad')">› Comunidad</span>
+      </div>
+
+      <!-- Col 3: Proyecto -->
+      <div class="foot-col">
+        <div class="foot-col-title">Proyecto</div>
+        <span class="foot-lnk" onclick="goView('about')">Sobre nosotros</span>
+        <span class="foot-lnk" onclick="goView('newsletter')">Newsletter</span>
+        <span class="foot-lnk" onclick="scrollToContrib()">¿Quieres publicar?</span>
+        <div class="foot-col-title" style="margin-top:28px">Colaboradores</div>
+        <div class="sponsors-row" id="sponsorsRow" style="margin-top:8px"><span style="font-size:.73rem;color:rgba(255,255,255,.2)">Sé el primero</span></div>
+        <span class="foot-lnk" style="margin-top:6px;font-size:.72rem;opacity:.6" onclick="window.location='mailto:hola@eldespachodeoverton.es'">hola@eldespachodeoverton.es</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EU Stars separator -->
+  <div class="foot-eu-band">
+    <span class="foot-eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</span>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="foot-bottom-bar">
+    <div class="foot-bottom-in">
+      <span class="foot-copy">© 2025 El Despacho de Overton. Contenido divulgativo, no asesoramiento jurídico.</span>
+      <div class="foot-legal">
+        <a href="#" class="foot-legal-lnk">Privacidad</a>
+        <a href="#" class="foot-legal-lnk">Aviso legal</a>
+        <a href="#" class="foot-legal-lnk">Cookies</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden sponsors section for admin -->
+  <div id="sponsorsSec" style="display:none"></div>
 </footer>
 
 <!-- ════════════════════ ARTICLE MODAL ════════════════════ -->
@@ -2041,6 +2173,7 @@ function goView(name){
   }
   document.querySelectorAll('.nl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
+  updateCatNav(name);
   renderGrid();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -2439,6 +2572,10 @@ async function subscribeFromLanding(){
 }
 function scrollToNewsletter(){
   document.getElementById('view-newsletter').scrollIntoView({behavior:'smooth'});
+}
+function scrollToContrib(){
+  const el=document.getElementById('view-comunidad');
+  if(el){ goView('comunidad'); window.scrollTo({top:0,behavior:'smooth'}); }
 }
 
 /* ── ADMIN AUTH ── */
@@ -3736,6 +3873,64 @@ async function subscribeEmail(){
 /* helper */
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+/* ── HERO SLIDESHOW ── */
+(function initHeroSlideshow(){
+  const captions=['Parlamento Europeo · Estrasburgo','Comisión Europea · Berlaymont','Tribunal de Justicia · Luxemburgo','Consejo Europeo · Bruselas','27 Estados Miembros · Unión Europea'];
+  const slides=document.querySelectorAll('.hero-slide');
+  const capEl=document.getElementById('heroCaption');
+  if(!slides.length) return;
+  let idx=0;
+  setInterval(()=>{
+    slides[idx].classList.remove('active');
+    idx=(idx+1)%slides.length;
+    slides[idx].classList.add('active');
+    if(capEl) capEl.textContent=captions[idx]||'';
+  },7000);
+})();
+
+/* ── PARALLAX HERO ── */
+(function initParallax(){
+  const hero=document.querySelector('.hero');
+  if(!hero) return;
+  window.addEventListener('scroll',()=>{
+    const y=window.scrollY;
+    const slides=document.querySelectorAll('.hero-slide');
+    slides.forEach(s=>{ s.style.transform=`translateY(${y*0.28}px)`; });
+  },{passive:true});
+})();
+
+/* ── SCROLL REVEAL ── */
+(function initReveal(){
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal,.reveal-left').forEach(el=>observer.observe(el));
+})();
+
+/* ── CATEGORY NAV ── */
+function catNavClick(v){
+  document.querySelectorAll('.cat-lnk').forEach(l=>l.classList.toggle('on',l.dataset.v===v));
+  goView(v==='home'?'home':v);
+}
+function updateCatNav(v){
+  document.querySelectorAll('.cat-lnk').forEach(l=>l.classList.toggle('on',l.dataset.v===v||(v==='home'&&l.dataset.v==='home')));
+}
+
+/* ── FOOTER LIVE STATS ── */
+async function loadFooterStats(){
+  const [arts,glos,subs]=await Promise.all([
+    db.from('articles').select('id',{count:'exact',head:true}),
+    db.from('glossary').select('id',{count:'exact',head:true}),
+    db.from('subscribers').select('id',{count:'exact',head:true})
+  ]);
+  const el=id=>document.getElementById(id);
+  if(el('fStArts')) el('fStArts').textContent=arts.count??'—';
+  if(el('fStGlos')) el('fStGlos').textContent=glos.count??'—';
+  if(el('fStSubs')) el('fStSubs').textContent=subs.count??'—';
+}
+
 /* ── INIT ── */
 (async function init(){
   await loadArts();
@@ -3749,6 +3944,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
   startRotatingPhrases();
   loadDebate();
   loadSponsors();
+  loadFooterStats();
 })();
 
 </script>
