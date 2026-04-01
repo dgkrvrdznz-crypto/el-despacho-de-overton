@@ -127,16 +127,6 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 .btn-ghost{background:transparent;color:rgba(255,255,255,.85);font-weight:500;font-size:.84rem;padding:13px 28px;border-radius:8px;border:1.5px solid rgba(255,255,255,.25);transition:all .2s}
 .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.45)}
 
-/* ═══════════════════════════════════════
-   SECONDARY CATEGORY NAV
-═══════════════════════════════════════ */
-.cat-nav{position:sticky;top:66px;z-index:84;background:var(--surface);border-bottom:2px solid var(--border);box-shadow:0 2px 8px rgba(10,34,68,.04)}
-.cat-nav-in{max-width:1180px;margin:0 auto;padding:0 22px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
-.cat-nav-in::-webkit-scrollbar{display:none}
-.cat-lnk{padding:13px 18px;font-size:.74rem;font-weight:600;letter-spacing:.06em;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:color .18s,border-color .18s;margin-bottom:-2px;text-transform:uppercase}
-.cat-lnk:hover{color:var(--blue)}
-.cat-lnk.on{color:var(--blue);border-bottom-color:var(--blue)}
-[data-theme=dark] .cat-lnk.on{color:#7AB8E8;border-bottom-color:#7AB8E8}
 
 /* ═══════════════════════════════════════
    STAT BAR
@@ -928,19 +918,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   </div>
 </header>
 
-<!-- ════════════════════ CATEGORY NAV ════════════════════ -->
-<nav class="cat-nav" id="catNav">
-  <div class="cat-nav-in">
-    <span class="cat-lnk on" data-v="home"          onclick="catNavClick('home')">Todo</span>
-    <span class="cat-lnk"   data-v="sentencias"     onclick="catNavClick('sentencias')">Sentencias</span>
-    <span class="cat-lnk"   data-v="directivas"     onclick="catNavClick('directivas')">Directivas</span>
-    <span class="cat-lnk"   data-v="medioambiente"  onclick="catNavClick('medioambiente')">Medio Ambiente</span>
-    <span class="cat-lnk"   data-v="opinion"        onclick="catNavClick('opinion')">Opinión</span>
-    <span class="cat-lnk"   data-v="otros"          onclick="catNavClick('otros')">Otros</span>
-    <span class="cat-lnk"   data-v="glosario"       onclick="catNavClick('glosario')">§ Glosario</span>
-    <span class="cat-lnk"   data-v="comunidad"      onclick="catNavClick('comunidad')">› Comunidad</span>
-  </div>
-</nav>
 
 <!-- ════════════════════ MOBILE NAV ════════════════════ -->
 <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileMenu()"></div>
@@ -1810,31 +1787,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Dos canales para debatir sobre derecho europeo. Sin registro, solo tu nombre.</p>
     </div>
 
-    <!-- ── DEBATE DE LA SEMANA (inline) ── -->
-    <div class="com-debate-inline" id="comDebateInline" style="display:none">
-      <div class="com-debate-pill">⚡ Debate de la Semana</div>
-      <div class="com-debate-q" id="comDebateQ"></div>
-      <div class="com-debate-btns" id="comDebateBtns"></div>
-      <div class="com-debate-res" id="comDebateRes" style="display:none">
-        <div class="debate-bar-wrap"><div class="debate-bar-yes" id="comDebateBarYes"></div></div>
-        <div class="debate-stats"><span id="comDebateStatY"></span><span id="comDebateStatN"></span></div>
-      </div>
-    </div>
-
-    <!-- ── NEWSLETTER (inline) ── -->
-    <div class="com-nl-inline">
-      <div class="com-nl-icon">📬</div>
-      <div class="com-nl-text">
-        <div class="com-nl-title">Recibe los análisis en tu correo</div>
-        <div class="com-nl-sub">Sin spam · Solo derecho europeo</div>
-      </div>
-      <div class="com-nl-form">
-        <input class="com-nl-in" id="comNlEmail" type="email" placeholder="tu@email.com"/>
-        <button class="btn-gold" onclick="subscribeEmailInline()" style="font-size:.8rem;padding:9px 18px;white-space:nowrap">Suscribirme</button>
-      </div>
-    </div>
-
-    <!-- ── SEPARADOR ── -->
+    <!-- ── FORO ── -->
     <div class="com-section-title">💬 Foro de la comunidad</div>
 
     <!-- Tabs de canal -->
@@ -1863,6 +1816,27 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     </div>
     <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
       <button class="btn-load-more" onclick="loadMoreComments()">Ver más mensajes</button>
+    </div>
+
+    <!-- ── NEWSLETTER (inline) ── -->
+    <div class="com-nl-inline" style="margin-top:32px">
+      <div class="com-nl-icon">📬</div>
+      <div class="com-nl-text">
+        <div class="com-nl-title">Recibe los análisis en tu correo</div>
+        <div class="com-nl-sub">Sin spam · Solo derecho europeo</div>
+      </div>
+      <div class="com-nl-form">
+        <input class="com-nl-in" id="comNlEmail" type="email" placeholder="tu@email.com"/>
+        <button class="btn-gold" onclick="subscribeEmailInline()" style="font-size:.8rem;padding:9px 18px;white-space:nowrap">Suscribirme</button>
+      </div>
+    </div>
+
+    <!-- ── ¿QUIERES PUBLICAR CON NOSOTROS? ── -->
+    <div style="background:linear-gradient(135deg,#0C2D5C,#1A4F8C);border-radius:var(--r);padding:28px 30px;margin-top:20px;text-align:center">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(201,162,39,.2);border:1px solid rgba(201,162,39,.4);color:var(--gold-lt);font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:14px">✍️ Colabora con nosotros</div>
+      <div style="font-family:var(--fh);font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:#fff;line-height:1.35;margin-bottom:10px">¿Quieres publicar con nosotros?</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.87rem;max-width:480px;margin:0 auto 20px">Si eres jurista, académico o simplemente apasionado del derecho europeo, escríbenos. Publicamos análisis rigurosos y accesibles.</p>
+      <a href="mailto:contacto@eldespacho.eu" style="display:inline-block;background:var(--gold);color:#0c1929;font-weight:700;font-size:.84rem;padding:11px 26px;border-radius:8px;text-decoration:none">Enviar propuesta</a>
     </div>
   </div>
 </div>
@@ -2208,11 +2182,9 @@ function goView(name){
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
     loadComments(true);
-    setTimeout(loadDebateInline, 300);
   }
   document.querySelectorAll('.nl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
-  updateCatNav(name);
   renderGrid();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -4021,13 +3993,6 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 })();
 
 /* ── CATEGORY NAV ── */
-function catNavClick(v){
-  document.querySelectorAll('.cat-lnk').forEach(l=>l.classList.toggle('on',l.dataset.v===v));
-  goView(v==='home'?'home':v);
-}
-function updateCatNav(v){
-  document.querySelectorAll('.cat-lnk').forEach(l=>l.classList.toggle('on',l.dataset.v===v||(v==='home'&&l.dataset.v==='home')));
-}
 
 /* ── FOOTER LIVE STATS ── */
 async function loadFooterStats(){
