@@ -2139,7 +2139,12 @@ const getArts = () => ARTS;
 // Carga artículos desde Supabase y los guarda en memoria
 async function loadArts() {
   const { data, error } = await db.from('articles').select('*').order('id', {ascending: false});
-  if (error) { console.error('Error cargando artículos:', error.message); return; }
+  if (error) {
+    console.error('Error cargando artículos:', error.message);
+    const grid=document.getElementById('grid');
+    if(grid) grid.innerHTML=`<div class="empty"><div class="empty-ico">⚠️</div><p>No se pudieron cargar los artículos.<br><small style="color:var(--faint)">${error.message}</small></p></div>`;
+    return;
+  }
   ARTS = (data || []).map(a => ({
     status:         a.status          || 'published',
     publish_at:     a.publish_at      || null,
@@ -2246,7 +2251,7 @@ function setTab(el,key){
 }
 function setTabKey(key){
   activeTab=key;
-  // Las pestañas de tipo fueron eliminadas — solo actualizamos activeTab y rerenderizamos
+  activeCat='all'; // reset categoría al cambiar de sección
   renderGrid();
 }
 
@@ -2258,15 +2263,26 @@ function setChip(el,cat){
   renderGrid();
 }
 function buildChips(){
-  const cats=[...new Set(getArts().map(a=>a.cat))].sort();
-  const row=document.getElementById('chipsRow');
-  row.innerHTML=`<span class="chip${activeCat==='all'?' on':''}" onclick="setChip(this,'all')">Todas las categorías</span>`
-    +cats.map(c=>`<span class="chip${activeCat===c?' on':''}" onclick="setChip(this,'${c.replace(/'/g,"\\'")}'')">${c}</span>`).join('');
-  // Re-bind with proper values
-  row.querySelectorAll('.chip').forEach((chip,i)=>{
-    const cat = i===0?'all':cats[i-1];
-    chip.onclick=()=>{ activeCat=cat; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); renderGrid(); };
+  const arts=getArts().filter(a=>{
+    if(!loggedIn&&(a.status==='draft')) return false;
+    if(activeTab!=='all'&&a.type!==activeTab) return false;
+    return true;
   });
+  const cats=[...new Set(arts.map(a=>a.cat))].filter(Boolean).sort();
+  // Si la cat activa ya no existe en el conjunto, resetear
+  if(activeCat!=='all'&&!cats.includes(activeCat)) activeCat='all';
+  const row=document.getElementById('chipsRow');
+  if(!row) return;
+  row.innerHTML='';
+  const make=(label,cat)=>{
+    const s=document.createElement('span');
+    s.className='chip'+(activeCat===cat?' on':'');
+    s.textContent=label;
+    s.onclick=()=>{ activeCat=cat; row.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); s.classList.add('on'); renderGrid(); };
+    row.appendChild(s);
+  };
+  make('Todas las categorías','all');
+  cats.forEach(c=>make(c,c));
 }
 
 /* ── STATS ── */
@@ -2302,26 +2318,32 @@ function renderGrid(){
   const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Directiva',medioambiente:'🌿 Medio Ambiente',opinion:'✍️ Opinión',otro:'📁 Otro'};
   const stripeClass={sentencia:'cs-s',directiva:'cs-d',medioambiente:'cs-ma',opinion:'cs-op',otro:'cs-o'};
   const badgeClass={sentencia:'b-s',directiva:'b-d',medioambiente:'b-ma',opinion:'b-op',otro:'b-o'};
-  grid.innerHTML=filtered.map((a,i)=>`
-    <div class="card" style="animation-delay:${i*.055}s" onclick="openArt(${a.id})">
-      ${a.photo?`<div class="c-photo-wrap"><img src="${a.photo}" alt="${a.title}"/></div>`:`<div class="c-stripe ${stripeClass[a.type]||'cs-o'}"></div>`}
+  grid.innerHTML=filtered.map((a,i)=>{
+    const delay=Math.min(i*0.055,0.4); // cap delay a 400ms máximo
+    const summary=esc(a.summary||(a.opinionContent||'').substring(0,200)||'');
+    return `
+    <div class="card" style="animation-delay:${delay}s" onclick="openArt(${a.id})">
+      ${a.photo
+        ?`<div class="c-photo-wrap"><img src="${esc(a.photo)}" alt="${esc(a.title)}" loading="lazy" onerror="this.closest('.c-photo-wrap').outerHTML='<div class=\\'c-stripe ${stripeClass[a.type]||'cs-o'}\\'></div>'"/></div>`
+        :`<div class="c-stripe ${stripeClass[a.type]||'cs-o'}"></div>`}
       <div class="c-top">
-        <span class="badge ${badgeClass[a.type]||'b-o'}">${typeLabel[a.type]||a.type}</span>
-        <span class="c-cat">${a.cat}</span>
+        <span class="badge ${badgeClass[a.type]||'b-o'}">${typeLabel[a.type]||esc(a.type)}</span>
+        <span class="c-cat">${esc(a.cat)}</span>
         ${a.status==='draft'?'<span class="draft-badge">Borrador</span>':''}
         ${a.publish_at&&new Date(a.publish_at)>new Date()?'<span class="draft-badge" style="background:rgba(99,102,241,.2);color:#818cf8;border-color:rgba(99,102,241,.35)">Programado</span>':''}
       </div>
       <div class="c-body">
-        <div class="c-date">${a.date}${a.ref?' · '+a.ref:''}</div>
-        <div class="c-title">${a.title}</div>
-        <div class="c-sum">${a.summary||a.opinionContent?.substring(0,200)||''}</div>
-        ${a.impShort&&a.type!=='opinion'?`<div class="c-imp"><strong>¿Cómo te afecta?</strong>${a.impShort}</div>`:''}
+        <div class="c-date">${esc(a.date)}${a.ref?' · '+esc(a.ref):''}</div>
+        <div class="c-title">${esc(a.title)}</div>
+        <div class="c-sum">${summary}</div>
+        ${a.impShort&&a.type!=='opinion'?`<div class="c-imp"><strong>¿Cómo te afecta?</strong> ${esc(a.impShort)}</div>`:''}
       </div>
       <div class="c-foot">
         <span class="c-read">Leer ${a.type==='opinion'?'artículo':'análisis'} →</span>
         <span class="c-mins">${a.mins||5} min</span>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ── ARTICLE MODAL ── */
@@ -2360,8 +2382,9 @@ function openArt(id){
     document.getElementById('r-'+r).classList.remove('voted');
     document.getElementById('rc-'+r).textContent='0';
   });
-  // Reset comments
-  document.getElementById('artComName').value='';
+  // Pre-fill comment name from localStorage
+  const savedComName=localStorage.getItem('overton_com_name')||localStorage.getItem('overton_forum_name')||'';
+  document.getElementById('artComName').value=savedComName;
   document.getElementById('artComBody').value='';
   document.getElementById('artComList').innerHTML='<p style="font-size:.8rem;color:var(--faint)">Cargando comentarios…</p>';
   document.getElementById('artOverlay').classList.add('open');
@@ -2373,6 +2396,7 @@ function openArt(id){
 }
 function closeArt(){ document.getElementById('artOverlay').classList.remove('open'); document.body.style.overflow=''; currentArtId=null; }
 function overlayClick(e){ if(e.target===document.getElementById('artOverlay')) closeArt(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&currentArtId!==null) closeArt(); });
 
 /* ── VIEWS ── */
 async function trackView(artId){
@@ -2414,35 +2438,39 @@ function getSessionId(){
 
 /* ── ARTICLE COMMENTS ── */
 async function loadArtComments(artId){
-  const {data}=await db.from('article_comments').select('*').eq('article_id',artId).order('created_at',{ascending:false});
+  const {data,error}=await db.from('article_comments').select('*').eq('article_id',artId).order('created_at',{ascending:false});
   const list=document.getElementById('artComList');
-  if(!data||!data.length){ list.innerHTML='<p style="font-size:.8rem;color:var(--faint)">Sé el primero en comentar.</p>'; return; }
+  if(error||!data||!data.length){ list.innerHTML='<p style="font-size:.8rem;color:var(--faint)">Sé el primero en comentar.</p>'; return; }
   list.innerHTML=data.map(c=>{
-    const ini=(c.name||'?')[0].toUpperCase();
-    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}):'';
+    const name=c.name||'Anónimo';
+    const ini=name[0].toUpperCase();
+    const color=getAvatarColor(name);
+    const t=timeAgo(c.created_at);
     const del=loggedIn?`<button class="art-com-del" onclick="deleteArtComment(${c.id})">✕</button>`:'';
     return `<div class="art-com-item">${del}
       <div class="art-com-hd">
-        <div class="art-com-av">${ini}</div>
-        <span class="art-com-name">${esc(c.name)}</span>
-        <span class="art-com-date">${fecha}</span>
+        <div class="art-com-av" style="background:${color}">${ini}</div>
+        <span class="art-com-name">${esc(name)}</span>
+        <span class="art-com-date">${t}</span>
       </div>
       <div class="art-com-body">${esc(c.body)}</div>
     </div>`;
   }).join('');
 }
 async function postArtComment(){
+  if(!currentArtId){ showToast('Error: no hay artículo activo','error'); return; }
   const name=document.getElementById('artComName').value.trim();
   const body=document.getElementById('artComBody').value.trim();
-  if(!name||!body||body.length<3){ showToast('Escribe tu nombre y un comentario','error'); return; }
+  if(!name){ showToast('Escribe tu nombre','error'); return; }
+  if(!body||body.length<3){ showToast('El comentario es demasiado corto','error'); return; }
   const btn=document.getElementById('artComBtn');
   btn.disabled=true; btn.textContent='Publicando…';
   const {error}=await db.from('article_comments').insert([{article_id:currentArtId,name,body}]);
   btn.disabled=false; btn.textContent='Comentar';
   if(error){ showToast('Error: '+error.message,'error'); return; }
-  document.getElementById('artComName').value='';
+  localStorage.setItem('overton_com_name',name);
   document.getElementById('artComBody').value='';
-  showToast('Comentario publicado');
+  showToast('Comentario publicado ✓');
   loadArtComments(currentArtId);
 }
 async function deleteArtComment(id){
@@ -2968,12 +2996,13 @@ function renderSaved(){
   const arts=getArts();
   const el=document.getElementById('savedList');
   if(!arts.length){ el.innerHTML='<p style="font-size:.83rem;color:var(--faint);text-align:center;padding:20px 0">Aún no hay artículos publicados.</p>'; return; }
-  const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Directiva',otro:'📁 Otro'};
+  const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Directiva',medioambiente:'🌿 Medio Ambiente',opinion:'✍️ Opinión',otro:'📁 Otro'};
+  const statusBadge={draft:'<span style="font-size:.65rem;background:rgba(251,191,36,.15);color:#f59e0b;border:1px solid rgba(251,191,36,.3);border-radius:4px;padding:1px 6px;margin-left:6px">Borrador</span>',published:''};
   el.innerHTML=arts.map(a=>`
     <div class="saved-item">
       <div class="sav-info">
-        <div class="sav-title">${a.title}</div>
-        <div class="sav-meta">${typeLabel[a.type]||a.type} · ${a.cat} · ${a.date}</div>
+        <div class="sav-title">${esc(a.title)}${statusBadge[a.status]||''}</div>
+        <div class="sav-meta">${typeLabel[a.type]||esc(a.type)} · ${esc(a.cat)} · ${esc(a.date)}</div>
       </div>
       <div class="sav-acts">
         <button class="btn-edit" onclick="loadEdit(${a.id})">Editar</button>
