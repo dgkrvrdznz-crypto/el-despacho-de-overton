@@ -723,63 +723,98 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .com-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
 [data-theme=dark] .com-section-title{color:#7AB8E8}
 /* Channel tabs */
-.forum-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.forum-tab{padding:9px 22px;border-radius:8px;font-size:.82rem;font-weight:600;border:2px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .2s}
-.forum-tab.on{background:var(--blue);border-color:var(--blue);color:#fff}
+/* ═══════════ FORO REDISEÑO ═══════════ */
+/* Channels (Discord-style) */
+.forum-channels{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
+.forum-ch{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s;border-radius:0;white-space:nowrap}
+.forum-ch:hover{color:var(--text);background:var(--surf2)}
+.forum-ch.on{color:var(--blue);border-bottom-color:var(--blue)}
+[data-theme=dark] .forum-ch.on{color:#7AB8E8;border-bottom-color:#7AB8E8}
+.forum-ch-badge{background:var(--surf2);border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-size:.63rem;font-weight:700;color:var(--faint);transition:all .18s}
+.forum-ch.on .forum-ch-badge{background:rgba(26,79,140,.15);border-color:rgba(26,79,140,.35);color:var(--blue)}
+[data-theme=dark] .forum-ch.on .forum-ch-badge{background:rgba(122,184,232,.15);border-color:rgba(122,184,232,.35);color:#7AB8E8}
 
-/* New post form */
-.com-form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh);margin-bottom:28px}
-.com-form-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin-bottom:14px}
-.com-name-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.com-submit-row{display:flex;justify-content:flex-end;margin-top:12px;gap:8px;align-items:center}
-.com-anon-note{font-size:.72rem;color:var(--faint);flex:1}
+/* Toolbar (count + sort) */
+.forum-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.forum-count-txt{font-size:.74rem;color:var(--faint)}
+.forum-sort{display:flex;gap:4px}
+.forum-sort-btn{padding:5px 12px;border-radius:6px;font-size:.74rem;font-weight:600;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all .18s}
+.forum-sort-btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
+[data-theme=dark] .forum-sort-btn.on{background:#1A4F8C}
+.forum-sort-btn:not(.on):hover{border-color:var(--blue);color:var(--blue)}
 
-/* Thread cards */
-.forum-list{display:flex;flex-direction:column;gap:12px}
-.thread-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh)}
-.thread-main{padding:18px 20px}
-.thread-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.thread-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;color:#fff;flex-shrink:0}
-.thread-meta{flex:1;min-width:0}
-.thread-name{font-weight:700;font-size:.88rem;color:var(--text)}
-.thread-date{font-size:.68rem;color:var(--faint)}
-.thread-body{font-size:.87rem;color:var(--text);line-height:1.75;white-space:pre-wrap;word-break:break-word;margin-bottom:12px}
-.thread-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.thread-vote{display:flex;align-items:center;gap:5px;background:var(--surf2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:.76rem;color:var(--muted);cursor:pointer;transition:all .18s;user-select:none}
-.thread-vote:hover,.thread-vote.voted{background:rgba(26,79,140,.18);border-color:var(--blue);color:var(--blue)}
-.thread-vote .vc{font-weight:700}
-.thread-reply-btn{font-size:.74rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .18s}
-.thread-reply-btn:hover{border-color:var(--blue);color:var(--blue)}
-.thread-del-btn{font-size:.72rem;color:#d64040;background:none;border:1px solid rgba(214,64,64,.25);border-radius:20px;padding:4px 10px;cursor:pointer;margin-left:auto;transition:all .18s;display:none}
-.thread-card:hover .thread-del-btn{display:inline-flex}
+/* Composer */
+.forum-composer{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:20px;box-shadow:var(--sh);transition:border-color .2s}
+.forum-composer:focus-within{border-color:var(--blue-mid)}
+.forum-composer-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.forum-composer-av{width:40px;height:40px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:#fff;flex-shrink:0;transition:background .3s}
+.forum-composer-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.forum-composer-name{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:8px 13px;font-size:.84rem;color:var(--text);outline:none;width:100%;max-width:200px;transition:border-color .2s;font-family:inherit}
+.forum-composer-name:focus{border-color:var(--blue-mid)}
+.forum-composer-body{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:.88rem;color:var(--text);outline:none;width:100%;resize:none;min-height:82px;transition:border-color .2s;font-family:inherit;line-height:1.5}
+.forum-composer-body:focus{border-color:var(--blue-mid)}
+.forum-composer-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.forum-anon-tag{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--faint)}
 
-/* Replies */
-.replies-block{border-top:1px solid var(--border);background:var(--surf2);border-radius:0 0 var(--r) var(--r)}
-.reply-item{padding:14px 20px 14px 54px;border-bottom:1px solid var(--border);position:relative}
-.reply-item:last-child{border-bottom:none}
-.reply-item::before{content:'↳';position:absolute;left:24px;top:16px;color:var(--faint);font-size:.9rem}
-.reply-hd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.reply-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#fff;flex-shrink:0}
-.reply-name{font-weight:700;font-size:.8rem;color:var(--text)}
-.reply-date{font-size:.65rem;color:var(--faint)}
-.reply-body{font-size:.83rem;color:var(--text);line-height:1.65;white-space:pre-wrap;word-break:break-word}
-.reply-del{font-size:.68rem;color:#d64040;background:none;border:1px solid rgba(214,64,64,.25);border-radius:12px;padding:2px 8px;cursor:pointer;margin-left:auto;display:none}
-.reply-item:hover .reply-del{display:inline-flex}
-.reply-actions{display:flex;align-items:center;gap:8px;margin-top:6px}
-.reply-vote{display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:14px;padding:2px 8px;cursor:pointer;transition:all .18s}
-.reply-vote:hover,.reply-vote.voted{color:var(--blue);border-color:var(--blue)}
+/* Post cards */
+.forum-list{display:flex;flex-direction:column;gap:10px}
+.forum-post{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+.forum-post:hover{box-shadow:0 4px 18px rgba(10,34,68,.08);border-color:rgba(26,79,140,.25)}
+[data-theme=dark] .forum-post:hover{box-shadow:0 4px 18px rgba(0,0,0,.25);border-color:rgba(122,184,232,.2)}
+.fp-inner{padding:16px 18px}
+.fp-header{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.fp-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#fff;flex-shrink:0}
+.fp-meta{flex:1;min-width:0}
+.fp-name{font-weight:700;font-size:.87rem;color:var(--text);line-height:1.2}
+.fp-info{display:flex;align-items:center;gap:6px;margin-top:2px;flex-wrap:wrap}
+.fp-time{font-size:.68rem;color:var(--faint)}
+.fp-ch-tag{font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(26,79,140,.1);color:var(--blue);padding:1px 7px;border-radius:4px}
+[data-theme=dark] .fp-ch-tag{background:rgba(122,184,232,.12);color:#7AB8E8}
+.fp-body{font-size:.9rem;color:var(--text);line-height:1.7;margin-bottom:13px;white-space:pre-wrap;word-break:break-word}
+.fp-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.fp-vote{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surf2);font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .18s;user-select:none}
+.fp-vote:hover{border-color:var(--blue);color:var(--blue);background:rgba(26,79,140,.07)}
+.fp-vote.voted{background:rgba(26,79,140,.14);border-color:var(--blue);color:var(--blue)}
+[data-theme=dark] .fp-vote.voted{background:rgba(122,184,232,.14);border-color:#7AB8E8;color:#7AB8E8}
+.fp-vote-n{font-weight:700}
+.fp-reply-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid transparent;background:none;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .18s}
+.fp-reply-btn:hover{color:var(--blue);border-color:var(--border);background:var(--surf2)}
+.fp-del-btn{margin-left:auto;padding:4px 10px;border-radius:20px;border:1px solid transparent;background:none;font-size:.72rem;color:var(--faint);cursor:pointer;transition:all .18s}
+.fp-del-btn:hover{color:#d64040;border-color:rgba(214,64,64,.3);background:rgba(214,64,64,.05)}
+
+/* Replies block */
+.fp-replies{border-top:1px solid var(--border);background:var(--surf2)}
+.fp-reply{display:flex;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border)}
+.fp-reply:last-child{border-bottom:none}
+.fp-reply-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#fff;flex-shrink:0;margin-top:1px}
+.fp-reply-content{flex:1;min-width:0}
+.fp-reply-header{display:flex;align-items:baseline;gap:7px;margin-bottom:4px;flex-wrap:wrap}
+.fp-reply-name{font-weight:700;font-size:.82rem;color:var(--text)}
+.fp-reply-time{font-size:.67rem;color:var(--faint)}
+.fp-reply-body{font-size:.84rem;color:var(--text);line-height:1.65;margin-bottom:7px;word-break:break-word;white-space:pre-wrap}
+.fp-reply-actions{display:flex;gap:6px}
+.fp-rvote{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:14px;padding:2px 9px;cursor:pointer;transition:all .18s}
+.fp-rvote:hover,.fp-rvote.voted{color:var(--blue);border-color:var(--blue)}
+.fp-rdel{font-size:.68rem;color:var(--faint);background:none;border:1px solid transparent;border-radius:14px;padding:2px 8px;cursor:pointer;transition:all .18s}
+.fp-rdel:hover{color:#d64040;border-color:rgba(214,64,64,.3)}
 
 /* Inline reply form */
-.inline-reply-form{background:var(--surf2);border-top:1px solid var(--border);padding:14px 20px 14px 54px}
-.inline-reply-form textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:.82rem;color:var(--text);resize:none;min-height:72px;outline:none}
-.inline-reply-form textarea:focus{border-color:var(--blue-mid)}
-.inline-reply-form .row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
-.inline-reply-form input{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:.8rem;color:var(--text);outline:none}
-.btn-cancel{background:none;border:1px solid var(--border);border-radius:7px;padding:7px 14px;font-size:.78rem;color:var(--muted);cursor:pointer}
+.fp-reply-form{background:var(--surf2);border-top:1px solid var(--border);padding:13px 18px}
+.fp-reply-form textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:.84rem;color:var(--text);resize:none;min-height:68px;outline:none;font-family:inherit;transition:border-color .2s}
+.fp-reply-form textarea:focus{border-color:var(--blue-mid)}
+.fp-reply-form-row{display:flex;gap:7px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.fp-reply-form input{flex:1;min-width:120px;max-width:180px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:.82rem;color:var(--text);outline:none;font-family:inherit;transition:border-color .2s}
+.fp-reply-form input:focus{border-color:var(--blue-mid)}
+.fp-reply-cancel{padding:6px 12px;border-radius:7px;border:1px solid var(--border);background:none;font-size:.78rem;color:var(--muted);cursor:pointer;transition:all .18s}
+.fp-reply-cancel:hover{border-color:var(--blue);color:var(--blue)}
 
-.com-empty{text-align:center;padding:60px 24px;color:var(--muted);font-size:.9rem}
-.com-count{font-size:.76rem;color:var(--faint);margin-bottom:14px}
-.load-more-wrap{text-align:center;margin-top:24px}
+/* Empty / load more */
+.forum-empty{text-align:center;padding:52px 24px}
+.forum-empty-icon{font-size:2.8rem;margin-bottom:12px;line-height:1}
+.forum-empty-title{font-size:.97rem;font-weight:700;color:var(--text);margin-bottom:5px}
+.forum-empty-sub{font-size:.83rem;color:var(--muted)}
+.forum-count-txt{font-size:.74rem;color:var(--faint)}
+.load-more-wrap{text-align:center;margin-top:20px}
 .btn-load-more{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 28px;font-size:.82rem;color:var(--muted);cursor:pointer;transition:all .2s}
 .btn-load-more:hover{border-color:var(--blue);color:var(--blue)}
 
@@ -1738,29 +1773,39 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <!-- ── FORO ── -->
     <div class="com-section-title">💬 Foro de la comunidad</div>
 
-    <!-- Tabs de canal -->
-    <div class="forum-tabs">
-      <button class="forum-tab on" id="ftab-general" onclick="switchChannel('general')">💬 General</button>
-      <button class="forum-tab"    id="ftab-debate"  onclick="switchChannel('debate')">⚡ Debate</button>
+    <!-- Channels -->
+    <div class="forum-channels">
+      <button class="forum-ch on" id="ftab-general" onclick="switchChannel('general')"># general <span class="forum-ch-badge" id="fbadge-general">—</span></button>
+      <button class="forum-ch"    id="ftab-debate"  onclick="switchChannel('debate')">⚡ debate <span class="forum-ch-badge" id="fbadge-debate">—</span></button>
     </div>
 
-    <!-- Formulario nuevo post -->
-    <div class="com-form-card">
-      <div class="com-form-title">Nueva publicación</div>
-      <div class="com-name-row">
-        <input class="com-in" id="comName" type="text" placeholder="Tu nombre o apodo…" maxlength="60" style="max-width:220px"/>
+    <!-- Composer -->
+    <div class="forum-composer">
+      <div class="forum-composer-row">
+        <div class="forum-composer-av" id="composerAv">?</div>
+        <div class="forum-composer-fields">
+          <input class="forum-composer-name" id="comName" type="text" placeholder="Tu nombre o apodo…" maxlength="60" oninput="updateComposerAv()"/>
+          <textarea class="forum-composer-body" id="comBody" placeholder="¿Qué opinas sobre derecho europeo? Escribe aquí…" maxlength="1200" rows="3"></textarea>
+        </div>
       </div>
-      <textarea class="com-in com-ta" id="comBody" placeholder="¿Qué opinas? Escribe aquí…" maxlength="1200" rows="3"></textarea>
-      <div class="com-submit-row">
-        <span class="com-anon-note">Sin correo ni contraseña</span>
-        <button class="btn-gold" onclick="postComment()" id="comBtn" style="font-size:.82rem;padding:9px 22px">Publicar</button>
+      <div class="forum-composer-footer">
+        <span class="forum-anon-tag">🔒 Sin registro ni contraseña</span>
+        <button class="btn-gold" onclick="postComment()" id="comBtn" style="font-size:.82rem;padding:9px 24px">Publicar →</button>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="forum-toolbar">
+      <span class="forum-count-txt" id="comCount"></span>
+      <div class="forum-sort">
+        <button class="forum-sort-btn on" id="fsort-recent" onclick="setForumSort('recent')">🕐 Reciente</button>
+        <button class="forum-sort-btn"    id="fsort-top"    onclick="setForumSort('top')">🔥 Top</button>
       </div>
     </div>
 
     <!-- Lista -->
-    <div class="com-count" id="comCount"></div>
     <div class="forum-list" id="commentsList">
-      <div class="com-empty">Cargando…</div>
+      <div class="forum-empty"><div class="forum-empty-icon">💬</div><div class="forum-empty-title">Cargando…</div></div>
     </div>
     <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
       <button class="btn-load-more" onclick="loadMoreComments()">Ver más mensajes</button>
@@ -3710,6 +3755,13 @@ function getForumSession(){
 }
 function getVotedKey(id){ return 'overton_vote_'+id; }
 
+let forumSort='recent';
+function setForumSort(s){
+  forumSort=s;
+  document.getElementById('fsort-recent').classList.toggle('on',s==='recent');
+  document.getElementById('fsort-top').classList.toggle('on',s==='top');
+  loadComments(true);
+}
 function switchChannel(ch){
   activeChannel=ch;
   forumOffset=0;
@@ -3717,18 +3769,41 @@ function switchChannel(ch){
   document.getElementById('ftab-debate').classList.toggle('on',ch==='debate');
   loadComments(true);
 }
+function getAvatarColor(name){
+  const palette=['#1A4F8C','#2E7D32','#6A1B9A','#C62828','#E65100','#00695C','#1565C0','#283593','#4527A0','#558B2F','#AD1457','#00838F'];
+  let h=0; for(let i=0;i<name.length;i++) h=name.charCodeAt(i)+((h<<5)-h);
+  return palette[Math.abs(h)%palette.length];
+}
+function timeAgo(dateStr){
+  if(!dateStr) return '';
+  const diff=Math.floor((Date.now()-new Date(dateStr))/1000);
+  if(diff<60) return 'ahora';
+  if(diff<3600) return Math.floor(diff/60)+'m';
+  if(diff<86400) return Math.floor(diff/3600)+'h';
+  if(diff<604800) return Math.floor(diff/86400)+'d';
+  return new Date(dateStr).toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+}
+function updateComposerAv(){
+  const name=document.getElementById('comName').value.trim();
+  const av=document.getElementById('composerAv');
+  if(!av) return;
+  if(name){ av.textContent=name[0].toUpperCase(); av.style.background=getAvatarColor(name); }
+  else { av.textContent='?'; av.style.background='var(--blue)'; }
+  localStorage.setItem('overton_forum_name',name);
+}
 
 async function loadComments(reset=false){
   if(reset) forumOffset=0;
   const list=document.getElementById('commentsList');
-  if(reset && list) list.innerHTML='<div class="com-empty">Cargando…</div>';
+  if(reset && list) list.innerHTML='<div class="forum-empty"><div class="forum-empty-icon">⏳</div><div class="forum-empty-title">Cargando…</div></div>';
 
+  const sortCol=forumSort==='top'?'votes':'created_at';
   // Intento 1: query completa con channel y reply_to
   let result = await db.from('forum_posts')
     .select('*',{count:'exact'})
     .eq('channel',activeChannel)
     .is('reply_to',null)
-    .order('created_at',{ascending:false})
+    .order(sortCol,{ascending:false})
     .range(forumOffset, forumOffset+FORUM_PAGE-1);
 
   // Si falla (columnas no existen), intento 2: solo ordenar por fecha
@@ -3771,67 +3846,84 @@ function renderComments(parents,replies,reset=true){
   const moreWrap=document.getElementById('loadMoreWrap');
   if(!list) return;
   if(!parents.length && forumOffset===0){
-    list.innerHTML='<div class="com-empty">Sé el primero en publicar en este canal 💬</div>';
+    list.innerHTML=`<div class="forum-empty">
+      <div class="forum-empty-icon">💬</div>
+      <div class="forum-empty-title">Este canal está esperando tu primera opinión</div>
+      <div class="forum-empty-sub">Escribe algo arriba — sin registro, solo tu nombre</div>
+    </div>`;
     if(cnt) cnt.textContent='';
     if(moreWrap) moreWrap.style.display='none';
+    // update badge
+    const badge=document.getElementById('fbadge-'+activeChannel);
+    if(badge) badge.textContent='0';
     return;
   }
   const sid=getForumSession();
   const total=forumTotal;
   if(cnt) cnt.textContent=`${total} mensaje${total!==1?'s':''}`;
+  const badge=document.getElementById('fbadge-'+activeChannel);
+  if(badge) badge.textContent=total;
+
   const html=parents.map(p=>{
-    const ini=(p.name||'?')[0].toUpperCase();
-    const fecha=p.created_at?new Date(p.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const name=p.name||'Anónimo';
+    const ini=name[0].toUpperCase();
+    const color=getAvatarColor(name);
+    const t=timeAgo(p.created_at);
     const votes=p.votes||0;
     const voted=localStorage.getItem(getVotedKey(p.id));
     const isOwn=(p.session_id&&p.session_id===sid)||loggedIn;
+    const ch=p.channel||'general';
     const pReplies=replies.filter(r=>r.reply_to===p.id);
-    const repliesHtml=pReplies.length?`<div class="replies-block">
-      ${pReplies.map(r=>{
-        const ri=(r.name||'?')[0].toUpperCase();
-        const rf=r.created_at?new Date(r.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
-        const rv=r.votes||0;
-        const rvoted=localStorage.getItem(getVotedKey(r.id));
-        const rOwn=(r.session_id&&r.session_id===sid)||loggedIn;
-        return `<div class="reply-item" id="reply-${r.id}">
-          <div class="reply-hd">
-            <div class="reply-avatar">${ri}</div>
-            <div class="reply-name">${esc(r.name||'Anónimo')}</div>
-            <div class="reply-date" style="margin-left:6px">${rf}</div>
+
+    const repliesHtml=pReplies.length?`<div class="fp-replies">${pReplies.map(r=>{
+      const rn=r.name||'Anónimo';
+      const rc=getAvatarColor(rn);
+      const ri=rn[0].toUpperCase();
+      const rt=timeAgo(r.created_at);
+      const rv=r.votes||0;
+      const rvoted=localStorage.getItem(getVotedKey(r.id));
+      const rOwn=(r.session_id&&r.session_id===sid)||loggedIn;
+      return `<div class="fp-reply" id="reply-${r.id}">
+        <div class="fp-reply-av" style="background:${rc}">${ri}</div>
+        <div class="fp-reply-content">
+          <div class="fp-reply-header">
+            <span class="fp-reply-name">${esc(rn)}</span>
+            <span class="fp-reply-time">${rt}</span>
           </div>
-          <div class="reply-body">${esc(r.body||'')}</div>
-          <div class="reply-actions">
-            <button class="reply-vote${rvoted?' voted':''}" id="rv-${r.id}" onclick="voteComment(${r.id},this)">👍 <span class="vc">${rv}</span></button>
-            ${rOwn?`<button class="reply-del" onclick="deleteComment(${r.id})">Eliminar</button>`:''}
-          </div>
-        </div>`;
-      }).join('')}
-    </div>`:'';
-    return `<div class="thread-card" id="thread-${p.id}">
-      <div class="thread-main">
-        <div class="thread-hd">
-          <div class="thread-avatar">${ini}</div>
-          <div class="thread-meta">
-            <div class="thread-name">${esc(p.name||'Anónimo')}</div>
-            <div class="thread-date">${fecha}</div>
+          <div class="fp-reply-body">${esc(r.body||'')}</div>
+          <div class="fp-reply-actions">
+            <button class="fp-rvote${rvoted?' voted':''}" id="rv-${r.id}" onclick="voteComment(${r.id},this)">▲ <span class="vc">${rv}</span></button>
+            ${rOwn?`<button class="fp-rdel" onclick="deleteComment(${r.id})">Eliminar</button>`:''}
           </div>
         </div>
-        <div class="thread-body">${esc(p.body||'')}</div>
-        <div class="thread-actions">
-          <button class="thread-vote${voted?' voted':''}" id="tv-${p.id}" onclick="voteComment(${p.id},this)">👍 <span class="vc">${votes}</span></button>
-          <button class="thread-reply-btn" onclick="showReplyForm(${p.id},'${esc(p.name||'Anónimo')}')">Responder</button>
-          ${isOwn?`<button class="thread-del-btn" onclick="deleteComment(${p.id})">Eliminar</button>`:''}
+      </div>`;
+    }).join('')}</div>`:'';
+
+    return `<div class="forum-post" id="thread-${p.id}">
+      <div class="fp-inner">
+        <div class="fp-header">
+          <div class="fp-av" style="background:${color}">${ini}</div>
+          <div class="fp-meta">
+            <div class="fp-name">${esc(name)}</div>
+            <div class="fp-info">
+              <span class="fp-time">${t}</span>
+              <span class="fp-ch-tag">${ch}</span>
+            </div>
+          </div>
+        </div>
+        <div class="fp-body">${esc(p.body||'')}</div>
+        <div class="fp-actions">
+          <button class="fp-vote${voted?' voted':''}" id="tv-${p.id}" onclick="voteComment(${p.id},this)">▲ <span class="fp-vote-n">${votes}</span></button>
+          <button class="fp-reply-btn" onclick="showReplyForm(${p.id},'${esc(name)}')">💬 Responder${pReplies.length?` (${pReplies.length})`:''}</button>
+          ${isOwn?`<button class="fp-del-btn" onclick="deleteComment(${p.id})">Eliminar</button>`:''}
         </div>
       </div>
       ${repliesHtml}
       <div id="reply-form-${p.id}"></div>
     </div>`;
   }).join('');
-  if(reset){
-    list.innerHTML=html;
-  } else {
-    list.insertAdjacentHTML('beforeend',html);
-  }
+
+  if(reset){ list.innerHTML=html; } else { list.insertAdjacentHTML('beforeend',html); }
   const loaded=forumOffset+parents.length;
   if(moreWrap) moreWrap.style.display=(loaded<total)?'block':'none';
 }
@@ -3891,18 +3983,16 @@ async function postComment(){
 }
 
 function showReplyForm(parentId, parentName){
-  // Close any open reply forms
   document.querySelectorAll('[id^="reply-form-"]').forEach(el=>el.innerHTML='');
   const container=document.getElementById('reply-form-'+parentId);
   if(!container) return;
-  const sid=getForumSession();
   const savedName=document.getElementById('comName').value.trim()||localStorage.getItem('overton_forum_name')||'';
-  container.innerHTML=`<div class="inline-reply-form">
+  container.innerHTML=`<div class="fp-reply-form">
     <textarea id="replyBody-${parentId}" placeholder="Responde a ${esc(parentName)}…" maxlength="800" rows="3"></textarea>
-    <div class="row">
+    <div class="fp-reply-form-row">
       <input id="replyName-${parentId}" type="text" placeholder="Tu nombre…" maxlength="60" value="${esc(savedName)}"/>
-      <button class="btn-cancel" onclick="document.getElementById('reply-form-${parentId}').innerHTML=''">Cancelar</button>
-      <button class="btn-gold" style="font-size:.78rem;padding:7px 16px" onclick="postReply(${parentId})">Responder</button>
+      <button class="fp-reply-cancel" onclick="document.getElementById('reply-form-${parentId}').innerHTML=''">Cancelar</button>
+      <button class="btn-gold" style="font-size:.78rem;padding:7px 16px" onclick="postReply(${parentId})">Responder →</button>
     </div>
   </div>`;
   document.getElementById('replyBody-'+parentId).focus();
@@ -4086,7 +4176,7 @@ async function loadFooterStats(){
   const savedName=localStorage.getItem('overton_forum_name');
   if(savedName){
     const el=document.getElementById('comName');
-    if(el) el.value=savedName;
+    if(el){ el.value=savedName; updateComposerAv(); }
   }
 })();
 
