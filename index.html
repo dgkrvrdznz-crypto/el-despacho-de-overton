@@ -3791,7 +3791,64 @@ function getVotedKey(id){ return 'overton_vote_'+id; }
 
 let forumSort='recent';
 const FORUM_CACHE_KEY='overton_forum_cache';
+const FORUM_LOCAL_KEY='overton_forum_local'; // fuente de verdad local
 const FORUM_MAX_LEN=600;
+
+/* ─── FUENTE DE VERDAD LOCAL (localStorage) ─────────────────────────────
+   getLocalPosts()   → lee todos los posts del localStorage
+   saveLocalPosts()  → guarda el array completo (máx 200)
+   addLocalPost()    → prepende un post sin duplicados
+   confirmLocalPost()→ reemplaza ID temporal por el ID real de Supabase
+   mergeSupabase()   → fusiona posts de Supabase SIN borrar posts locales
+   renderFromLocal() → renderiza SIEMPRE desde localStorage (nunca desaparece)
+ ──────────────────────────────────────────────────────────────────────── */
+function getLocalPosts(){
+  try{ return JSON.parse(localStorage.getItem(FORUM_LOCAL_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+function saveLocalPosts(posts){
+  try{ localStorage.setItem(FORUM_LOCAL_KEY,JSON.stringify((posts||[]).slice(0,200))); }
+  catch(e){ console.warn('localStorage lleno:',e); }
+}
+function addLocalPost(post){
+  const all=getLocalPosts().filter(m=>m.id!==post.id);
+  saveLocalPosts([post,...all]);
+}
+function confirmLocalPost(tempId,realPost){
+  const posts=getLocalPosts().map(m=>m.id===tempId?{...realPost,_local:false,_pending:false}:m);
+  saveLocalPosts(posts);
+}
+function mergeSupabase(supabasePosts){
+  const local=getLocalPosts();
+  const sbIds=new Set(supabasePosts.map(p=>String(p.id)));
+  // Conservar posts locales que aún no están en Supabase (pendientes o con error)
+  const pendingLocal=local.filter(m=>{
+    if(!m._local) return false;
+    if(sbIds.has(String(m.id))) return false;
+    // Si el contenido coincide con un post de Supabase reciente, es que ya se guardó
+    return !supabasePosts.some(sp=>
+      sp.name===m.name && sp.body===m.body &&
+      Math.abs(new Date(sp.created_at)-new Date(m.created_at))<60000
+    );
+  });
+  const merged=[...pendingLocal,...supabasePosts];
+  saveLocalPosts(merged);
+  return merged;
+}
+function renderFromLocal(reset=true){
+  const all=getLocalPosts();
+  const parents=all
+    .filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to)
+    .sort((a,b)=>forumSort==='top'
+      ?(b.votes||0)-(a.votes||0)
+      :new Date(b.created_at||0)-new Date(a.created_at||0)
+    )
+    .slice(forumOffset, forumOffset+FORUM_PAGE);
+  const parentIds=new Set(parents.map(p=>p.id));
+  const replies=all.filter(m=>m.reply_to&&parentIds.has(m.reply_to));
+  renderComments(parents,replies,reset);
+}
+
 function setForumSort(s){
   forumSort=s;
   document.getElementById('fsort-recent').classList.toggle('on',s==='recent');
@@ -3832,20 +3889,16 @@ async function loadComments(reset=false){
   if(reset) forumOffset=0;
   const list=document.getElementById('commentsList');
 
-  // 1. Mostrar caché local instantáneamente si existe
-  if(reset){
-    const cached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
-    const forChannel=cached.filter(m=>!m.channel||m.channel===activeChannel);
-    if(forChannel.length){
-      renderComments(forChannel,[],true);
-    } else {
-      if(list) list.innerHTML='<div class="forum-empty"><div class="forum-empty-icon">⏳</div><div class="forum-empty-title">Cargando…</div></div>';
-    }
+  // 1. Render INMEDIATO desde localStorage — los posts ya guardados nunca desaparecen
+  const localPosts=getLocalPosts().filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to);
+  if(localPosts.length){
+    renderFromLocal(reset);
+  } else if(reset && list){
+    list.innerHTML='<div class="forum-empty"><div class="forum-empty-icon">⏳</div><div class="forum-empty-title">Cargando…</div></div>';
   }
 
+  // 2. Fetch desde Supabase en background
   const sortCol=forumSort==='top'?'votes':'created_at';
-
-  // 2. Query principal: acepta channel='general' O channel IS NULL (posts sin canal asignado)
   let result=await db.from('forum_posts')
     .select('*',{count:'exact'})
     .or(`channel.eq.${activeChannel},channel.is.null`)
@@ -3853,52 +3906,47 @@ async function loadComments(reset=false){
     .order(sortCol,{ascending:false})
     .range(forumOffset,forumOffset+FORUM_PAGE-1);
 
-  // 3. Si falla (columnas no existen), query mínima sin filtros
   if(result.error){
-    console.warn('Forum query failed:',result.error.message,'. Usando query mínima…');
+    console.warn('Forum query failed:',result.error.message,'. Usando query básica…');
     result=await db.from('forum_posts')
       .select('*',{count:'exact'})
       .order('created_at',{ascending:false})
       .range(forumOffset,forumOffset+FORUM_PAGE-1);
   }
 
-  // 4. Si sigue fallando, mostrar caché o error
   if(result.error){
+    // Supabase falló: mantener lo que hay en localStorage (no borrar nada)
     console.error('Forum load error:',result.error.message);
-    const cached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
-    const forChannel=cached.filter(m=>!m.channel||m.channel===activeChannel);
-    if(forChannel.length && reset){
-      renderComments(forChannel,[],true);
-    } else if(list && reset){
-      list.innerHTML=`<div class="forum-empty">
-        <div class="forum-empty-icon">⚠️</div>
-        <div class="forum-empty-title">Error al cargar mensajes</div>
-        <div class="forum-empty-sub" style="color:#d64040">${result.error.message}</div>
-      </div>`;
-    }
     return;
   }
 
   forumTotal=result.count||0;
-  const parents=result.data||[];
+  const sbParents=result.data||[];
 
-  // 5. Actualizar caché local con datos frescos de Supabase
-  if(reset){
-    const allCached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
-    const otherChannels=allCached.filter(m=>m.channel&&m.channel!==activeChannel&&!m._pending);
-    const fresh=parents.map(m=>({...m,_cached:true}));
-    localStorage.setItem(FORUM_CACHE_KEY,JSON.stringify([...fresh,...otherChannels].slice(0,100)));
+  // 3. Cargar replies de Supabase
+  let sbReplies=[];
+  if(sbParents.length){
+    const ids=sbParents.map(p=>p.id);
+    const {data:rd}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
+    sbReplies=rd||[];
   }
 
-  // 6. Cargar respuestas
-  let replies=[];
-  if(parents.length){
-    const ids=parents.map(p=>p.id);
-    const {data:rd,error:re}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
-    if(!re) replies=rd||[];
-  }
-  COMMENTS=parents;
-  renderComments(parents,replies,reset);
+  // 4. Fusionar Supabase con localStorage — NUNCA borra posts locales pendientes
+  mergeSupabase([...sbParents,...sbReplies]);
+  COMMENTS=sbParents;
+
+  // 5. Re-render con datos fusionados (incluye posts locales + Supabase)
+  renderFromLocal(reset);
+
+  // Actualizar contadores
+  const channelTotal=getLocalPosts().filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to).length;
+  const total=Math.max(forumTotal,channelTotal);
+  const cnt=document.getElementById('comCount');
+  if(cnt) cnt.textContent=`${total} mensaje${total!==1?'s':''}`;
+  const badge=document.getElementById('fbadge-'+activeChannel);
+  if(badge) badge.textContent=total;
+  const moreWrap=document.getElementById('loadMoreWrap');
+  if(moreWrap) moreWrap.style.display=(forumOffset+sbParents.length<forumTotal)?'block':'none';
 }
 
 function renderComments(parents,replies,reset=true){
@@ -3932,8 +3980,12 @@ function renderComments(parents,replies,reset=true){
     const t=timeAgo(p.created_at);
     const votes=p.votes||0;
     const voted=localStorage.getItem(getVotedKey(p.id));
-    const isOwn=(p.session_id&&p.session_id===sid)||loggedIn;
+    const isOwn=(p.session_id&&p.session_id===sid)||loggedIn||p._local;
     const ch=p.channel||'general';
+    const pendingBadge=p._pending?'<span style="font-size:.65rem;color:var(--faint);margin-left:6px">Enviando…</span>':'';
+    const errorBadge=p._error?`<span style="font-size:.65rem;color:#d64040;margin-left:6px">⚠️ ${esc(p._errorMsg||'Error al guardar')}</span>`:'';
+    const pendingStyle=p._pending?'opacity:.7;border-style:dashed':'';
+    const pendingId=p._pending?`temp_${p.id}`:`${p.id}`;
     const pReplies=replies.filter(r=>r.reply_to===p.id);
 
     const repliesHtml=pReplies.length?`<div class="fp-replies">${pReplies.map(r=>{
@@ -3960,12 +4012,12 @@ function renderComments(parents,replies,reset=true){
       </div>`;
     }).join('')}</div>`:'';
 
-    return `<div class="forum-post" id="thread-${p.id}">
+    return `<div class="forum-post" id="thread-${p.id}" style="${pendingStyle}">
       <div class="fp-inner">
         <div class="fp-header">
           <div class="fp-av" style="background:${color}">${ini}</div>
           <div class="fp-meta">
-            <div class="fp-name">${esc(name)}</div>
+            <div class="fp-name">${esc(name)}${pendingBadge}${errorBadge}</div>
             <div class="fp-info">
               <span class="fp-time">${t}</span>
               <span class="fp-ch-tag">${ch}</span>
@@ -3973,11 +4025,11 @@ function renderComments(parents,replies,reset=true){
           </div>
         </div>
         <div class="fp-body">${esc(p.body||'')}</div>
-        <div class="fp-actions">
+        ${p._pending?'':`<div class="fp-actions">
           <button class="fp-vote${voted?' voted':''}" id="tv-${p.id}" onclick="voteComment(${p.id},this)">▲ <span class="fp-vote-n">${votes}</span></button>
           <button class="fp-reply-btn" onclick="showReplyForm(${p.id},'${esc(name)}')">💬 Responder${pReplies.length?` (${pReplies.length})`:''}</button>
           ${isOwn?`<button class="fp-del-btn" onclick="deleteComment(${p.id})">Eliminar</button>`:''}
-        </div>
+        </div>`}
       </div>
       ${repliesHtml}
       <div id="reply-form-${p.id}"></div>
@@ -4006,130 +4058,99 @@ async function loadMoreComments(){
   }
   if(result.error){showToast('Error cargando más mensajes','error');return;}
   forumTotal=result.count||0;
-  const parents=result.data||[];
-  let replies=[];
-  if(parents.length){
-    const ids=parents.map(p=>p.id);
+  const sbParents=result.data||[];
+  let sbReplies=[];
+  if(sbParents.length){
+    const ids=sbParents.map(p=>p.id);
     const {data:rd}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
-    replies=rd||[];
+    sbReplies=rd||[];
   }
-  renderComments(parents,replies,false);
+  mergeSupabase([...sbParents,...sbReplies]);
+  renderFromLocal(false);
 }
 
 async function postComment(){
   const name=document.getElementById('comName').value.trim();
   const body=document.getElementById('comBody').value.trim();
 
-  // Validaciones separadas y claras
+  // Validaciones independientes y claras
   if(!name){showToast('Escribe tu nombre o apodo','error');document.getElementById('comName').focus();return;}
   if(!body||body.length<3){showToast('El mensaje es demasiado corto (mín. 3 caracteres)','error');return;}
-  if(body.length>FORUM_MAX_LEN){showToast(`Mensaje demasiado largo (máx. ${FORUM_MAX_LEN} caracteres)`,'error');return;}
+  if(body.length>FORUM_MAX_LEN){showToast(`Máx. ${FORUM_MAX_LEN} caracteres`,'error');return;}
 
-  // Guardar nombre en localStorage inmediatamente
+  // Guardar nombre
   localStorage.setItem('overton_forum_name',name);
 
   const btn=document.getElementById('comBtn');
   btn.disabled=true; btn.textContent='Publicando…';
 
-  // ── OPTIMISTIC UPDATE ──────────────────────────────────────────
-  // Mostrar el mensaje al instante antes de confirmar Supabase
-  const tempId='temp_'+Date.now();
-  const list=document.getElementById('commentsList');
-  if(list){
-    // Eliminar estado vacío si existe
-    const emptyEl=list.querySelector('.forum-empty');
-    if(emptyEl) emptyEl.remove();
-    const color=getAvatarColor(name);
-    const tempEl=document.createElement('div');
-    tempEl.id='thread-'+tempId;
-    tempEl.className='forum-post';
-    tempEl.style.cssText='opacity:.65;border-style:dashed';
-    tempEl.innerHTML=`<div class="fp-inner">
-      <div class="fp-header">
-        <div class="fp-av" style="background:${color}">${name[0].toUpperCase()}</div>
-        <div class="fp-meta">
-          <div class="fp-name">${esc(name)}</div>
-          <div class="fp-info"><span class="fp-time">Enviando…</span></div>
-        </div>
-      </div>
-      <div class="fp-body">${esc(body)}</div>
-    </div>`;
-    list.prepend(tempEl);
-    // Scroll al inicio para ver el mensaje
-    list.scrollTop=0;
-  }
+  // ── PASO 1: GUARDAR EN localStorage ANTES DE CUALQUIER OTRA COSA ──
+  // Esto garantiza que el mensaje NUNCA desaparece, incluso si Supabase tarda o falla.
+  const tempId='local_'+Date.now();
+  const newPost={
+    id:tempId,
+    name,
+    body,
+    channel:activeChannel,
+    created_at:new Date().toISOString(),
+    votes:0,
+    reply_to:null,
+    session_id:getForumSession(),
+    _local:true,
+    _pending:true
+  };
+  addLocalPost(newPost);
 
-  // Limpiar textarea y restaurar botón YA (no esperar a Supabase)
+  // ── PASO 2: RENDERIZAR DESDE localStorage (fuente de verdad) ──
+  // Como el post ya está en localStorage, renderFromLocal lo incluirá SIEMPRE.
+  // Ninguna llamada posterior a loadComments puede borrarlo.
+  renderFromLocal(true);
+
+  // Limpiar formulario
   document.getElementById('comBody').value='';
   updateCharCount();
   btn.disabled=false; btn.textContent='Publicar';
+  const list=document.getElementById('commentsList');
+  if(list) list.scrollTop=0;
 
-  // ── GUARDAR EN SUPABASE ────────────────────────────────────────
+  // ── PASO 3: GUARDAR EN SUPABASE (background, no bloquea el render) ──
   const sid=getForumSession();
-  // Intento 1: schema completo + .select() para obtener el post guardado con su ID real
   let result=await db.from('forum_posts')
     .insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}])
     .select();
-  // Intento 2 (fallback): solo campos básicos que siempre existen
   if(result.error){
-    console.warn('Insert completo falló:',result.error.message,'. Intentando insert básico…');
+    console.warn('Insert completo falló:',result.error.message,'. Intentando básico…');
     result=await db.from('forum_posts').insert([{name,body}]).select();
   }
 
-  const tempEl=document.getElementById('thread-'+tempId);
-
   if(result.error){
-    console.error('Post comment error:',result.error.message);
-    if(tempEl){
-      tempEl.style.opacity='1';
-      tempEl.style.borderStyle='solid';
-      tempEl.style.background='rgba(214,64,64,.04)';
-      tempEl.style.borderColor='rgba(214,64,64,.35)';
-      tempEl.innerHTML+=`<div style="padding:0 16px 12px;font-size:.78rem;color:#d64040">
-        ⚠️ No se pudo guardar: <strong>${esc(result.error.message)}</strong><br>
-        <small style="opacity:.7">Solo visible para ti en esta sesión</small>
-      </div>`;
-    }
-    showToast('Error al publicar','error');
+    // Supabase falló: marcar el post como error pero NO borrarlo
+    console.error('Supabase error:',result.error.message);
+    const posts=getLocalPosts().map(m=>
+      m.id===tempId?{...m,_pending:false,_error:true,_errorMsg:result.error.message}:m
+    );
+    saveLocalPosts(posts);
+    renderFromLocal(true); // Re-render para mostrar badge de error
+    showToast('Error al guardar en servidor','error');
     return;
   }
 
-  // ── ÉXITO: confirmar el post en el DOM sin recargar la lista ───
-  // NUNCA llamar loadComments(true) aquí — eso causaría que el post
-  // desaparezca mientras se espera la respuesta de la base de datos.
-  const realPost=(result.data&&result.data[0])||null;
-
-  if(tempEl){
-    // Hacer sólido: ya no es un envío pendiente
-    tempEl.style.opacity='1';
-    tempEl.style.borderStyle='';
-    if(realPost){
-      // Actualizar al ID real de la DB
-      tempEl.id='thread-'+realPost.id;
-      // Actualizar tiempo con el timestamp real del servidor
-      const timeEl=tempEl.querySelector('.fp-time');
-      if(timeEl) timeEl.textContent=timeAgo(realPost.created_at);
-      // Añadir botones de acción ahora que tenemos el ID real
-      const actionsEl=document.createElement('div');
-      actionsEl.className='fp-actions';
-      actionsEl.innerHTML=`
-        <button class="fp-vote" id="tv-${realPost.id}" onclick="voteComment(${realPost.id},this)">▲ <span class="fp-vote-n">0</span></button>
-        <button class="fp-reply-btn" onclick="showReplyForm(${realPost.id},'${esc(name)}')">💬 Responder</button>
-        <button class="fp-del-btn" onclick="deleteComment(${realPost.id})">Eliminar</button>`;
-      const inner=tempEl.querySelector('.fp-inner');
-      if(inner) inner.appendChild(actionsEl);
-    }
+  // ── PASO 4: CONFIRMAR — reemplazar ID temporal con el ID real de Supabase ──
+  const realPost=result.data&&result.data[0];
+  if(realPost){
+    confirmLocalPost(tempId,{...realPost,_local:false,_pending:false});
+  } else {
+    // Supabase no devolvió datos (RLS en SELECT) — marcar como sincronizado
+    const posts=getLocalPosts().map(m=>
+      m.id===tempId?{...m,_pending:false,_local:false}:m
+    );
+    saveLocalPosts(posts);
   }
 
-  // Actualizar caché local con el post confirmado
-  const postToCache=realPost||{id:tempId,name,body,channel:activeChannel,created_at:new Date().toISOString(),votes:0};
-  const cached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
-  // Evitar duplicados: eliminar si ya existía con este ID
-  const deduped=cached.filter(m=>m.id!==postToCache.id&&m.id!==tempId);
-  deduped.unshift({...postToCache,_cached:true});
-  localStorage.setItem(FORUM_CACHE_KEY,JSON.stringify(deduped.slice(0,100)));
+  // Re-render final: el post queda sólido con botones de acción
+  renderFromLocal(true);
 
-  // Actualizar contadores sin recargar
+  // Actualizar contadores
   forumTotal=(forumTotal||0)+1;
   const cnt=document.getElementById('comCount');
   if(cnt) cnt.textContent=`${forumTotal} mensaje${forumTotal!==1?'s':''}`;
@@ -4137,8 +4158,6 @@ async function postComment(){
   if(badge) badge.textContent=forumTotal;
 
   showToast('¡Publicado! ✓');
-  // No se llama loadComments — el mensaje ya está visible en el DOM,
-  // confirmado en Supabase y guardado en caché. No hay nada que recargar.
 }
 
 function updateCharCount(){
