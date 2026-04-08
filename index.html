@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
+<script>if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')location.replace('https:'+location.href.substring(location.protocol.length));</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>El Despacho de Overton</title>
@@ -1686,59 +1687,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   </div><!-- /admin-wrap -->
 </div><!-- /view-admin -->
 
-<!-- ════════════════════ DEBATE DE LA SEMANA ════════════════════ -->
-<div class="debate-sec" id="debateSection">
-  <div class="debate-in">
-    <div class="debate-pill">🗳️ Debate de la semana</div>
-    <div class="debate-q" id="debateQuestion">Cargando debate…</div>
-    <div class="debate-btns">
-      <button class="debate-vote-btn yes" id="debateYes" onclick="voteDebate('yes')">Sí</button>
-      <button class="debate-vote-btn no"  id="debateNo"  onclick="voteDebate('no')">No</button>
-    </div>
-    <div class="debate-results" id="debateResults">
-      <div class="debate-bar-wrap"><div class="debate-bar-yes" id="debateBar" style="width:50%"></div></div>
-      <div class="debate-stats">
-        <span id="debateYesPct">50% Sí</span>
-        <span id="debateNoPct">50% No</span>
-      </div>
-      <div class="debate-voted-msg" id="debateVotedMsg"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════ ¿QUIERES PUBLICAR? ════════════════════ -->
-<div class="contrib-sec">
-  <div class="contrib-in">
-    <div class="contrib-icon">✍️</div>
-    <div class="contrib-title">¿Quieres <em>publicar</em> con nosotros?</div>
-    <p class="contrib-sub">Si tienes algo que decir sobre derecho europeo, este es tu espacio. Estudiantes, juristas, investigadores — cualquier voz rigurosa es bienvenida.</p>
-    <div class="contrib-form">
-      <input class="contrib-in-name" id="contribName" type="text" placeholder="Tu nombre…" maxlength="60"/>
-      <input class="contrib-in-email" id="contribEmail" type="email" placeholder="tu@email.com"/>
-      <button class="btn-gold" onclick="submitContrib()" style="font-size:.84rem;padding:10px 22px">Quiero publicar →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════ NEWSLETTER LANDING ════════════════════ -->
-<div class="nl-landing" id="view-newsletter">
-  <div class="nl-landing-in">
-    <div class="hero-pill" style="margin-bottom:16px">📬 Newsletter gratuita</div>
-    <h2>El análisis que <em>importa</em>,<br/>en tu bandeja de entrada</h2>
-    <p class="nl-landing-sub">Cada semana, las sentencias y directivas más relevantes de la UE explicadas en menos de 5 minutos. Sin ruido, sin tecnicismos innecesarios.</p>
-    <div class="nl-perks">
-      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Análisis de las últimas sentencias del TJUE</span></div>
-      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Directivas que afectan a tu vida cotidiana</span></div>
-      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Sin spam. Baja cuando quieras.</span></div>
-    </div>
-    <div class="nl-form">
-      <input class="nl-form-in" id="nlLandingEmail" type="email" placeholder="tu@email.com"/>
-      <button class="btn-gold" onclick="subscribeFromLanding()" style="font-size:.84rem;padding:11px 24px">Suscribirme gratis</button>
-    </div>
-    <p class="nl-privacy">Sin spam · Baja en un clic · Gratis para siempre</p>
-  </div>
-</div>
-
 <!-- ════════════════════ GLOSARIO ════════════════════ -->
 <div id="view-glosario" class="hide">
   <div class="glos-wrap">
@@ -1838,6 +1786,59 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <p style="color:rgba(255,255,255,.7);font-size:.87rem;max-width:480px;margin:0 auto 20px">Si eres jurista, académico o simplemente apasionado del derecho europeo, escríbenos. Publicamos análisis rigurosos y accesibles.</p>
       <a href="mailto:contacto@eldespacho.eu" style="display:inline-block;background:var(--gold);color:#0c1929;font-weight:700;font-size:.84rem;padding:11px 26px;border-radius:8px;text-decoration:none">Enviar propuesta</a>
     </div>
+  </div>
+</div>
+
+<!-- ════════════════════ DEBATE DE LA SEMANA ════════════════════ -->
+<div class="debate-sec" id="debateSection">
+  <div class="debate-in">
+    <div class="debate-pill">🗳️ Debate de la semana</div>
+    <div class="debate-q" id="debateQuestion">Cargando debate…</div>
+    <div class="debate-btns">
+      <button class="debate-vote-btn yes" id="debateYes" onclick="voteDebate('yes')">Sí</button>
+      <button class="debate-vote-btn no"  id="debateNo"  onclick="voteDebate('no')">No</button>
+    </div>
+    <div class="debate-results" id="debateResults">
+      <div class="debate-bar-wrap"><div class="debate-bar-yes" id="debateBar" style="width:50%"></div></div>
+      <div class="debate-stats">
+        <span id="debateYesPct">50% Sí</span>
+        <span id="debateNoPct">50% No</span>
+      </div>
+      <div class="debate-voted-msg" id="debateVotedMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ ¿QUIERES PUBLICAR? ════════════════════ -->
+<div class="contrib-sec">
+  <div class="contrib-in">
+    <div class="contrib-icon">✍️</div>
+    <div class="contrib-title">¿Quieres <em>publicar</em> con nosotros?</div>
+    <p class="contrib-sub">Si tienes algo que decir sobre derecho europeo, este es tu espacio. Estudiantes, juristas, investigadores — cualquier voz rigurosa es bienvenida.</p>
+    <div class="contrib-form">
+      <input class="contrib-in-name" id="contribName" type="text" placeholder="Tu nombre…" maxlength="60"/>
+      <input class="contrib-in-email" id="contribEmail" type="email" placeholder="tu@email.com"/>
+      <button class="btn-gold" onclick="submitContrib()" style="font-size:.84rem;padding:10px 22px">Quiero publicar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ NEWSLETTER LANDING ════════════════════ -->
+<div class="nl-landing" id="view-newsletter">
+  <div class="nl-landing-in">
+    <div class="hero-pill" style="margin-bottom:16px">📬 Newsletter gratuita</div>
+    <h2>El análisis que <em>importa</em>,<br/>en tu bandeja de entrada</h2>
+    <p class="nl-landing-sub">Cada semana, las sentencias y directivas más relevantes de la UE explicadas en menos de 5 minutos. Sin ruido, sin tecnicismos innecesarios.</p>
+    <div class="nl-perks">
+      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Análisis de las últimas sentencias del TJUE</span></div>
+      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Directivas que afectan a tu vida cotidiana</span></div>
+      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Sin spam. Baja cuando quieras.</span></div>
+    </div>
+    <div class="nl-form">
+      <input class="nl-form-in" id="nlLandingEmail" type="email" placeholder="tu@email.com"/>
+      <button class="btn-gold" onclick="subscribeFromLanding()" style="font-size:.84rem;padding:11px 24px">Suscribirme gratis</button>
+    </div>
+    <p class="nl-privacy">Sin spam · Baja en un clic · Gratis para siempre</p>
   </div>
 </div>
 
@@ -2405,14 +2406,70 @@ async function deleteArtComment(id){
   loadArtComments(currentArtId);
 }
 
-/* ── DEBATE ── */
+/* ── DEBATE DIARIO (sin API, selección por fecha) ── */
+const DAILY_DEBATES=[
+  "¿Debe la Unión Europea tener su propio ejército permanente?",
+  "¿Debería la UE prohibir TikTok para menores de 16 años?",
+  "¿Debería existir un salario mínimo europeo igual en todos los estados miembros?",
+  "¿Está haciendo suficiente la UE para combatir el cambio climático?",
+  "¿Debería la UE sancionar a países que no respetan el Estado de Derecho?",
+  "¿Crees que Europa debería tener fronteras más abiertas para la inmigración?",
+  "¿Debería la UE tener el poder de recaudar impuestos directamente?",
+  "¿Debe prohibirse la IA en las decisiones judiciales europeas?",
+  "¿Debería el euro ser obligatorio para todos los países de la UE?",
+  "¿Debería la UE regular el precio de la vivienda en las grandes ciudades?",
+  "¿Crees que el Parlamento Europeo tiene demasiado poco poder?",
+  "¿Debería la UE reconocer el matrimonio igualitario en todos sus estados miembros?",
+  "¿Debe la UE prohibir la exportación de armas a zonas en conflicto?",
+  "¿Crees que las redes sociales están suficientemente reguladas en Europa?",
+  "¿Debería la UE crear una renta básica universal para sus ciudadanos?",
+  "¿Crees que el Brexit fue un error para el Reino Unido?",
+  "¿Debe la UE intervenir más en las crisis de salud pública de sus estados miembros?",
+  "¿Debería la energía nuclear considerarse 'verde' en la política europea?",
+  "¿Debería la UE tener un presidente elegido directamente por los ciudadanos?",
+  "¿Tienen Google y Meta demasiado poder en Europa?",
+  "¿Debería prohibirse el uso de pesticidas en la agricultura europea?",
+  "¿Protege suficientemente la UE los datos personales de sus ciudadanos?",
+  "¿Debería la UE ofrecer formación universitaria gratuita a todos sus ciudadanos?",
+  "¿Es demasiado restrictiva la política de asilo en Europa?",
+  "¿Debe la UE regular el uso de criptomonedas y activos digitales?",
+  "¿Debería la UE tener competencias para actuar contra la corrupción interna?",
+  "¿Está suficientemente protegida la libertad de prensa en la Unión Europea?",
+  "¿Debe la UE abandonar los combustibles fósiles antes de 2035?",
+  "¿Debería Europa tener una política exterior más unida e independiente de EE.UU.?",
+  "¿Debería la UE regular los algoritmos de recomendación de YouTube e Instagram?",
+  "¿Crees que la UE tarda demasiado en tomar decisiones importantes?",
+  "¿Debería reducirse la semana laboral a 4 días en toda la UE?",
+  "¿Prioriza la UE la economía por encima de los derechos fundamentales?",
+  "¿Debería la UE imponer cuotas de representación femenina en grandes empresas?",
+  "¿Tiene el TJUE suficiente autoridad para hacer cumplir sus sentencias?",
+  "¿Debería la UE crear su propia plataforma de redes sociales sin ánimo de lucro?",
+  "¿Entienden los ciudadanos europeos cómo funciona realmente la UE?",
+  "¿Debe la UE establecer límites máximos a los salarios de directivos?",
+  "¿Debería la UE adherirse de forma más vinculante al Convenio Europeo de DDHH?",
+  "¿Debería prohibirse los vuelos cortos cuando exista alternativa en tren?",
+  "¿Respeta el pacto migratorio europeo los derechos humanos?",
+  "¿Debería la UE tener una constitución que sustituya a los tratados actuales?",
+  "¿Actúa la UE con suficiente rapidez ante las crisis internacionales?",
+  "¿Debería prohibirse la publicidad dirigida a menores en plataformas digitales?",
+  "¿Debe la UE garantizar el acceso a internet como derecho fundamental?",
+  "¿Debería la UE crear un tribunal específico para delitos medioambientales?",
+  "¿Tiene el lobby corporativo demasiada influencia en la legislación europea?",
+  "¿Debería la UE negociar en exclusiva todos los tratados comerciales internacionales?",
+  "¿Es efectiva la política de competencia de la UE frente a los monopolios digitales?",
+  "¿Debería la UE exigir etiquetado obligatorio de huella de carbono en todos los productos?"
+];
+
 let debateData=null;
-async function loadDebate(){
-  const {data}=await db.from('debate').select('*').eq('active',true).order('created_at',{ascending:false}).limit(1);
-  if(!data||!data.length){ document.getElementById('debateSection').style.display='none'; return; }
-  debateData=data[0];
-  document.getElementById('debateQuestion').textContent=debateData.question;
-  const voted=localStorage.getItem('overton_debate_'+debateData.id);
+function loadDebate(){
+  const dayIdx=Math.floor(Date.now()/86400000)%DAILY_DEBATES.length;
+  const question=DAILY_DEBATES[dayIdx];
+  const key='overton_debate_day_'+dayIdx;
+  const votesKey='overton_debate_votes_'+dayIdx;
+  let votes=JSON.parse(localStorage.getItem(votesKey)||'{"yes":0,"no":0}');
+  debateData={id:key,question,yes_count:votes.yes,no_count:votes.no};
+  document.getElementById('debateQuestion').textContent=question;
+  const voted=localStorage.getItem(key);
   if(voted) showDebateResults(debateData,voted);
 }
 function showDebateResults(d,voted){
@@ -2420,22 +2477,29 @@ function showDebateResults(d,voted){
   const yesPct=Math.round((d.yes_count||0)/total*100);
   const noPct=100-yesPct;
   document.getElementById('debateBar').style.width=yesPct+'%';
-  document.getElementById('debateYesPct').textContent=yesPct+'% Sí ('+d.yes_count+')';
-  document.getElementById('debateNoPct').textContent=noPct+'% No ('+d.no_count+')';
+  document.getElementById('debateYesPct').textContent=yesPct+'% Sí ('+(d.yes_count||0)+')';
+  document.getElementById('debateNoPct').textContent=noPct+'% No ('+(d.no_count||0)+')';
   document.getElementById('debateResults').classList.add('show');
   document.getElementById('debateVotedMsg').textContent='Votaste: '+(voted==='yes'?'Sí ✓':'No ✓');
   document.getElementById('debateYes').classList.toggle('voted',voted==='yes');
   document.getElementById('debateNo').classList.toggle('voted',voted==='no');
 }
-async function voteDebate(vote){
+function voteDebate(vote){
   if(!debateData) return;
-  const key='overton_debate_'+debateData.id;
-  if(localStorage.getItem(key)){ showToast('Ya has votado en este debate'); return; }
-  await db.rpc('vote_debate',{p_id:debateData.id,p_vote:vote});
+  const key=debateData.id;
+  if(localStorage.getItem(key)){showToast('Ya has votado en este debate');return;}
   localStorage.setItem(key,vote);
-  debateData[vote==='yes'?'yes_count':'no_count']=(debateData[vote==='yes'?'yes_count':'no_count']||0)+1;
+  const dayIdx=Math.floor(Date.now()/86400000)%DAILY_DEBATES.length;
+  const votesKey='overton_debate_votes_'+dayIdx;
+  const votes=JSON.parse(localStorage.getItem(votesKey)||'{"yes":0,"no":0}');
+  votes[vote]=(votes[vote]||0)+1;
+  localStorage.setItem(votesKey,JSON.stringify(votes));
+  debateData.yes_count=votes.yes;
+  debateData.no_count=votes.no;
   showDebateResults(debateData,vote);
   showToast('¡Voto registrado!');
+  // Enviar a Supabase en background (no bloquea la UI)
+  db.rpc('vote_debate',{p_id:0,p_vote:vote}).catch(()=>{});
 }
 async function loadDebateAdmin(){
   const {data}=await db.from('debate').select('*').order('created_at',{ascending:false}).limit(5);
@@ -3802,10 +3866,7 @@ async function postComment(){
   btn.disabled=true; btn.textContent='Publicando…';
   const sid=getForumSession();
 
-  // Intento 1: insert completo con todos los campos
   let result=await db.from('forum_posts').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
-
-  // Si falla (columnas no existen), intento 2: solo name y body
   if(result.error){
     console.warn('Insert full failed:',result.error.message,'. Trying minimal insert…');
     result=await db.from('forum_posts').insert([{name,body}]);
@@ -3815,7 +3876,6 @@ async function postComment(){
 
   if(result.error){
     console.error('Post comment error:',result.error);
-    // Mostrar error visible en el foro además del toast
     const list=document.getElementById('commentsList');
     const errDiv=document.createElement('div');
     errDiv.style.cssText='background:rgba(214,64,64,.1);border:1px solid rgba(214,64,64,.3);border-radius:8px;padding:14px;margin-bottom:12px;color:#d64040;font-size:.82rem';
@@ -3824,6 +3884,7 @@ async function postComment(){
     showToast('Error al publicar','error');
     return;
   }
+  localStorage.setItem('overton_forum_name', name);
   document.getElementById('comBody').value='';
   showToast('¡Publicado! ✓');
   loadComments(true);
@@ -4021,6 +4082,12 @@ async function loadFooterStats(){
   loadDebate();
   loadSponsors();
   loadFooterStats();
+  // Pre-rellenar nombre del foro desde localStorage
+  const savedName=localStorage.getItem('overton_forum_name');
+  if(savedName){
+    const el=document.getElementById('comName');
+    if(el) el.value=savedName;
+  }
 })();
 
 </script>
