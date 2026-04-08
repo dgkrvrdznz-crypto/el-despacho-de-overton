@@ -4066,19 +4066,19 @@ async function postComment(){
 
   // ── GUARDAR EN SUPABASE ────────────────────────────────────────
   const sid=getForumSession();
-  // Intento 1: con todos los campos del esquema nuevo
-  let result=await db.from('forum_posts').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
+  // Intento 1: schema completo + .select() para obtener el post guardado con su ID real
+  let result=await db.from('forum_posts')
+    .insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}])
+    .select();
   // Intento 2 (fallback): solo campos básicos que siempre existen
   if(result.error){
     console.warn('Insert completo falló:',result.error.message,'. Intentando insert básico…');
-    result=await db.from('forum_posts').insert([{name,body}]);
+    result=await db.from('forum_posts').insert([{name,body}]).select();
   }
 
-  // Eliminar el elemento optimista en ambos casos
   const tempEl=document.getElementById('thread-'+tempId);
 
   if(result.error){
-    // Guardar también en caché local aunque Supabase falle
     console.error('Post comment error:',result.error.message);
     if(tempEl){
       tempEl.style.opacity='1';
@@ -4086,18 +4086,59 @@ async function postComment(){
       tempEl.style.background='rgba(214,64,64,.04)';
       tempEl.style.borderColor='rgba(214,64,64,.35)';
       tempEl.innerHTML+=`<div style="padding:0 16px 12px;font-size:.78rem;color:#d64040">
-        ⚠️ No se pudo guardar en el servidor: <strong>${esc(result.error.message)}</strong><br>
-        <small style="opacity:.7">Solo visible para ti mientras estés en esta página</small>
+        ⚠️ No se pudo guardar: <strong>${esc(result.error.message)}</strong><br>
+        <small style="opacity:.7">Solo visible para ti en esta sesión</small>
       </div>`;
     }
-    showToast('Error al publicar — mensaje solo local','error');
+    showToast('Error al publicar','error');
     return;
   }
 
-  // Éxito: quitar el optimista y recargar datos reales de Supabase
-  if(tempEl) tempEl.remove();
+  // ── ÉXITO: confirmar el post en el DOM sin recargar la lista ───
+  // NUNCA llamar loadComments(true) aquí — eso causaría que el post
+  // desaparezca mientras se espera la respuesta de la base de datos.
+  const realPost=(result.data&&result.data[0])||null;
+
+  if(tempEl){
+    // Hacer sólido: ya no es un envío pendiente
+    tempEl.style.opacity='1';
+    tempEl.style.borderStyle='';
+    if(realPost){
+      // Actualizar al ID real de la DB
+      tempEl.id='thread-'+realPost.id;
+      // Actualizar tiempo con el timestamp real del servidor
+      const timeEl=tempEl.querySelector('.fp-time');
+      if(timeEl) timeEl.textContent=timeAgo(realPost.created_at);
+      // Añadir botones de acción ahora que tenemos el ID real
+      const actionsEl=document.createElement('div');
+      actionsEl.className='fp-actions';
+      actionsEl.innerHTML=`
+        <button class="fp-vote" id="tv-${realPost.id}" onclick="voteComment(${realPost.id},this)">▲ <span class="fp-vote-n">0</span></button>
+        <button class="fp-reply-btn" onclick="showReplyForm(${realPost.id},'${esc(name)}')">💬 Responder</button>
+        <button class="fp-del-btn" onclick="deleteComment(${realPost.id})">Eliminar</button>`;
+      const inner=tempEl.querySelector('.fp-inner');
+      if(inner) inner.appendChild(actionsEl);
+    }
+  }
+
+  // Actualizar caché local con el post confirmado
+  const postToCache=realPost||{id:tempId,name,body,channel:activeChannel,created_at:new Date().toISOString(),votes:0};
+  const cached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
+  // Evitar duplicados: eliminar si ya existía con este ID
+  const deduped=cached.filter(m=>m.id!==postToCache.id&&m.id!==tempId);
+  deduped.unshift({...postToCache,_cached:true});
+  localStorage.setItem(FORUM_CACHE_KEY,JSON.stringify(deduped.slice(0,100)));
+
+  // Actualizar contadores sin recargar
+  forumTotal=(forumTotal||0)+1;
+  const cnt=document.getElementById('comCount');
+  if(cnt) cnt.textContent=`${forumTotal} mensaje${forumTotal!==1?'s':''}`;
+  const badge=document.getElementById('fbadge-'+activeChannel);
+  if(badge) badge.textContent=forumTotal;
+
   showToast('¡Publicado! ✓');
-  loadComments(true);
+  // No se llama loadComments — el mensaje ya está visible en el DOM,
+  // confirmado en Supabase y guardado en caché. No hay nada que recargar.
 }
 
 function updateCharCount(){
