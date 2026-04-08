@@ -1785,11 +1785,11 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
         <div class="forum-composer-av" id="composerAv">?</div>
         <div class="forum-composer-fields">
           <input class="forum-composer-name" id="comName" type="text" placeholder="Tu nombre o apodo…" maxlength="60" oninput="updateComposerAv()"/>
-          <textarea class="forum-composer-body" id="comBody" placeholder="¿Qué opinas sobre derecho europeo? Escribe aquí…" maxlength="1200" rows="3"></textarea>
+          <textarea class="forum-composer-body" id="comBody" placeholder="¿Qué opinas sobre derecho europeo? Escribe aquí…" maxlength="600" rows="3" oninput="updateCharCount()"></textarea>
         </div>
       </div>
       <div class="forum-composer-footer">
-        <span class="forum-anon-tag">🔒 Sin registro ni contraseña</span>
+        <span class="forum-anon-tag">🔒 Sin registro ni contraseña &nbsp;<span id="comCharCount" style="font-size:.72rem;color:var(--faint)"></span></span>
         <button class="btn-gold" onclick="postComment()" id="comBtn" style="font-size:.82rem;padding:9px 24px">Publicar →</button>
       </div>
     </div>
@@ -1800,6 +1800,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <div class="forum-sort">
         <button class="forum-sort-btn on" id="fsort-recent" onclick="setForumSort('recent')">🕐 Reciente</button>
         <button class="forum-sort-btn"    id="fsort-top"    onclick="setForumSort('top')">🔥 Top</button>
+        <button class="forum-sort-btn" id="btnClearForum" onclick="clearForumMessages()" style="display:none;color:#d64040;border-color:rgba(214,64,64,.3)">🗑 Limpiar foro</button>
       </div>
     </div>
 
@@ -2752,6 +2753,8 @@ async function doLogin(){
 function enterAdmin(name='Administrador', isEditor=false){
   loggedIn=true;
   document.getElementById('adminDot').classList.remove('hide');
+  const clearBtn=document.getElementById('btnClearForum');
+  if(clearBtn) clearBtn.style.display='';
   // Show/hide editors tab for non-admins
   document.querySelectorAll('.adm-tab').forEach(t=>{
     if(t.textContent.includes('Editores')) t.style.display = isEditor ? 'none' : '';
@@ -2764,6 +2767,8 @@ async function adminLogout(){
   await db.auth.signOut();
   loggedIn=false;
   document.getElementById('adminDot').classList.add('hide');
+  const clearBtn=document.getElementById('btnClearForum');
+  if(clearBtn) clearBtn.style.display='none';
   goView('home');
 }
 
@@ -3785,6 +3790,8 @@ function getForumSession(){
 function getVotedKey(id){ return 'overton_vote_'+id; }
 
 let forumSort='recent';
+const FORUM_CACHE_KEY='overton_forum_cache';
+const FORUM_MAX_LEN=600;
 function setForumSort(s){
   forumSort=s;
   document.getElementById('fsort-recent').classList.toggle('on',s==='recent');
@@ -3824,41 +3831,66 @@ function updateComposerAv(){
 async function loadComments(reset=false){
   if(reset) forumOffset=0;
   const list=document.getElementById('commentsList');
-  if(reset && list) list.innerHTML='<div class="forum-empty"><div class="forum-empty-icon">⏳</div><div class="forum-empty-title">Cargando…</div></div>';
 
-  const sortCol=forumSort==='top'?'votes':'created_at';
-  // Intento 1: query completa con channel y reply_to
-  let result = await db.from('forum_posts')
-    .select('*',{count:'exact'})
-    .eq('channel',activeChannel)
-    .is('reply_to',null)
-    .order(sortCol,{ascending:false})
-    .range(forumOffset, forumOffset+FORUM_PAGE-1);
-
-  // Si falla (columnas no existen), intento 2: solo ordenar por fecha
-  if(result.error){
-    console.warn('Forum query full failed:',result.error.message,'. Trying simple query…');
-    result = await db.from('forum_posts')
-      .select('*',{count:'exact'})
-      .order('created_at',{ascending:false})
-      .range(forumOffset, forumOffset+FORUM_PAGE-1);
+  // 1. Mostrar caché local instantáneamente si existe
+  if(reset){
+    const cached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
+    const forChannel=cached.filter(m=>!m.channel||m.channel===activeChannel);
+    if(forChannel.length){
+      renderComments(forChannel,[],true);
+    } else {
+      if(list) list.innerHTML='<div class="forum-empty"><div class="forum-empty-icon">⏳</div><div class="forum-empty-title">Cargando…</div></div>';
+    }
   }
 
+  const sortCol=forumSort==='top'?'votes':'created_at';
+
+  // 2. Query principal: acepta channel='general' O channel IS NULL (posts sin canal asignado)
+  let result=await db.from('forum_posts')
+    .select('*',{count:'exact'})
+    .or(`channel.eq.${activeChannel},channel.is.null`)
+    .is('reply_to',null)
+    .order(sortCol,{ascending:false})
+    .range(forumOffset,forumOffset+FORUM_PAGE-1);
+
+  // 3. Si falla (columnas no existen), query mínima sin filtros
   if(result.error){
-    console.error('Forum load error:',result.error);
-    if(list) list.innerHTML=`<div class="com-empty" style="color:#d64040;line-height:1.7">
-      ⚠️ <strong>Error de base de datos</strong><br>
-      <small>${result.error.message}</small><br>
-      <small style="opacity:.7">Ejecuta el SQL de setup en Supabase (ver consola)</small>
-    </div>`;
-    console.error('SQL SETUP NECESARIO:\nALTER TABLE comments ADD COLUMN IF NOT EXISTS reply_to bigint REFERENCES comments(id) ON DELETE CASCADE, ADD COLUMN IF NOT EXISTS channel text DEFAULT \'general\', ADD COLUMN IF NOT EXISTS session_id text, ADD COLUMN IF NOT EXISTS votes int DEFAULT 0;\nCREATE OR REPLACE FUNCTION increment_forum_votes(p_id bigint) RETURNS void LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN UPDATE comments SET votes=votes+1 WHERE id=p_id; END; $$;\nDROP POLICY IF EXISTS "anon_select_comments" ON comments; CREATE POLICY "anon_select_comments" ON comments FOR SELECT TO anon USING (true);\nDROP POLICY IF EXISTS "anon_insert_comments" ON comments; CREATE POLICY "anon_insert_comments" ON comments FOR INSERT TO anon WITH CHECK (true);\nDROP POLICY IF EXISTS "anon_delete_own" ON comments; CREATE POLICY "anon_delete_own" ON comments FOR DELETE TO anon USING (true);');
+    console.warn('Forum query failed:',result.error.message,'. Usando query mínima…');
+    result=await db.from('forum_posts')
+      .select('*',{count:'exact'})
+      .order('created_at',{ascending:false})
+      .range(forumOffset,forumOffset+FORUM_PAGE-1);
+  }
+
+  // 4. Si sigue fallando, mostrar caché o error
+  if(result.error){
+    console.error('Forum load error:',result.error.message);
+    const cached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
+    const forChannel=cached.filter(m=>!m.channel||m.channel===activeChannel);
+    if(forChannel.length && reset){
+      renderComments(forChannel,[],true);
+    } else if(list && reset){
+      list.innerHTML=`<div class="forum-empty">
+        <div class="forum-empty-icon">⚠️</div>
+        <div class="forum-empty-title">Error al cargar mensajes</div>
+        <div class="forum-empty-sub" style="color:#d64040">${result.error.message}</div>
+      </div>`;
+    }
     return;
   }
 
-  forumTotal = result.count||0;
-  const parents = result.data||[];
+  forumTotal=result.count||0;
+  const parents=result.data||[];
 
-  // Cargar respuestas solo si la columna reply_to existe
+  // 5. Actualizar caché local con datos frescos de Supabase
+  if(reset){
+    const allCached=JSON.parse(localStorage.getItem(FORUM_CACHE_KEY)||'[]');
+    const otherChannels=allCached.filter(m=>m.channel&&m.channel!==activeChannel&&!m._pending);
+    const fresh=parents.map(m=>({...m,_cached:true}));
+    localStorage.setItem(FORUM_CACHE_KEY,JSON.stringify([...fresh,...otherChannels].slice(0,100)));
+  }
+
+  // 6. Cargar respuestas
   let replies=[];
   if(parents.length){
     const ids=parents.map(p=>p.id);
@@ -3959,16 +3991,22 @@ function renderComments(parents,replies,reset=true){
 
 async function loadMoreComments(){
   forumOffset+=FORUM_PAGE;
-  const sid=getForumSession();
-  const {data,error,count}=await db.from('forum_posts')
+  const sortCol=forumSort==='top'?'votes':'created_at';
+  let result=await db.from('forum_posts')
     .select('*',{count:'exact'})
-    .eq('channel',activeChannel)
+    .or(`channel.eq.${activeChannel},channel.is.null`)
     .is('reply_to',null)
-    .order('created_at',{ascending:false})
+    .order(sortCol,{ascending:false})
     .range(forumOffset,forumOffset+FORUM_PAGE-1);
-  if(error){showToast('Error cargando más','error');return;}
-  forumTotal=count||0;
-  const parents=data||[];
+  if(result.error){
+    result=await db.from('forum_posts')
+      .select('*',{count:'exact'})
+      .order('created_at',{ascending:false})
+      .range(forumOffset,forumOffset+FORUM_PAGE-1);
+  }
+  if(result.error){showToast('Error cargando más mensajes','error');return;}
+  forumTotal=result.count||0;
+  const parents=result.data||[];
   let replies=[];
   if(parents.length){
     const ids=parents.map(p=>p.id);
@@ -3981,33 +4019,107 @@ async function loadMoreComments(){
 async function postComment(){
   const name=document.getElementById('comName').value.trim();
   const body=document.getElementById('comBody').value.trim();
-  if(!name){showToast('Escribe tu nombre o apodo','error');return;}
-  if(!body||body.length<3){showToast('El mensaje es demasiado corto','error');return;}
+
+  // Validaciones separadas y claras
+  if(!name){showToast('Escribe tu nombre o apodo','error');document.getElementById('comName').focus();return;}
+  if(!body||body.length<3){showToast('El mensaje es demasiado corto (mín. 3 caracteres)','error');return;}
+  if(body.length>FORUM_MAX_LEN){showToast(`Mensaje demasiado largo (máx. ${FORUM_MAX_LEN} caracteres)`,'error');return;}
+
+  // Guardar nombre en localStorage inmediatamente
+  localStorage.setItem('overton_forum_name',name);
+
   const btn=document.getElementById('comBtn');
   btn.disabled=true; btn.textContent='Publicando…';
-  const sid=getForumSession();
 
+  // ── OPTIMISTIC UPDATE ──────────────────────────────────────────
+  // Mostrar el mensaje al instante antes de confirmar Supabase
+  const tempId='temp_'+Date.now();
+  const list=document.getElementById('commentsList');
+  if(list){
+    // Eliminar estado vacío si existe
+    const emptyEl=list.querySelector('.forum-empty');
+    if(emptyEl) emptyEl.remove();
+    const color=getAvatarColor(name);
+    const tempEl=document.createElement('div');
+    tempEl.id='thread-'+tempId;
+    tempEl.className='forum-post';
+    tempEl.style.cssText='opacity:.65;border-style:dashed';
+    tempEl.innerHTML=`<div class="fp-inner">
+      <div class="fp-header">
+        <div class="fp-av" style="background:${color}">${name[0].toUpperCase()}</div>
+        <div class="fp-meta">
+          <div class="fp-name">${esc(name)}</div>
+          <div class="fp-info"><span class="fp-time">Enviando…</span></div>
+        </div>
+      </div>
+      <div class="fp-body">${esc(body)}</div>
+    </div>`;
+    list.prepend(tempEl);
+    // Scroll al inicio para ver el mensaje
+    list.scrollTop=0;
+  }
+
+  // Limpiar textarea y restaurar botón YA (no esperar a Supabase)
+  document.getElementById('comBody').value='';
+  updateCharCount();
+  btn.disabled=false; btn.textContent='Publicar';
+
+  // ── GUARDAR EN SUPABASE ────────────────────────────────────────
+  const sid=getForumSession();
+  // Intento 1: con todos los campos del esquema nuevo
   let result=await db.from('forum_posts').insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}]);
+  // Intento 2 (fallback): solo campos básicos que siempre existen
   if(result.error){
-    console.warn('Insert full failed:',result.error.message,'. Trying minimal insert…');
+    console.warn('Insert completo falló:',result.error.message,'. Intentando insert básico…');
     result=await db.from('forum_posts').insert([{name,body}]);
   }
 
-  btn.disabled=false; btn.textContent='Publicar';
+  // Eliminar el elemento optimista en ambos casos
+  const tempEl=document.getElementById('thread-'+tempId);
 
   if(result.error){
-    console.error('Post comment error:',result.error);
-    const list=document.getElementById('commentsList');
-    const errDiv=document.createElement('div');
-    errDiv.style.cssText='background:rgba(214,64,64,.1);border:1px solid rgba(214,64,64,.3);border-radius:8px;padding:14px;margin-bottom:12px;color:#d64040;font-size:.82rem';
-    errDiv.innerHTML='⚠️ Error al publicar: <strong>'+result.error.message+'</strong>';
-    if(list) list.prepend(errDiv);
-    showToast('Error al publicar','error');
+    // Guardar también en caché local aunque Supabase falle
+    console.error('Post comment error:',result.error.message);
+    if(tempEl){
+      tempEl.style.opacity='1';
+      tempEl.style.borderStyle='solid';
+      tempEl.style.background='rgba(214,64,64,.04)';
+      tempEl.style.borderColor='rgba(214,64,64,.35)';
+      tempEl.innerHTML+=`<div style="padding:0 16px 12px;font-size:.78rem;color:#d64040">
+        ⚠️ No se pudo guardar en el servidor: <strong>${esc(result.error.message)}</strong><br>
+        <small style="opacity:.7">Solo visible para ti mientras estés en esta página</small>
+      </div>`;
+    }
+    showToast('Error al publicar — mensaje solo local','error');
     return;
   }
-  localStorage.setItem('overton_forum_name', name);
-  document.getElementById('comBody').value='';
+
+  // Éxito: quitar el optimista y recargar datos reales de Supabase
+  if(tempEl) tempEl.remove();
   showToast('¡Publicado! ✓');
+  loadComments(true);
+}
+
+function updateCharCount(){
+  const ta=document.getElementById('comBody');
+  const counter=document.getElementById('comCharCount');
+  if(!ta||!counter) return;
+  const len=ta.value.length;
+  const remaining=FORUM_MAX_LEN-len;
+  if(remaining<=60){
+    counter.textContent=remaining+' restantes';
+    counter.style.color=remaining<=20?'#d64040':'#f59e0b';
+  } else {
+    counter.textContent='';
+  }
+}
+
+async function clearForumMessages(){
+  if(!confirm('¿Borrar TODOS los mensajes del foro?\n\nEsta acción no se puede deshacer.')) return;
+  const {error}=await db.from('forum_posts').delete().neq('id',0);
+  if(error){showToast('Error al limpiar: '+error.message,'error');return;}
+  localStorage.removeItem(FORUM_CACHE_KEY);
+  showToast('Foro limpiado correctamente');
   loadComments(true);
 }
 
