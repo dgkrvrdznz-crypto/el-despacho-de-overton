@@ -2,26 +2,28 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Página no encontrada — El Despacho de Overton</title>
-<meta name="description" content="La página que buscas no existe. Vuelve al análisis de derecho europeo en El Despacho de Overton."/>
-<meta name="robots" content="noindex,follow"/>
-<style>
-body{margin:0;font-family:'Outfit',system-ui,sans-serif;background:#F0F5FB;color:#0A1828;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}
-.wrap{max-width:480px;padding:40px 24px}
-.code{font-size:5rem;font-weight:700;color:#1A4F8C;line-height:1;margin-bottom:16px}
-h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8rem;margin-bottom:12px}
-p{color:#4A6280;margin-bottom:28px;line-height:1.6}
-a{display:inline-block;background:#1A4F8C;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600}
-a:hover{background:#2D6DB5}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>El Despacho de Overton</title>
+<meta name="robots" content="noindex"/>
+<script>
+// GitHub Pages SPA routing trick
+// Convierte /sentencias/ en /?_v=sentencias y luego index.html restaura la URL
+(function(){
+  var path = location.pathname;
+  var views = ['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about','debate-del-dia'];
+  var view = path.replace(/^\/|\/$/g,'');
+  if(views.indexOf(view) !== -1){
+    sessionStorage.setItem('__overton_view__', view === 'debate-del-dia' ? 'home' : view);
+  }
+  // Redirigir al index preservando query y hash
+  var redirect = location.protocol + '//' + location.host + '/' +
+    (location.search ? location.search + '&' : '?') + '_404=1' +
+    (location.hash ? location.hash : '');
+  location.replace(redirect);
+})();
+</script>
 </head>
 <body>
-<div class="wrap">
-  <div class="code">404</div>
-  <h1>Esta página no existe</h1>
-  <p>Puede que la URL haya cambiado o que hayas llegado aquí por error. Vuelve al inicio para explorar el análisis de derecho europeo.</p>
-  <a href="/">← Volver al inicio</a>
-</div>
+<p>Redirigiendo...</p>
 </body>
 </html>

@@ -2393,6 +2393,10 @@ const SUPA_URL = 'https://dlqnrlenosemcsfyhltc.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRscW5ybGVub3NlbWNzZnlobHRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTY2NjMsImV4cCI6MjA5MDM5MjY2M30.5cUzJCjokZb6vqxuP2A_CGIFnIwNGf318ffera3Qv1g';
 const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
+/* ── ROUTING STATE ── */
+let _routerPush = true; // false cuando goView viene de popstate o init (usa replaceState)
+const VALID_VIEWS = ['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about'];
+
 /* ── STATE ── */
 let loggedIn     = false;
 let activeTab    = 'all';
@@ -2511,7 +2515,12 @@ function goView(name){
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   renderGrid();
   window.scrollTo({top:0,behavior:'smooth'});
-  // ── SEO: actualizar URL hash + meta tags dinámicos ──
+  // ── ROUTING: URL real (sin hash) ──
+  const newPath = name==='home' ? '/' : '/'+name+'/';
+  if(location.pathname !== newPath){
+    if(_routerPush) history.pushState({view:name},'',newPath);
+    else            history.replaceState({view:name},'',newPath);
+  }
   updateSEOMeta(name);
 }
 
@@ -2529,32 +2538,25 @@ const SEO_META={
 
 function updateSEOMeta(name){
   const base='https://eldespachodeoverton.es';
-  const hash=name==='home'?'':('#'+name);
-  const url=base+'/'+hash;
+  const path=name==='home'?'/':('/'+name+'/');
+  const url=base+path;
   const meta=SEO_META[name]||SEO_META.home;
-  // Update document title
   document.title=meta.title;
-  // Update meta description
   const descEl=document.querySelector('meta[name="description"]');
   if(descEl) descEl.setAttribute('content',meta.desc);
-  // Update OG tags
   const ogTitle=document.getElementById('ogTitle');
   const ogDesc=document.getElementById('ogDesc');
   const ogUrl=document.getElementById('ogUrl');
   if(ogTitle) ogTitle.setAttribute('content',meta.title);
-  if(ogDesc) ogDesc.setAttribute('content',meta.desc);
-  if(ogUrl) ogUrl.setAttribute('content',url);
-  // Update canonical
+  if(ogDesc)  ogDesc.setAttribute('content',meta.desc);
+  if(ogUrl)   ogUrl.setAttribute('content',url);
   let canonical=document.querySelector('link[rel="canonical"]');
   if(canonical) canonical.setAttribute('href',url);
-  // Update Twitter tags
   const twTitle=document.getElementById('twTitle');
   const twDesc=document.getElementById('twDesc');
   if(twTitle) twTitle.setAttribute('content',meta.title);
-  if(twDesc) twDesc.setAttribute('content',meta.desc);
-  // Update URL hash (no recarga)
-  if(name!=='home') history.replaceState(null,'',hash);
-  else history.replaceState(null,'','/');
+  if(twDesc)  twDesc.setAttribute('content',meta.desc);
+  // Historia ya gestionada en goView() — no llamar replaceState/pushState aquí
 }
 
 function scrollToGrid(){
@@ -4872,11 +4874,33 @@ async function loadFooterStats(){
     if(el){ el.value=savedName; updateComposerAv(); }
   }
 
-  // ③b Hash routing: si la URL tiene #seccion, navegar directo a ella
-  const hashView=(location.hash||'').replace('#','');
-  if(hashView&&['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about'].includes(hashView)){
-    goView(hashView);
-  }
+  // ③b Routing por URL real — prioridad: sessionStorage > pathname > hash legado
+  (function initRouting(){
+    _routerPush = false; // init siempre usa replaceState
+    // 1. Sub-páginas estáticas setean sessionStorage antes de cargar /
+    const ssView = sessionStorage.getItem('__overton_view__');
+    if(ssView && VALID_VIEWS.includes(ssView)){
+      sessionStorage.removeItem('__overton_view__');
+      goView(ssView);
+      _routerPush = true;
+      return;
+    }
+    // 2. URL path real: /sentencias/, /glosario/, etc.
+    const pathView = location.pathname.replace(/^\/|\/$/g,'');
+    if(VALID_VIEWS.includes(pathView)){
+      goView(pathView);
+      _routerPush = true;
+      return;
+    }
+    // 3. Hash legado (/#sentencias) → redirigir a URL limpia
+    const hashView = (location.hash||'').replace('#','');
+    if(VALID_VIEWS.includes(hashView)){
+      goView(hashView);
+      _routerPush = true;
+      return;
+    }
+    _routerPush = true;
+  })();
 
   // ④ Red — en paralelo, con try/catch para que uno no bloquee al otro
   await Promise.allSettled([
@@ -4887,6 +4911,24 @@ async function loadFooterStats(){
   ]);
   renderGrid();
 })();
+
+/* ── POPSTATE — botón atrás/adelante del navegador ── */
+window.addEventListener('popstate', function(e){
+  const view = (e.state && e.state.view) ||
+               location.pathname.replace(/^\/|\/$/g,'') ||
+               'home';
+  _routerPush = false; // popstate nunca hace pushState
+  goView(VALID_VIEWS.includes(view) ? view : 'home');
+  _routerPush = true;
+});
+
+/* ── LEGACY HASH REDIRECT — convierte /#sentencias en /sentencias/ ── */
+if(location.hash && location.hash.length > 1){
+  const h = location.hash.replace('#','');
+  if(VALID_VIEWS.includes(h)){
+    history.replaceState({view:h},'','/'+h+'/');
+  }
+}
 
 </script>
 </body>
