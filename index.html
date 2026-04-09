@@ -710,6 +710,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .com-debate-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .com-debate-res .debate-bar-wrap{background:rgba(255,255,255,.1);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;max-width:400px;margin-left:auto;margin-right:auto}
 .com-debate-res .debate-stats{display:flex;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.6);max-width:400px;margin:0 auto}
+.com-debate-res .debate-voted-msg{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:8px}
 /* Comunidad inline newsletter */
 .com-nl-inline{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-bottom:28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .com-nl-icon{font-size:2rem;flex-shrink:0}
@@ -755,6 +756,26 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .forum-composer-body:focus{border-color:var(--blue-mid)}
 .forum-composer-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .forum-anon-tag{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--faint)}
+
+/* Forum widgets */
+.forum-widgets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:600px){.forum-widgets{grid-template-columns:1fr}}
+.fw-top-post{background:linear-gradient(135deg,rgba(201,162,39,.08),rgba(201,162,39,.03));border:1px solid rgba(201,162,39,.25);border-radius:12px;padding:16px 18px}
+.fw-top-post-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.fw-top-post-body{font-size:.86rem;color:var(--text);line-height:1.55;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.fw-top-post-meta{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.fw-leaderboard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.fw-lb-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.fw-lb-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.fw-lb-row:last-child{border-bottom:none}
+.fw-lb-rank{width:18px;font-size:.68rem;font-weight:700;color:var(--faint);flex-shrink:0}
+.fw-lb-rank.gold{color:#f59e0b}
+.fw-lb-rank.silver{color:#94a3b8}
+.fw-lb-rank.bronze{color:#b45309}
+.fw-lb-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0}
+.fw-lb-name{flex:1;font-size:.82rem;font-weight:600;color:var(--text);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fw-lb-pts{font-size:.72rem;font-weight:700;color:var(--blue);flex-shrink:0}
+[data-theme=dark] .fw-lb-pts{color:#7AB8E8}
 
 /* Post cards */
 .forum-list{display:flex;flex-direction:column;gap:10px}
@@ -1774,6 +1795,30 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Dos canales para debatir sobre derecho europeo. Sin registro, solo tu nombre.</p>
     </div>
 
+    <!-- ── DEBATE INLINE ── -->
+    <div class="com-debate-inline" id="comDebateInline">
+      <div class="com-debate-pill">🗳️ Debate del día</div>
+      <div class="com-debate-q" id="comDebateQ">Cargando debate…</div>
+      <div class="com-debate-btns" id="comDebateBtns">
+        <button class="debate-vote-btn yes" onclick="voteDebateProxy('yes')">✓ Sí</button>
+        <button class="debate-vote-btn no"  onclick="voteDebateProxy('no')">✗ No</button>
+      </div>
+      <div class="com-debate-res" id="comDebateRes" style="display:none">
+        <div class="debate-bar-wrap"><div class="debate-bar-yes" id="comDebateBar" style="width:50%"></div></div>
+        <div class="debate-stats">
+          <span id="comDebateYesPct">50% Sí</span>
+          <span id="comDebateNoPct">50% No</span>
+        </div>
+        <div class="debate-voted-msg" id="comDebateVotedMsg"></div>
+      </div>
+    </div>
+
+    <!-- ── LEADERBOARD + TOP POST ── -->
+    <div class="forum-widgets" id="forumWidgets" style="display:none">
+      <div class="fw-top-post" id="fwTopPost"></div>
+      <div class="fw-leaderboard" id="fwLeaderboard"></div>
+    </div>
+
     <!-- ── FORO ── -->
     <div class="com-section-title">💬 Foro de la comunidad</div>
 
@@ -1844,9 +1889,9 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   <div class="debate-in">
     <div class="debate-pill">🗳️ Debate de la semana</div>
     <div class="debate-q" id="debateQuestion">Cargando debate…</div>
-    <div class="debate-btns">
-      <button class="debate-vote-btn yes" id="debateYes" onclick="voteDebate('yes')">Sí</button>
-      <button class="debate-vote-btn no"  id="debateNo"  onclick="voteDebate('no')">No</button>
+    <div class="debate-btns" id="debateBtns">
+      <button class="debate-vote-btn yes" id="debateYes" onclick="voteDebate('yes')">✓ Sí</button>
+      <button class="debate-vote-btn no"  id="debateNo"  onclick="voteDebate('no')">✗ No</button>
     </div>
     <div class="debate-results" id="debateResults">
       <div class="debate-bar-wrap"><div class="debate-bar-yes" id="debateBar" style="width:50%"></div></div>
@@ -2237,6 +2282,7 @@ function goView(name){
     renderGlossary();
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
+    syncDebateInline();
     loadComments(true);
     subscribeRealtime();
   }
@@ -2536,7 +2582,21 @@ const DAILY_DEBATES=[
   "¿Tiene el lobby corporativo demasiada influencia en la legislación europea?",
   "¿Debería la UE negociar en exclusiva todos los tratados comerciales internacionales?",
   "¿Es efectiva la política de competencia de la UE frente a los monopolios digitales?",
-  "¿Debería la UE exigir etiquetado obligatorio de huella de carbono en todos los productos?"
+  "¿Debería la UE exigir etiquetado obligatorio de huella de carbono en todos los productos?",
+  "¿Debería la UE prohibir los acuerdos de no competencia para trabajadores con salarios bajos?",
+  "¿Tiene sentido que la UE subvencione a empresas que deslocalizan empleos fuera de Europa?",
+  "¿Debería la IA estar obligada a revelar que es una IA en cada interacción con humanos?",
+  "¿Crees que el RGPD ha mejorado realmente la privacidad de los ciudadanos europeos?",
+  "¿Debería la UE imponer aranceles más altos a productos fabricados con mano de obra explotada?",
+  "¿Tiene la Comisión Europea demasiado poder sobre los estados miembros?",
+  "¿Debería el español tener el mismo estatus que el inglés y el francés en las instituciones de la UE?",
+  "¿Crees que la UE debería tener competencia exclusiva en materia de defensa?",
+  "¿Debería la UE regular los precios de los medicamentos para garantizar el acceso universal?",
+  "¿Está la UE haciendo suficiente para proteger a los periodistas de la represión gubernamental?",
+  "¿Debería haber una lista negra europea de paraísos fiscales vinculante para los estados miembros?",
+  "¿Crees que el voto electrónico debería ser legal en las elecciones europeas?",
+  "¿Debería la UE obligar a las plataformas digitales a pagar a los medios por usar sus contenidos?",
+  "¿Tiene la UE suficiente autonomía industrial para no depender de China ni de EE.UU.?"
 ];
 
 let debateData=null;
@@ -2550,6 +2610,8 @@ function loadDebate(){
   document.getElementById('debateQuestion').textContent=question;
   const voted=localStorage.getItem(key);
   if(voted) showDebateResults(debateData,voted);
+  // Sync inline block (will run again after DOM is ready)
+  setTimeout(syncDebateInline,0);
 }
 function showDebateResults(d,voted){
   const total=(d.yes_count||0)+(d.no_count||0)||1;
@@ -2576,7 +2638,8 @@ function voteDebate(vote){
   debateData.yes_count=votes.yes;
   debateData.no_count=votes.no;
   showDebateResults(debateData,vote);
-  showToast('¡Voto registrado!');
+  syncDebateInlineResults(debateData,vote);
+  showToast('¡Voto registrado! 🗳️');
   // Enviar a Supabase en background (no bloquea la UI)
   db.rpc('vote_debate',{p_id:0,p_vote:vote}).catch(()=>{});
 }
@@ -3897,6 +3960,53 @@ function handleRealtimeEvent(payload){
   }
 }
 
+/* ── ENGAGEMENT WIDGETS ─────────────────────────────────────────────────── */
+function renderForumWidgets(){
+  const all=getLocalPosts().filter(m=>!m.reply_to&&!m._pending&&!m._error);
+  if(!all.length) return;
+
+  // 🔥 TOP POST
+  const sorted=[...all].sort((a,b)=>(b.votes||0)-(a.votes||0));
+  const top=sorted[0];
+  const topWrap=document.getElementById('fwTopPost');
+  if(topWrap&&top&&(top.votes||0)>0){
+    topWrap.innerHTML=`
+      <div class="fw-top-post-label">🔥 Mensaje más votado</div>
+      <div class="fw-top-post-body">${esc(top.body||'')}</div>
+      <div class="fw-top-post-meta">
+        <span style="width:22px;height:22px;border-radius:50%;background:${getAvatarColor(top.name||'?')};display:inline-flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff">${(top.name||'?')[0].toUpperCase()}</span>
+        <span>${esc(top.name||'Anónimo')}</span>
+        <span>▲ ${top.votes||0} votos</span>
+      </div>`;
+  } else if(topWrap){
+    topWrap.innerHTML='<div class="fw-top-post-label">🔥 Sé el primero en destacar</div><div style="font-size:.82rem;color:var(--muted)">Publica y recibe upvotes para aparecer aquí</div>';
+  }
+
+  // 🏆 LEADERBOARD
+  const scoreMap={};
+  all.forEach(p=>{
+    const n=p.name||'Anónimo';
+    scoreMap[n]=(scoreMap[n]||0)+(p.votes||0)+1; // +1 por participar
+  });
+  const leaders=Object.entries(scoreMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const lbWrap=document.getElementById('fwLeaderboard');
+  if(lbWrap&&leaders.length){
+    const rankClass=['gold','silver','bronze','',''];
+    const medals=['🥇','🥈','🥉','4','5'];
+    lbWrap.innerHTML=`<div class="fw-lb-label">🏆 Top participantes</div>`+
+      leaders.map(([name,pts],i)=>`
+        <div class="fw-lb-row">
+          <div class="fw-lb-rank ${rankClass[i]}">${medals[i]}</div>
+          <div class="fw-lb-av" style="background:${getAvatarColor(name)}">${name[0].toUpperCase()}</div>
+          <div class="fw-lb-name">${esc(name)}</div>
+          <div class="fw-lb-pts">▲${pts}</div>
+        </div>`).join('');
+  }
+
+  const wrap=document.getElementById('forumWidgets');
+  if(wrap) wrap.style.display='grid';
+}
+
 function setForumSort(s){
   forumSort=s;
   document.getElementById('fsort-recent').classList.toggle('on',s==='recent');
@@ -3963,8 +4073,16 @@ async function loadComments(reset=false){
   }
 
   if(result.error){
-    // Supabase falló: mantener lo que hay en localStorage (no borrar nada)
+    // Supabase falló: mostrar lo de localStorage (nunca "cargando infinito")
     console.error('Forum load error:',result.error.message);
+    const current=getLocalPosts().filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to);
+    if(!current.length && list){
+      list.innerHTML=`<div class="forum-empty">
+        <div class="forum-empty-icon">⚠️</div>
+        <div class="forum-empty-title">No se pudo conectar con el servidor</div>
+        <div class="forum-empty-sub" style="margin-top:6px;font-size:.8rem">Comprueba tu conexión y <a href="#" onclick="loadComments(true);return false" style="color:var(--blue)">vuelve a intentarlo</a></div>
+      </div>`;
+    }
     return;
   }
 
@@ -4091,6 +4209,8 @@ function renderComments(parents,replies,reset=true){
   // Limpiar flag _new para que la animación no se repita en re-renders
   const cleaned=getLocalPosts().map(m=>m._new?{...m,_new:false}:m);
   saveLocalPosts(cleaned);
+  // Actualizar widgets de engagement
+  renderForumWidgets();
 }
 
 async function loadMoreComments(){
@@ -4369,27 +4489,46 @@ async function subscribeEmailInline(){
   showToast('¡Suscripción confirmada! 🎉');
 }
 
-function loadDebateInline(){
-  // Rellena el bloque de debate inline en comunidad con los mismos datos del debate principal
-  const q=document.getElementById('debateQ');
-  const inlineBlock=document.getElementById('comDebateInline');
-  if(!q||!inlineBlock) return;
-  const questionText=q.textContent||q.innerText;
-  if(!questionText||questionText.trim()==='') return;
-  document.getElementById('comDebateQ').textContent=questionText;
-  // Copiar botones del debate principal
-  const mainBtns=document.getElementById('debateBtns');
-  const inlineBtns=document.getElementById('comDebateBtns');
-  if(mainBtns&&inlineBtns){
-    inlineBtns.innerHTML=mainBtns.innerHTML.replace(/onclick="/g,'onclick="comDebateVote(this,');
+/* Sincroniza el bloque de debate inline en Comunidad con el estado actual */
+function syncDebateInline(){
+  // Leer pregunta del debate principal (ID correcto)
+  const qEl=document.getElementById('debateQuestion');
+  const qText=qEl?qEl.textContent:'';
+  if(!qText||qText==='Cargando debate…') return;
+  const cdQ=document.getElementById('comDebateQ');
+  if(cdQ) cdQ.textContent=qText;
+  // Sincronizar resultados si ya votó
+  if(debateData){
+    const voted=localStorage.getItem(debateData.id);
+    if(voted) syncDebateInlineResults(debateData,voted);
   }
-  inlineBlock.style.display='block';
 }
-
-function comDebateVote(btn,type){
-  // Delega al voto principal
-  const mainBtns=document.querySelectorAll('.debate-vote-btn');
-  mainBtns.forEach(b=>{ if((type==='yes'&&b.classList.contains('yes'))||(type==='no'&&b.classList.contains('no'))) b.click(); });
+function syncDebateInlineResults(d,voted){
+  const total=(d.yes_count||0)+(d.no_count||0)||1;
+  const yesPct=Math.round((d.yes_count||0)/total*100);
+  const noPct=100-yesPct;
+  const bar=document.getElementById('comDebateBar');
+  const yp=document.getElementById('comDebateYesPct');
+  const np=document.getElementById('comDebateNoPct');
+  const vm=document.getElementById('comDebateVotedMsg');
+  const res=document.getElementById('comDebateRes');
+  const btns=document.getElementById('comDebateBtns');
+  if(bar) bar.style.width=yesPct+'%';
+  if(yp) yp.textContent=yesPct+'% Sí ('+(d.yes_count||0)+')';
+  if(np) np.textContent=noPct+'% No ('+(d.no_count||0)+')';
+  if(vm) vm.textContent='Votaste: '+(voted==='yes'?'Sí ✓':'No ✓');
+  if(res) res.style.display='block';
+  if(btns){ btns.querySelectorAll('.debate-vote-btn').forEach(b=>{
+    b.classList.toggle('voted',(voted==='yes'&&b.onclick.toString().includes("'yes'"))||(voted==='no'&&b.onclick.toString().includes("'no'")));
+    b.disabled=true;
+  }); }
+}
+function voteDebateProxy(vote){
+  voteDebate(vote);
+  if(debateData){
+    const voted=localStorage.getItem(debateData.id);
+    if(voted) syncDebateInlineResults(debateData,voted);
+  }
 }
 
 /* helper */
@@ -4448,8 +4587,11 @@ async function loadFooterStats(){
 
 /* ── INIT ── */
 (async function init(){
-  await loadArts();
-  await loadGlossary();
+  // ① Debate: SYNC, no depende de red — se ejecuta PRIMERO siempre
+  loadDebate();
+  syncDebateInline();
+
+  // ② UI local (no necesitan red)
   applyAbout();
   applyPhoto();
   applySiteSettings();
@@ -4457,15 +4599,22 @@ async function loadFooterStats(){
   updateStats();
   renderGrid();
   startRotatingPhrases();
-  loadDebate();
-  loadSponsors();
-  loadFooterStats();
-  // Pre-rellenar nombre del foro desde localStorage
+
+  // ③ Pre-rellenar nombre del foro
   const savedName=localStorage.getItem('overton_forum_name');
   if(savedName){
     const el=document.getElementById('comName');
     if(el){ el.value=savedName; updateComposerAv(); }
   }
+
+  // ④ Red — en paralelo, con try/catch para que uno no bloquee al otro
+  await Promise.allSettled([
+    loadArts().catch(e=>console.warn('loadArts:',e)),
+    loadGlossary().catch(e=>console.warn('loadGlossary:',e)),
+    loadSponsors().catch(e=>console.warn('loadSponsors:',e)),
+    loadFooterStats().catch(e=>console.warn('loadFooterStats:',e)),
+  ]);
+  renderGrid();
 })();
 
 </script>
