@@ -1,35 +1,170 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Opinión sobre Derecho Europeo — El Despacho de Overton</title>
-<meta name="description" content="Artículos de opinión sobre derecho europeo. Juristas y académicos especializados en derecho comunitario, política europea y derechos fundamentales."/>
-<meta name="robots" content="index, follow"/>
-<link rel="canonical" href="https://eldespachodeoverton.es/opinion/"/>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:#F0F5FB;color:#0A1828;line-height:1.7}header{background:#0A2244;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}.logo{color:#fff;text-decoration:none;font-weight:700}.logo span{color:#C9A227}nav a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.85rem;margin-left:16px}main{max-width:860px;margin:0 auto;padding:48px 24px}h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:#0A2244;margin-bottom:16px}h2{font-size:1.2rem;font-weight:700;color:#1A4F8C;margin:28px 0 10px;padding-bottom:6px;border-bottom:2px solid #C9A227}p{margin-bottom:14px;color:#1a2e44}ul{margin:0 0 14px 20px}li{margin-bottom:6px}.cta{background:#1A4F8C;color:#fff;text-decoration:none;display:inline-block;padding:12px 28px;border-radius:8px;font-weight:700;margin-top:8px}footer{background:#0A2244;color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.82rem;margin-top:64px}footer a{color:#C9A227;text-decoration:none}</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Análisis y Opinión sobre Derecho Europeo | El Despacho de Overton</title>
+  <meta name="description" content="Artículos de análisis y opinión jurídica sobre el derecho de la Unión Europea: sentencias TJUE, directivas, AI Act, Green Deal y debates constitucionales europeos. Colabora con nosotros."/>
+  <meta name="robots" content="index, follow, max-snippet:-1"/>
+  <link rel="canonical" href="https://eldespachodeoverton.es/opinion/"/>
+  <meta property="og:title" content="Análisis y Opinión sobre Derecho Europeo | El Despacho de Overton"/>
+  <meta property="og:description" content="Artículos de análisis y opinión jurídica sobre el derecho de la UE: sentencias, directivas, AI Act, Green Deal y grandes debates del derecho europeo contemporáneo."/>
+  <meta property="og:url" content="https://eldespachodeoverton.es/opinion/"/>
+  <meta property="og:type" content="website"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Análisis y Opinión sobre Derecho Europeo",
+    "url": "https://eldespachodeoverton.es/opinion/",
+    "description": "Artículos de análisis jurídico y opinión sobre el derecho de la Unión Europea, con rigor académico y lenguaje accesible.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "El Despacho de Overton",
+      "url": "https://eldespachodeoverton.es/"
+    }
+  }
+  </script>
+  <style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F0F5FB;color:#0A1828;line-height:1.75}
+  header{background:#0A2244;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .logo{color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px}
+  .logo-em{color:#C9A227}
+  nav{display:flex;flex-wrap:wrap;gap:4px}
+  nav a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.82rem;padding:4px 10px;border-radius:5px;transition:background .15s}
+  nav a:hover,nav a.active{background:rgba(255,255,255,.12);color:#fff}
+  main{max-width:900px;margin:0 auto;padding:52px 24px 80px}
+  .breadcrumb{font-size:.78rem;color:#4A6280;margin-bottom:28px}
+  .breadcrumb a{color:#1A4F8C;text-decoration:none}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:#EBF2FB;border:1px solid #C8D5EC;color:#1A4F8C;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:18px}
+  h1{font-family:Georgia,serif;font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;color:#0A2244;margin-bottom:18px;line-height:1.2}
+  h2{font-size:1.2rem;font-weight:700;color:#1A4F8C;margin:36px 0 12px;padding-bottom:8px;border-bottom:2px solid #C9A227}
+  h3{font-size:1rem;font-weight:700;color:#0A2244;margin:22px 0 8px}
+  p{margin-bottom:15px;color:#1a2e44;font-size:.95rem}
+  ul,ol{margin:0 0 16px 20px}
+  li{margin-bottom:7px;color:#1a2e44;font-size:.95rem}
+  strong{color:#0A2244}
+  .card{background:#fff;border:1px solid #C8D5EC;border-radius:10px;padding:20px 24px;margin-bottom:14px}
+  .card-tag{font-size:.68rem;font-weight:700;color:#C9A227;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+  .highlight{background:linear-gradient(135deg,rgba(26,79,140,.06),rgba(26,79,140,.02));border:1px solid rgba(26,79,140,.15);border-radius:10px;padding:20px 24px;margin:24px 0}
+  .related{background:#fff;border:1px solid #C8D5EC;border-radius:10px;padding:24px;margin-top:48px}
+  .related-title{font-weight:700;color:#0A2244;margin-bottom:14px;font-size:.95rem}
+  .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  .related-link{background:#F0F5FB;border:1px solid #C8D5EC;border-radius:8px;padding:12px 16px;text-decoration:none;color:#1A4F8C;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:8px;transition:border-color .15s,background .15s}
+  .related-link:hover{background:#EBF2FB;border-color:#1A4F8C}
+  .cta-block{background:linear-gradient(135deg,#0C2D5C,#1A4F8C);border-radius:12px;padding:32px;margin-top:40px;text-align:center}
+  .cta-block h3{color:#fff;font-size:1.2rem;margin-bottom:10px}
+  .cta-block p{color:rgba(255,255,255,.8);margin-bottom:20px}
+  .cta-btn{background:#C9A227;color:#0a1828;text-decoration:none;display:inline-block;padding:12px 28px;border-radius:8px;font-weight:700;font-size:.9rem}
+  .cta-btn:hover{background:#E2BA48}
+  footer{background:#0A2244;color:rgba(255,255,255,.55);text-align:center;padding:28px 24px;font-size:.82rem}
+  footer a{color:#C9A227;text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  @media(max-width:640px){header{flex-direction:column;align-items:flex-start}nav a{font-size:.8rem}}
+  </style>
 </head>
 <body>
 <header>
-  <a class="logo" href="/">El Despacho <span>de Overton</span></a>
-  <nav><a href="/">Inicio</a><a href="/sentencias/">Sentencias</a><a href="/directivas/">Directivas</a><a href="/glosario/">Glosario</a><a href="/comunidad/">Comunidad</a></nav>
+  <a class="logo" href="/">⚖️ El Despacho <span class="logo-em">de Overton</span></a>
+  <nav>
+    <a href="/">Inicio</a>
+    <a href="/sentencias/">Sentencias</a>
+    <a href="/directivas/">Directivas</a>
+    <a href="/medioambiente/">Medio Ambiente</a>
+    <a href="/glosario/">§ Glosario</a>
+    <a href="/comunidad/">› Comunidad</a>
+    <a href="/debate-del-dia/">⚡ Debate</a>
+    <a href="/about/" >Sobre nosotros</a>
+  </nav>
 </header>
 <main>
-  <h1>Artículos de opinión sobre derecho europeo</h1>
-  <p>La seccion de opinion de El Despacho de Overton recoge analisis criticos y reflexiones sobre el derecho de la Union Europea escritos por juristas, academicos e investigadores especializados en derecho comunitario.</p>
-  <h2>Temas que analizamos</h2>
+  <div class="breadcrumb"><a href="/">Inicio</a> / Opinión y Análisis</div>
+  <div class="pill">✍️ Análisis Jurídico</div>
+  <h1>Análisis jurídico y opinión sobre el derecho de la Unión Europea</h1>
+  <p class="intro">La sección de opinión y <strong>análisis de derecho europeo</strong> de El Despacho de Overton recoge artículos de fondo que van más allá de la noticia inmediata. Aquí encontrarás reflexiones sobre sentencias del TJUE que merecen más atención de la que reciben, análisis críticos de las grandes iniciativas legislativas europeas, debates sobre la arquitectura constitucional de la Unión y tribuna abierta para voces del mundo jurídico, académico y de la sociedad civil. El objetivo es siempre el mismo: rigor sin pedantería, profundidad sin hermetismo.</p>
+
+  <h2>Qué encontrarás en la sección de opinión</h2>
+  <p>Los <strong>artículos jurídicos sobre la UE</strong> que publicamos en esta sección pertenecen a distintos géneros, todos ellos con un denominador común: el compromiso con el análisis fundamentado. No publicamos columnas de opinión sin respaldo argumentativo ni notas de prensa disfrazadas de análisis. Lo que encontrarás aquí:</p>
   <ul>
-    <li>Tensiones entre el derecho de la UE y las constituciones nacionales</li>
-    <li>El futuro de la integracion europea y la reforma de los tratados</li>
-    <li>Derechos fundamentales vs. seguridad nacional en la jurisprudencia del TJUE</li>
-    <li>Regulacion tecnologica europea: DSA, DMA, AI Act</li>
-    <li>Estado de Derecho y democracia en la Union Europea</li>
-    <li>Politica migratoria europea: entre el derecho y la realidad</li>
+    <li><strong>Comentarios de sentencias:</strong> Análisis en profundidad de fallos del TJUE y del Tribunal General que explican no solo qué ha decidido el Tribunal, sino por qué importa, qué consecuencias tiene y qué preguntas deja abiertas.</li>
+    <li><strong>Análisis legislativo:</strong> Fichas y comentarios sobre directivas y reglamentos europeos en tramitación o recién aprobados, con atención especial a los aspectos más controvertidos y a las consecuencias prácticas para ciudadanos y empresas.</li>
+    <li><strong>Tribuna de opinión:</strong> Artículos firmados por juristas, académicos, funcionarios europeos, abogados en ejercicio y expertos en política europea que aportan su perspectiva sobre temas de actualidad.</li>
+    <li><strong>Análisis comparado:</strong> Examen de cómo distintos estados miembros han transpuesto una misma directiva, con qué resultados y qué tensiones han generado.</li>
+    <li><strong>Perspectiva histórica:</strong> Artículos que sitúan el debate jurídico actual en el contexto de la evolución del proyecto europeo desde los Tratados de Roma hasta hoy.</li>
   </ul>
-  <h2>Quieres publicar con nosotros</h2>
-  <p>Si eres jurista, academico, investigador o tienes algo riguroso que decir sobre derecho europeo, escribenos a hola@eldespachodeoverton.es</p>
-  <a class="cta" href="/">Ver todos los articulos</a>
+
+  <h2>Temas recurrentes en nuestros análisis</h2>
+
+  <div class="card">
+    <div class="card-tag">Regulación digital</div>
+    <h3>AI Act, DSA, DMA y la nueva gobernanza digital europea</h3>
+    <p>La regulación digital es el área más dinámica del derecho europeo contemporáneo. El paquete legislativo formado por el AI Act, el DSA y el DMA redefine las reglas del ecosistema digital y plantea preguntas jurídicas de primera magnitud: ¿cómo se supervisa un algoritmo? ¿Qué significa la transparencia algorítmica en términos jurídicamente exigibles? ¿Puede el DMA obligar a Apple a abrir su ecosistema sin violar derechos de propiedad intelectual? Nuestros <strong>análisis jurídicos de la UE</strong> sobre regulación digital responden estas preguntas con rigor.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-tag">Estado de Derecho</div>
+    <h3>Crisis constitucional y respuesta jurídica europea</h3>
+    <p>La crisis del Estado de Derecho en algunos estados miembros ha puesto a prueba la solidez del ordenamiento jurídico europeo. ¿Tienen los Tratados herramientas suficientes para responder a los gobiernos que erosionan la independencia judicial? ¿Ha sido la respuesta de la Comisión y el TJUE suficientemente enérgica? ¿Puede la condicionalidad financiera —la vinculación de fondos europeos al respeto del Estado de Derecho— ser una herramienta eficaz? Analizamos estas preguntas con perspectiva jurídica y política.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-tag">Derecho ambiental</div>
+    <h3>Green Deal, litigio climático y compromisos 2030-2050</h3>
+    <p>La juridificación de los compromisos climáticos plantea preguntas jurídicas nuevas: ¿quién tiene legitimación para litigar por incumplimiento de los objetivos de la Ley Europea del Clima? ¿Cómo se mide el cumplimiento de una obligación de resultado difuso como la neutralidad climática? ¿Es el CBAM compatible con las reglas de la OMC? Estas y otras cuestiones son objeto de análisis regular en nuestra sección de <a href="/medioambiente/">derecho ambiental europeo</a>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-tag">Arquitectura institucional</div>
+    <h3>Reforma de los Tratados y futuro de la integración</h3>
+    <p>El debate sobre la reforma de los Tratados de la UE ha vuelto a la agenda política. La Conferencia sobre el Futuro de Europa (2021-2022) propuso cambios institucionales significativos: fin de la unanimidad en política exterior, mayor papel del Parlamento Europeo, nuevas competencias en salud. ¿Son jurídicamente viables estas reformas? ¿Qué obstáculos constitucionales presenta la reforma de los Tratados? Abordamos estas cuestiones desde el análisis constitucional europeo.</p>
+  </div>
+
+  <h2>Estándares editoriales</h2>
+  <p>La sección de análisis y opinión de El Despacho de Overton se rige por criterios editoriales exigentes. Todo artículo que cita una sentencia del TJUE debe identificarla correctamente (número de asunto, fecha, partes). Todo análisis de una directiva o reglamento debe citar el número de referencia oficial y el artículo concreto cuando sea relevante. Las opiniones se distinguen claramente del análisis jurídico. No publicamos contenidos patrocinados disfrazados de análisis.</p>
+  <p>Creemos que el rigor y la accesibilidad no son incompatibles. Un texto jurídico puede ser preciso y técnicamente sólido sin ser ilegible para quien no tiene formación especializada. Ese es el equilibrio que buscamos en cada artículo.</p>
+
+  <h2>Convocatoria para colaboradores</h2>
+  <p>El Despacho de Overton está abierto a colaboraciones externas. Si eres jurista, académico, funcionario europeo, abogado en ejercicio, politólogo o cualquier otro profesional con algo relevante que decir sobre el <strong>derecho europeo</strong>, nos interesa leer tu propuesta.</p>
+  <p>Buscamos especialmente artículos sobre:</p>
+  <ul>
+    <li>Sentencias recientes del TJUE o del Tribunal General que merezcan análisis en profundidad</li>
+    <li>Perspectivas nacionales sobre la transposición de directivas europeas (especialmente desde estados miembros poco representados en el debate académico hispano)</li>
+    <li>Análisis críticos del AI Act, el DSA o el DMA desde perspectivas técnicas o sectoriales</li>
+    <li>Litigio climático y derecho ambiental europeo</li>
+    <li>Derechos fundamentales y aplicación de la Carta de la UE</li>
+  </ul>
+  <p>Los artículos deben tener entre 800 y 2.000 palabras, estar escritos en español, incluir referencias precisas a fuentes jurídicas y respetar nuestros estándares editoriales. Envía tu propuesta a <a href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a> con el asunto "Colaboración: [título del artículo]". También puedes participar en el debate diario desde nuestro <a href="/comunidad/">foro de la comunidad</a>.</p>
+
+  <div class="related">
+    <div class="related-title">📚 Más en El Despacho de Overton</div>
+    <div class="related-grid">
+      <a class="related-link" href="/sentencias/">⚖️ Sentencias TJUE</a>
+      <a class="related-link" href="/directivas/">📋 Directivas UE</a>
+      <a class="related-link" href="/glosario/">§ Glosario jurídico</a>
+      <a class="related-link" href="/comunidad/">💬 Foro de debate</a>
+      <a class="related-link" href="/medioambiente/">🌿 Medio Ambiente</a>
+      <a class="related-link" href="/debate-del-dia/">⚡ Debate del día</a>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <h3>Análisis completo + foro de debate en vivo</h3>
+    <p>Accede a todos los artículos, el glosario interactivo y el foro de la comunidad</p>
+    <a class="cta-btn" href="/">Ir a El Despacho de Overton →</a>
+  </div>
 </main>
-<footer><p><a href="/">El Despacho de Overton</a> - <a href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a></p></footer>
-<script>(function(){sessionStorage.setItem("__overton_view__","opinion");var x=new XMLHttpRequest();x.open("GET","/",true);x.onload=function(){if(x.status===200){document.open("text/html","replace");document.write(x.responseText);document.close();}};x.send();})();</script>
+<footer>
+  <p>© 2024–2026 <a href="/">El Despacho de Overton</a> · Derecho UE accesible ·
+  <a href="/sentencias/">Sentencias</a> · <a href="/directivas/">Directivas</a> ·
+  <a href="/glosario/">Glosario</a> · <a href="/comunidad/">Comunidad</a> ·
+  <a href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a></p>
+</footer>
+<script>
+(function(){
+  sessionStorage.setItem("__overton_view__","opinion");
+  location.replace("/");
+})();
+</script>
 </body>
 </html>
