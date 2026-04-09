@@ -1,22 +1,162 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
+<!-- HTTPS redirect -->
 <script>if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')location.replace('https:'+location.href.substring(location.protocol.length));</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>El Despacho de Overton</title>
-<meta name="description" content="Análisis de sentencias y directivas de la Unión Europea. Derecho europeo explicado de forma objetiva y accesible."/>
+
+<!-- ══════════════════════════════════════════════
+     SEO — TITLE & DESCRIPTION
+══════════════════════════════════════════════ -->
+<title>El Despacho de Overton — Derecho Europeo, Sentencias TJUE y Debates</title>
+<meta name="description" content="Análisis de sentencias del TJUE, directivas de la UE y debates sobre derecho europeo. Glosario jurídico, foro de la comunidad y newsletter semanal. Derecho UE explicado sin tecnicismos."/>
+<meta name="keywords" content="derecho europeo, sentencias TJUE, directivas UE, debate derecho europeo, foro derecho europeo, análisis jurídico, Tribunal de Justicia UE, normativa europea, glosario jurídico europeo, derecho comunitario"/>
+<meta name="author" content="El Despacho de Overton"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+<meta name="language" content="Spanish"/>
+<meta name="revisit-after" content="7 days"/>
+
+<!-- Canonical -->
+<link rel="canonical" href="https://eldespachodeoverton.es/"/>
+
+<!-- Sitemap -->
+<link rel="sitemap" type="application/xml" href="https://eldespachodeoverton.es/sitemap.xml"/>
+
+<!-- ══════════════════════════════════════════════
+     OPEN GRAPH (Facebook, LinkedIn, WhatsApp, IA)
+══════════════════════════════════════════════ -->
 <meta property="og:site_name" content="El Despacho de Overton"/>
 <meta property="og:type" content="website"/>
-<meta property="og:title" id="ogTitle" content="El Despacho de Overton — Derecho UE accesible"/>
-<meta property="og:description" id="ogDesc" content="Análisis de sentencias y directivas de la Unión Europea de forma objetiva y comprensible."/>
-<meta property="og:url" id="ogUrl" content="https://eldespachodeoverton.es"/>
+<meta property="og:locale" content="es_ES"/>
+<meta property="og:title" id="ogTitle" content="El Despacho de Overton — Derecho Europeo y Sentencias TJUE"/>
+<meta property="og:description" id="ogDesc" content="Análisis de sentencias del TJUE, directivas de la UE y foro de debate sobre derecho europeo. Accesible, riguroso y sin tecnicismos."/>
+<meta property="og:url" id="ogUrl" content="https://eldespachodeoverton.es/"/>
 <meta property="og:image" id="ogImage" content="https://eldespachodeoverton.es/og-default.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="El Despacho de Overton — Derecho Europeo"/>
+
+<!-- ══════════════════════════════════════════════
+     TWITTER / X CARDS
+══════════════════════════════════════════════ -->
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" id="twTitle" content="El Despacho de Overton"/>
-<meta name="twitter:description" id="twDesc" content="Derecho de la UE explicado claro y sin tecnicismos."/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="twitter:site" content="@despachodeoverton"/>
+<meta name="twitter:title" id="twTitle" content="El Despacho de Overton — Derecho Europeo"/>
+<meta name="twitter:description" id="twDesc" content="Sentencias TJUE, directivas UE y debates sobre derecho europeo. Sin tecnicismos, con rigor."/>
+<meta name="twitter:image" content="https://eldespachodeoverton.es/og-default.png"/>
+
+<!-- ══════════════════════════════════════════════
+     FAVICON
+══════════════════════════════════════════════ -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231A4F8C'/><text x='16' y='23' text-anchor='middle' font-size='20' fill='%23C9A227'>⚖</text></svg>"/>
+
+<!-- ══════════════════════════════════════════════
+     JSON-LD STRUCTURED DATA
+══════════════════════════════════════════════ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://eldespachodeoverton.es/#website",
+      "url": "https://eldespachodeoverton.es/",
+      "name": "El Despacho de Overton",
+      "description": "Análisis de sentencias del TJUE, directivas de la UE y debates sobre derecho europeo.",
+      "inLanguage": "es",
+      "publisher": { "@id": "https://eldespachodeoverton.es/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": { "@type": "EntryPoint", "urlTemplate": "https://eldespachodeoverton.es/?q={search_term_string}" },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://eldespachodeoverton.es/#organization",
+      "name": "El Despacho de Overton",
+      "url": "https://eldespachodeoverton.es/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://eldespachodeoverton.es/og-default.png",
+        "width": 1200,
+        "height": 630
+      },
+      "description": "Publicación digital especializada en análisis de derecho de la Unión Europea.",
+      "email": "hola@eldespachodeoverton.es",
+      "foundingDate": "2024",
+      "knowsAbout": ["Derecho europeo", "Sentencias TJUE", "Directivas UE", "Derecho comunitario", "Normativa europea"]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://eldespachodeoverton.es/#webpage",
+      "url": "https://eldespachodeoverton.es/",
+      "name": "El Despacho de Overton — Derecho Europeo, Sentencias TJUE y Debates",
+      "isPartOf": { "@id": "https://eldespachodeoverton.es/#website" },
+      "publisher": { "@id": "https://eldespachodeoverton.es/#organization" },
+      "inLanguage": "es",
+      "description": "Portal de análisis jurídico europeo: sentencias del TJUE, directivas UE, glosario jurídico y foro de debate sobre derecho europeo.",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://eldespachodeoverton.es/" },
+          { "@type": "ListItem", "position": 2, "name": "Sentencias TJUE", "item": "https://eldespachodeoverton.es/#sentencias" },
+          { "@type": "ListItem", "position": 3, "name": "Directivas UE", "item": "https://eldespachodeoverton.es/#directivas" },
+          { "@type": "ListItem", "position": 4, "name": "Comunidad", "item": "https://eldespachodeoverton.es/#comunidad" }
+        ]
+      }
+    },
+    {
+      "@type": "DiscussionForumPosting",
+      "url": "https://eldespachodeoverton.es/#comunidad",
+      "name": "Foro de Derecho Europeo — El Despacho de Overton",
+      "description": "Foro de debate sobre derecho europeo: sentencias del TJUE, directivas, derechos fundamentales y normativa comunitaria. Sin registro requerido.",
+      "inLanguage": "es",
+      "isPartOf": { "@id": "https://eldespachodeoverton.es/#website" }
+    },
+    {
+      "@type": "FAQPage",
+      "url": "https://eldespachodeoverton.es/#comunidad",
+      "name": "Debates sobre Derecho Europeo",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Debe la Unión Europea tener su propio ejército permanente?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Debate abierto en la comunidad de El Despacho de Overton sobre defensa europea y derecho comunitario." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Debería existir un salario mínimo europeo igual en todos los estados miembros?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Debate sobre política social europea, normativa laboral de la UE y convergencia económica entre estados miembros." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Debería la UE sancionar a países que no respetan el Estado de Derecho?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Análisis del Reglamento de condicionalidad del Estado de Derecho y jurisprudencia del TJUE sobre este mecanismo." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Debe prohibirse la IA en las decisiones judiciales europeas?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Debate sobre el Reglamento de IA de la UE (AI Act) y su impacto en el sistema judicial europeo." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Tiene el TJUE suficiente autoridad para hacer cumplir sus sentencias?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Análisis del sistema de cumplimiento de las sentencias del Tribunal de Justicia de la Unión Europea y los mecanismos sancionadores del artículo 260 TFUE." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<!-- Preconnect para mejorar rendimiento -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://dlqnrlenosemcsfyhltc.supabase.co"/>
+<link rel="dns-prefetch" href="https://dlqnrlenosemcsfyhltc.supabase.co"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════
    TOKENS
@@ -757,6 +897,9 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .forum-composer-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .forum-anon-tag{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--faint)}
 
+/* Screen-reader only (visible a bots + accesibilidad, invisible a usuarios) */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
 /* Forum widgets */
 .forum-widgets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 @media(max-width:600px){.forum-widgets{grid-template-columns:1fr}}
@@ -938,25 +1081,98 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 </head>
 <body>
 
+<!-- ════════════════════════════════════════════════════════════════
+     FALLBACK ESTÁTICO PARA BOTS / CRAWLERS / IA
+     Visible SOLO cuando JavaScript está desactivado.
+     Google, Bing, ChatGPT, Perplexity y otros crawlers leen esto.
+     Los usuarios normales nunca lo ven (display:none via JS debajo).
+════════════════════════════════════════════════════════════════ -->
+<noscript>
+<style>
+  #js-fallback{font-family:Georgia,serif;max-width:900px;margin:0 auto;padding:32px 24px;color:#0A1828;line-height:1.7}
+  #js-fallback h1{font-size:2rem;color:#1A4F8C;margin-bottom:8px}
+  #js-fallback h2{font-size:1.35rem;color:#1A4F8C;margin:28px 0 10px;border-bottom:2px solid #C9A227;padding-bottom:6px}
+  #js-fallback h3{font-size:1.1rem;color:#0A1828;margin:18px 0 6px}
+  #js-fallback p{margin:0 0 12px;color:#2A3A4A}
+  #js-fallback ul{margin:0 0 14px;padding-left:22px}
+  #js-fallback li{margin-bottom:6px}
+  #js-fallback nav{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+  #js-fallback nav a{background:#1A4F8C;color:#fff;padding:7px 16px;border-radius:6px;text-decoration:none;font-size:.9rem}
+  #js-fallback .art-item{border-left:3px solid #C9A227;padding:10px 14px;margin-bottom:12px;background:#f5f8fc}
+  #js-fallback .debate-q{background:#EBF2FB;padding:10px 14px;border-radius:6px;margin-bottom:8px;font-style:italic}
+  #js-fallback footer-note{font-size:.8rem;color:#7D9BBB;margin-top:32px;border-top:1px solid #C8D5EC;padding-top:16px}
+</style>
+<div id="js-fallback" itemscope itemtype="https://schema.org/WebSite">
+  <h1 itemprop="name">⚖️ El Despacho de Overton</h1>
+  <p itemprop="description"><strong>El Despacho de Overton</strong> es un portal especializado en análisis de <strong>derecho europeo</strong>: sentencias del Tribunal de Justicia de la UE (TJUE), directivas comunitarias, normativa de medio ambiente, glosario jurídico y un foro de debate abierto sobre derecho de la Unión Europea.</p>
+
+  <nav aria-label="Navegación principal">
+    <a href="/">Inicio</a>
+    <a href="/#sentencias">Sentencias TJUE</a>
+    <a href="/#directivas">Directivas UE</a>
+    <a href="/#medioambiente">Medio Ambiente</a>
+    <a href="/#opinion">Opinión</a>
+    <a href="/#glosario">Glosario jurídico</a>
+    <a href="/#comunidad">Comunidad / Foro</a>
+    <a href="/#about">Sobre nosotros</a>
+  </nav>
+
+  <h2>Sentencias del Tribunal de Justicia de la UE</h2>
+  <p>Analizamos las sentencias más relevantes del <strong>Tribunal de Justicia de la Unión Europea (TJUE)</strong> con rigor jurídico y lenguaje accesible. Cubrimos áreas como protección de datos (RGPD), libre circulación, derechos fundamentales, derecho de la competencia y más.</p>
+  <div class="art-item" itemprop="about" itemscope itemtype="https://schema.org/Article">
+    <h3 itemprop="name">Análisis de jurisprudencia del TJUE</h3>
+    <p itemprop="description">Comentarios y análisis de sentencias clave del Tribunal de Justicia de la Unión Europea en materia de derechos fundamentales, libertades comunitarias y aplicación del derecho comunitario.</p>
+  </div>
+
+  <h2>Directivas de la Unión Europea</h2>
+  <p>Explicamos las <strong>directivas europeas</strong> más importantes: qué significan, cómo se transponen y qué impacto tienen en los ciudadanos y empresas de los 27 estados miembros.</p>
+  <ul>
+    <li><strong>Directiva de Servicios Digitales (DSA)</strong> — regulación de plataformas online en la UE</li>
+    <li><strong>Directiva de Mercados Digitales (DMA)</strong> — límites a los gigantes tecnológicos</li>
+    <li><strong>AI Act</strong> — el primer reglamento mundial sobre inteligencia artificial</li>
+    <li><strong>RGPD</strong> — protección de datos personales en Europa</li>
+  </ul>
+
+  <h2>Foro de Debate sobre Derecho Europeo</h2>
+  <p>Nuestra <strong>comunidad de debate sobre derecho europeo</strong> es un espacio abierto para discutir las grandes preguntas jurídicas de la Unión Europea. Sin registro, sin contraseña.</p>
+  <p><strong>Debates recientes:</strong></p>
+  <div class="debate-q">¿Debe la Unión Europea tener su propio ejército permanente?</div>
+  <div class="debate-q">¿Debería la UE sancionar a países que no respetan el Estado de Derecho?</div>
+  <div class="debate-q">¿Debe prohibirse la IA en las decisiones judiciales europeas?</div>
+  <div class="debate-q">¿Tiene el TJUE suficiente autoridad para hacer cumplir sus sentencias?</div>
+  <div class="debate-q">¿Debería la UE crear una renta básica universal para sus ciudadanos?</div>
+
+  <h2>Glosario de Derecho Europeo</h2>
+  <p>Definiciones claras y rigurosas de los términos más importantes del <strong>derecho comunitario europeo</strong>: desde el principio de subsidiariedad hasta el procedimiento de infracción, pasando por la primacía del derecho de la UE.</p>
+
+  <h2>Sobre El Despacho de Overton</h2>
+  <p>Somos un equipo de juristas y académicos apasionados por el <strong>derecho de la Unión Europea</strong>. Nuestro objetivo es hacer el derecho europeo accesible, riguroso y relevante para estudiantes, profesionales y ciudadanos.</p>
+  <p>📬 Contacto: <a href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a></p>
+  <p>🌐 Web: <a href="https://eldespachodeoverton.es">eldespachodeoverton.es</a></p>
+
+  <p><small>Para la experiencia completa, activa JavaScript en tu navegador.</small></p>
+</div>
+</noscript>
+
 <div id="pbar"></div>
 
 <!-- ════════════════════ HEADER ════════════════════ -->
 <header>
   <div class="nav">
-    <div class="logo" onclick="goView('home')">
+    <a class="logo" href="/" onclick="goView('home');return false;" aria-label="El Despacho de Overton — Inicio">
       <div class="logo-name">El Despacho <em>de Overton</em></div>
       <span class="logo-sub">Derecho UE · Claro y objetivo</span>
-    </div>
-    <nav class="nav-links" id="navLinks">
-      <span class="nl on" data-v="home"            onclick="goView('home')">Inicio</span>
-      <span class="nl"    data-v="sentencias"       onclick="goView('sentencias')">Sentencias</span>
-      <span class="nl"    data-v="directivas"       onclick="goView('directivas')">Directivas</span>
-      <span class="nl"    data-v="medioambiente"    onclick="goView('medioambiente')">Medio Ambiente</span>
-      <span class="nl"    data-v="opinion"          onclick="goView('opinion')">Opinión</span>
-      <span class="nl"    data-v="otros"            onclick="goView('otros')">Otros</span>
-      <span class="nl"    data-v="glosario"         onclick="goView('glosario')">§ Glosario</span>
-      <span class="nl"    data-v="comunidad"        onclick="goView('comunidad')">› Comunidad</span>
-      <span class="nl"    data-v="about"            onclick="goView('about')">Sobre nosotros</span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Navegación principal">
+      <a class="nl on" data-v="home"         href="/"                   onclick="goView('home');return false;">Inicio</a>
+      <a class="nl"    data-v="sentencias"   href="/#sentencias"        onclick="goView('sentencias');return false;">Sentencias</a>
+      <a class="nl"    data-v="directivas"   href="/#directivas"        onclick="goView('directivas');return false;">Directivas</a>
+      <a class="nl"    data-v="medioambiente" href="/#medioambiente"    onclick="goView('medioambiente');return false;">Medio Ambiente</a>
+      <a class="nl"    data-v="opinion"      href="/#opinion"           onclick="goView('opinion');return false;">Opinión</a>
+      <a class="nl"    data-v="otros"        href="/#otros"             onclick="goView('otros');return false;">Otros</a>
+      <a class="nl"    data-v="glosario"     href="/#glosario"          onclick="goView('glosario');return false;">§ Glosario</a>
+      <a class="nl"    data-v="comunidad"    href="/#comunidad"         onclick="goView('comunidad');return false;">› Comunidad</a>
+      <a class="nl"    data-v="about"        href="/#about"             onclick="goView('about');return false;">Sobre nosotros</a>
     </nav>
     <div class="nav-r">
       <div class="srch-w">
@@ -988,17 +1204,20 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <button class="ico-btn" onclick="closeMobileMenu()">✕</button>
   </div>
   <div class="mobile-nav-links">
-    <span class="mnl" data-v="home"         onclick="goView('home');closeMobileMenu()">Inicio</span>
-    <span class="mnl" data-v="sentencias"   onclick="goView('sentencias');closeMobileMenu()">Sentencias</span>
-    <span class="mnl" data-v="directivas"   onclick="goView('directivas');closeMobileMenu()">Directivas</span>
-    <span class="mnl" data-v="medioambiente" onclick="goView('medioambiente');closeMobileMenu()">Medio Ambiente</span>
-    <span class="mnl" data-v="opinion"      onclick="goView('opinion');closeMobileMenu()">Opinión</span>
-    <span class="mnl" data-v="otros"        onclick="goView('otros');closeMobileMenu()">Otros</span>
-    <span class="mnl" data-v="glosario"    onclick="goView('glosario');closeMobileMenu()">§ Glosario</span>
-    <span class="mnl" data-v="comunidad"   onclick="goView('comunidad');closeMobileMenu()">› Comunidad</span>
-    <span class="mnl" data-v="about"        onclick="goView('about');closeMobileMenu()">Sobre nosotros</span>
+    <a class="mnl" data-v="home"          href="/"              onclick="goView('home');closeMobileMenu();return false;">Inicio</a>
+    <a class="mnl" data-v="sentencias"    href="/#sentencias"   onclick="goView('sentencias');closeMobileMenu();return false;">Sentencias</a>
+    <a class="mnl" data-v="directivas"    href="/#directivas"   onclick="goView('directivas');closeMobileMenu();return false;">Directivas</a>
+    <a class="mnl" data-v="medioambiente" href="/#medioambiente" onclick="goView('medioambiente');closeMobileMenu();return false;">Medio Ambiente</a>
+    <a class="mnl" data-v="opinion"       href="/#opinion"      onclick="goView('opinion');closeMobileMenu();return false;">Opinión</a>
+    <a class="mnl" data-v="otros"         href="/#otros"        onclick="goView('otros');closeMobileMenu();return false;">Otros</a>
+    <a class="mnl" data-v="glosario"      href="/#glosario"     onclick="goView('glosario');closeMobileMenu();return false;">§ Glosario</a>
+    <a class="mnl" data-v="comunidad"     href="/#comunidad"    onclick="goView('comunidad');closeMobileMenu();return false;">› Comunidad</a>
+    <a class="mnl" data-v="about"         href="/#about"        onclick="goView('about');closeMobileMenu();return false;">Sobre nosotros</a>
   </div>
 </div>
+
+<!-- ════════════════════ CONTENIDO PRINCIPAL ════════════════════ -->
+<main id="main-content" aria-label="Contenido principal">
 
 <!-- ════════════════════ HERO ════════════════════ -->
 <div id="view-home">
@@ -1019,7 +1238,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <div class="hero-pill">🇪🇺 Unión Europea · Derecho accesible</div>
       <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">El Derecho Europeo como espacio de debate</div></div>
       <h1 id="heroTitle">Sentencias y directivas,<br/><em>sin tecnicismos</em></h1>
-      <p class="hero-p" id="heroDesc">Analizamos los actos jurídicos de la Unión Europea de forma objetiva y comprensible. Saber qué dice Bruselas no debería requerir un título en derecho.</p>
+      <p class="hero-p" id="heroDesc">Analizamos las sentencias del <strong>Tribunal de Justicia de la UE</strong> y las directivas europeas de forma objetiva y comprensible. El <strong>derecho europeo</strong> explicado para todos.</p>
       <div class="hero-btns">
         <button class="btn-gold" onclick="scrollToGrid()">Ver publicaciones</button>
         <button class="btn-ghost" onclick="goView('about')">¿Qué es este blog?</button>
@@ -1788,11 +2007,11 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <div class="com-head">
       <div class="sec-head">
         <div>
-          <div class="sec-title">› Comunidad</div>
+          <h2 class="sec-title" id="comunidad">› Comunidad <span class="sr-only">— Foro de debate sobre derecho europeo</span></h2>
           <div class="sec-bar"></div>
         </div>
       </div>
-      <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Dos canales para debatir sobre derecho europeo. Sin registro, solo tu nombre.</p>
+      <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Foro de debate sobre <strong>derecho europeo</strong>. Participa sin registro en debates sobre sentencias del TJUE, directivas y derechos fundamentales de la UE.</p>
     </div>
 
     <!-- ── DEBATE INLINE ── -->
@@ -1938,6 +2157,8 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 </div>
 
 <!-- ════════════════════ FOOTER ════════════════════ -->
+</main><!-- /main-content -->
+
 <footer class="foot-new">
   <!-- Newsletter band -->
   <div class="foot-nl-band">
@@ -2290,6 +2511,50 @@ function goView(name){
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   renderGrid();
   window.scrollTo({top:0,behavior:'smooth'});
+  // ── SEO: actualizar URL hash + meta tags dinámicos ──
+  updateSEOMeta(name);
+}
+
+const SEO_META={
+  home:{     title:'El Despacho de Overton — Derecho Europeo, Sentencias TJUE y Debates',        desc:'Análisis de sentencias del TJUE, directivas de la UE y debates sobre derecho europeo. Glosario jurídico y foro de la comunidad.'},
+  sentencias:{title:'Sentencias del TJUE — El Despacho de Overton',                               desc:'Análisis y comentarios de las sentencias más relevantes del Tribunal de Justicia de la Unión Europea. Derecho europeo explicado con rigor.'},
+  directivas:{title:'Directivas de la Unión Europea — El Despacho de Overton',                    desc:'Análisis de las directivas europeas más importantes: DSA, DMA, AI Act, RGPD y más. Qué significan y cómo afectan a ciudadanos y empresas.'},
+  medioambiente:{title:'Derecho Europeo de Medio Ambiente — El Despacho de Overton',              desc:'Normativa medioambiental de la UE: directivas, reglamentos y sentencias sobre clima, biodiversidad y sostenibilidad.'},
+  opinion:{  title:'Opinión sobre Derecho Europeo — El Despacho de Overton',                      desc:'Artículos de opinión y análisis crítico sobre el derecho de la Unión Europea. Juristas y académicos especializados.'},
+  glosario:{ title:'Glosario de Derecho Europeo — El Despacho de Overton',                        desc:'Diccionario y glosario de términos del derecho comunitario europeo. Definiciones claras de conceptos jurídicos de la UE.'},
+  comunidad:{title:'Foro de Debate sobre Derecho Europeo — El Despacho de Overton',               desc:'Foro de la comunidad para debatir sobre derecho europeo. Participa sin registro en debates sobre sentencias TJUE, directivas y derechos fundamentales.'},
+  about:{    title:'Sobre El Despacho de Overton — Equipo y misión',                               desc:'Conoce al equipo de El Despacho de Overton: juristas y académicos especializados en derecho de la Unión Europea.'},
+  otros:{    title:'Documentos y Análisis de Derecho Europeo — El Despacho de Overton',           desc:'Análisis, documentos e informes sobre derecho europeo en diversas materias.'},
+};
+
+function updateSEOMeta(name){
+  const base='https://eldespachodeoverton.es';
+  const hash=name==='home'?'':('#'+name);
+  const url=base+'/'+hash;
+  const meta=SEO_META[name]||SEO_META.home;
+  // Update document title
+  document.title=meta.title;
+  // Update meta description
+  const descEl=document.querySelector('meta[name="description"]');
+  if(descEl) descEl.setAttribute('content',meta.desc);
+  // Update OG tags
+  const ogTitle=document.getElementById('ogTitle');
+  const ogDesc=document.getElementById('ogDesc');
+  const ogUrl=document.getElementById('ogUrl');
+  if(ogTitle) ogTitle.setAttribute('content',meta.title);
+  if(ogDesc) ogDesc.setAttribute('content',meta.desc);
+  if(ogUrl) ogUrl.setAttribute('content',url);
+  // Update canonical
+  let canonical=document.querySelector('link[rel="canonical"]');
+  if(canonical) canonical.setAttribute('href',url);
+  // Update Twitter tags
+  const twTitle=document.getElementById('twTitle');
+  const twDesc=document.getElementById('twDesc');
+  if(twTitle) twTitle.setAttribute('content',meta.title);
+  if(twDesc) twDesc.setAttribute('content',meta.desc);
+  // Update URL hash (no recarga)
+  if(name!=='home') history.replaceState(null,'',hash);
+  else history.replaceState(null,'','/');
 }
 
 function scrollToGrid(){
@@ -4605,6 +4870,12 @@ async function loadFooterStats(){
   if(savedName){
     const el=document.getElementById('comName');
     if(el){ el.value=savedName; updateComposerAv(); }
+  }
+
+  // ③b Hash routing: si la URL tiene #seccion, navegar directo a ella
+  const hashView=(location.hash||'').replace('#','');
+  if(hashView&&['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about'].includes(hashView)){
+    goView(hashView);
   }
 
   // ④ Red — en paralelo, con try/catch para que uno no bloquee al otro
