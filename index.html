@@ -760,6 +760,10 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .forum-list{display:flex;flex-direction:column;gap:10px}
 .forum-post{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .2s,border-color .2s}
 .forum-post:hover{box-shadow:0 4px 18px rgba(10,34,68,.08);border-color:rgba(26,79,140,.25)}
+@keyframes fpSlideIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.forum-post-new{animation:fpSlideIn .38s cubic-bezier(.22,.68,0,1.2) forwards}
+@keyframes fpFadeOut{to{opacity:0;transform:scale(.97)}}
+.forum-post-removing{animation:fpFadeOut .28s ease forwards}
 [data-theme=dark] .forum-post:hover{box-shadow:0 4px 18px rgba(0,0,0,.25);border-color:rgba(122,184,232,.2)}
 .fp-inner{padding:16px 18px}
 .fp-header{display:flex;align-items:center;gap:10px;margin-bottom:11px}
@@ -2234,6 +2238,7 @@ function goView(name){
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
     loadComments(true);
+    subscribeRealtime();
   }
   document.querySelectorAll('.nl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
@@ -3793,6 +3798,9 @@ let forumSort='recent';
 const FORUM_CACHE_KEY='overton_forum_cache';
 const FORUM_LOCAL_KEY='overton_forum_local'; // fuente de verdad local
 const FORUM_MAX_LEN=600;
+const FORUM_SPAM_COOLDOWN=30; // segundos entre mensajes
+let lastForumPost=0;
+let realtimeChannel=null;
 
 /* ─── FUENTE DE VERDAD LOCAL (localStorage) ─────────────────────────────
    getLocalPosts()   → lee todos los posts del localStorage
@@ -3847,6 +3855,46 @@ function renderFromLocal(reset=true){
   const parentIds=new Set(parents.map(p=>p.id));
   const replies=all.filter(m=>m.reply_to&&parentIds.has(m.reply_to));
   renderComments(parents,replies,reset);
+}
+
+/* ── SUPABASE REALTIME ───────────────────────────────────────────────────── */
+function subscribeRealtime(){
+  if(realtimeChannel){ db.removeChannel(realtimeChannel); realtimeChannel=null; }
+  realtimeChannel=db.channel('forum_realtime')
+    .on('postgres_changes',{event:'*',schema:'public',table:'forum_posts'},handleRealtimeEvent)
+    .subscribe((status)=>{
+      if(status==='SUBSCRIBED') console.log('🔴 Realtime conectado');
+    });
+}
+
+function handleRealtimeEvent(payload){
+  const {eventType,new:newRow,old:oldRow}=payload;
+  if(eventType==='INSERT'){
+    if(newRow.reply_to) return; // las respuestas se cargan al abrir thread
+    // Ignorar si ya lo tenemos (es nuestro propio post)
+    const local=getLocalPosts();
+    const alreadyHave=local.some(m=>String(m.id)===String(newRow.id));
+    if(alreadyHave) return;
+    // Post de otro usuario → añadir con animación
+    addLocalPost({...newRow,_new:true});
+    renderFromLocal(true);
+    showToast('💬 Nuevo mensaje en el foro');
+  } else if(eventType==='UPDATE'){
+    // Actualizar votos en localStorage y en el DOM sin re-render completo
+    const posts=getLocalPosts().map(m=>String(m.id)===String(newRow.id)?{...m,votes:newRow.votes}:m);
+    saveLocalPosts(posts);
+    const vEl=document.querySelector(`#tv-${newRow.id} .fp-vote-n`);
+    if(vEl) vEl.textContent=newRow.votes||0;
+    const rvEl=document.querySelector(`#rv-${newRow.id} .vc`);
+    if(rvEl) rvEl.textContent=newRow.votes||0;
+  } else if(eventType==='DELETE'){
+    saveLocalPosts(getLocalPosts().filter(m=>String(m.id)!==String(oldRow.id)));
+    const el=document.getElementById('thread-'+oldRow.id);
+    if(el){
+      el.classList.add('forum-post-removing');
+      setTimeout(()=>el.remove(),300);
+    }
+  }
 }
 
 function setForumSort(s){
@@ -3986,6 +4034,7 @@ function renderComments(parents,replies,reset=true){
     const errorBadge=p._error?`<span style="font-size:.65rem;color:#d64040;margin-left:6px">⚠️ ${esc(p._errorMsg||'Error al guardar')}</span>`:'';
     const pendingStyle=p._pending?'opacity:.7;border-style:dashed':'';
     const pendingId=p._pending?`temp_${p.id}`:`${p.id}`;
+    const newClass=p._new?' forum-post-new':'';
     const pReplies=replies.filter(r=>r.reply_to===p.id);
 
     const repliesHtml=pReplies.length?`<div class="fp-replies">${pReplies.map(r=>{
@@ -4012,7 +4061,7 @@ function renderComments(parents,replies,reset=true){
       </div>`;
     }).join('')}</div>`:'';
 
-    return `<div class="forum-post" id="thread-${p.id}" style="${pendingStyle}">
+    return `<div class="forum-post${newClass}" id="thread-${p.id}" style="${pendingStyle}">
       <div class="fp-inner">
         <div class="fp-header">
           <div class="fp-av" style="background:${color}">${ini}</div>
@@ -4039,6 +4088,9 @@ function renderComments(parents,replies,reset=true){
   if(reset){ list.innerHTML=html; } else { list.insertAdjacentHTML('beforeend',html); }
   const loaded=forumOffset+parents.length;
   if(moreWrap) moreWrap.style.display=(loaded<total)?'block':'none';
+  // Limpiar flag _new para que la animación no se repita en re-renders
+  const cleaned=getLocalPosts().map(m=>m._new?{...m,_new:false}:m);
+  saveLocalPosts(cleaned);
 }
 
 async function loadMoreComments(){
@@ -4077,6 +4129,13 @@ async function postComment(){
   if(!name){showToast('Escribe tu nombre o apodo','error');document.getElementById('comName').focus();return;}
   if(!body||body.length<3){showToast('El mensaje es demasiado corto (mín. 3 caracteres)','error');return;}
   if(body.length>FORUM_MAX_LEN){showToast(`Máx. ${FORUM_MAX_LEN} caracteres`,'error');return;}
+  // Anti-spam: mínimo 30s entre publicaciones
+  const now=Date.now();
+  if(now-lastForumPost<FORUM_SPAM_COOLDOWN*1000){
+    const wait=Math.ceil((FORUM_SPAM_COOLDOWN*1000-(now-lastForumPost))/1000);
+    showToast(`Espera ${wait}s antes de publicar de nuevo 🕐`,'error');
+    return;
+  }
 
   // Guardar nombre
   localStorage.setItem('overton_forum_name',name);
@@ -4157,6 +4216,7 @@ async function postComment(){
   const badge=document.getElementById('fbadge-'+activeChannel);
   if(badge) badge.textContent=forumTotal;
 
+  lastForumPost=Date.now();
   showToast('¡Publicado! ✓');
 }
 
@@ -4216,20 +4276,47 @@ async function postReply(parentId){
 async function voteComment(id, btn){
   const key=getVotedKey(id);
   if(localStorage.getItem(key)){showToast('Ya votaste este mensaje');return;}
-  const {error}=await db.rpc('increment_forum_votes',{p_id:id});
-  if(error){showToast('Error al votar','error');return;}
+  // Optimistic UI: update instantly before Supabase responds
   localStorage.setItem(key,'1');
   btn.classList.add('voted');
-  const vc=btn.querySelector('.vc');
-  if(vc) vc.textContent=parseInt(vc.textContent||0)+1;
+  btn.disabled=true;
+  const vc=btn.querySelector('.vc,.fp-vote-n');
+  const oldVal=parseInt(vc?.textContent||0);
+  if(vc) vc.textContent=oldVal+1;
+  // Update localStorage immediately
+  const posts=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:(m.votes||0)+1}:m);
+  saveLocalPosts(posts);
+  // Send to Supabase
+  const {error}=await db.rpc('increment_forum_votes',{p_id:id});
+  btn.disabled=false;
+  if(error){
+    // Rollback optimistic update
+    localStorage.removeItem(key);
+    btn.classList.remove('voted');
+    if(vc) vc.textContent=oldVal;
+    const posts2=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:Math.max(0,(m.votes||0)-1)}:m);
+    saveLocalPosts(posts2);
+    showToast('Error al votar','error');
+  }
 }
 
 async function deleteComment(id){
   if(!confirm('¿Eliminar este mensaje?')) return;
+  // Local-first: eliminar del DOM y localStorage al instante
+  saveLocalPosts(getLocalPosts().filter(m=>String(m.id)!==String(id)));
+  const el=document.getElementById('thread-'+id);
+  if(el){
+    el.classList.add('forum-post-removing');
+    setTimeout(()=>el.remove(),300);
+  }
+  // Supabase en background
   const {error}=await db.from('forum_posts').delete().eq('id',id);
-  if(error){showToast('Error al eliminar','error');return;}
+  if(error){
+    showToast('Error al eliminar en servidor','error');
+    loadComments(true); // Resync si falla
+    return;
+  }
   showToast('Mensaje eliminado');
-  loadComments(true);
   renderAdmComments();
 }
 
