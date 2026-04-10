@@ -50,6 +50,12 @@
      FAVICON
 ══════════════════════════════════════════════ -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231A4F8C'/><text x='16' y='23' text-anchor='middle' font-size='20' fill='%23C9A227'>⚖</text></svg>"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#1A4F8C"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="El Despacho de Overton"/>
 
 <!-- ══════════════════════════════════════════════
      JSON-LD STRUCTURED DATA
@@ -4930,6 +4936,13 @@ if(location.hash && location.hash.length > 1){
   }
 }
 
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
