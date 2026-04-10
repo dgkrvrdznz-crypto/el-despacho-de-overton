@@ -2874,6 +2874,7 @@ const DAILY_DEBATES=[
 
 let debateData=null;
 function loadDebate(){
+  // SYNC: muestra debate del array local inmediatamente (sin esperar red)
   const dayIdx=Math.floor(Date.now()/86400000)%DAILY_DEBATES.length;
   const question=DAILY_DEBATES[dayIdx];
   const key='overton_debate_day_'+dayIdx;
@@ -2883,8 +2884,30 @@ function loadDebate(){
   document.getElementById('debateQuestion').textContent=question;
   const voted=localStorage.getItem(key);
   if(voted) showDebateResults(debateData,voted);
-  // Sync inline block (will run again after DOM is ready)
   setTimeout(syncDebateInline,0);
+  // ASYNC: sobreescribir con debate activo de Supabase si existe
+  loadDebateFromDB();
+}
+
+async function loadDebateFromDB(){
+  try{
+    const {data}=await db.from('debate').select('*').eq('active',true).limit(1).maybeSingle();
+    if(!data||!data.question) return;
+    const key='overton_debate_db_'+data.id;
+    const voted=localStorage.getItem(key);
+    debateData={id:key,question:data.question,yes_count:data.yes_count||0,no_count:data.no_count||0,dbId:data.id};
+    document.getElementById('debateQuestion').textContent=data.question;
+    if(voted){
+      showDebateResults(debateData,voted);
+    } else {
+      // Resetear resultados si no ha votado en este debate de DB
+      document.getElementById('debateResults').classList.remove('show');
+      document.getElementById('debateYes').classList.remove('voted');
+      document.getElementById('debateNo').classList.remove('voted');
+      document.getElementById('debateVotedMsg').textContent='';
+    }
+    syncDebateInline();
+  }catch(e){console.warn('loadDebateFromDB:',e);}
 }
 function showDebateResults(d,voted){
   const total=(d.yes_count||0)+(d.no_count||0)||1;
@@ -2903,18 +2926,24 @@ function voteDebate(vote){
   const key=debateData.id;
   if(localStorage.getItem(key)){showToast('Ya has votado en este debate');return;}
   localStorage.setItem(key,vote);
-  const dayIdx=Math.floor(Date.now()/86400000)%DAILY_DEBATES.length;
-  const votesKey='overton_debate_votes_'+dayIdx;
-  const votes=JSON.parse(localStorage.getItem(votesKey)||'{"yes":0,"no":0}');
-  votes[vote]=(votes[vote]||0)+1;
-  localStorage.setItem(votesKey,JSON.stringify(votes));
-  debateData.yes_count=votes.yes;
-  debateData.no_count=votes.no;
+  if(debateData.dbId){
+    // Debate de Supabase: actualizar contadores en DB
+    debateData.yes_count=(debateData.yes_count||0)+(vote==='yes'?1:0);
+    debateData.no_count=(debateData.no_count||0)+(vote==='no'?1:0);
+    db.rpc('vote_debate',{p_id:debateData.dbId,p_vote:vote}).catch(()=>{});
+  } else {
+    // Debate del array local: guardar en localStorage
+    const dayIdx=Math.floor(Date.now()/86400000)%DAILY_DEBATES.length;
+    const votesKey='overton_debate_votes_'+dayIdx;
+    const votes=JSON.parse(localStorage.getItem(votesKey)||'{"yes":0,"no":0}');
+    votes[vote]=(votes[vote]||0)+1;
+    localStorage.setItem(votesKey,JSON.stringify(votes));
+    debateData.yes_count=votes.yes;
+    debateData.no_count=votes.no;
+  }
   showDebateResults(debateData,vote);
   syncDebateInlineResults(debateData,vote);
   showToast('¡Voto registrado! 🗳️');
-  // Enviar a Supabase en background (no bloquea la UI)
-  db.rpc('vote_debate',{p_id:0,p_vote:vote}).catch(()=>{});
 }
 async function loadDebateAdmin(){
   const {data}=await db.from('debate').select('*').order('created_at',{ascending:false}).limit(5);
@@ -2929,12 +2958,17 @@ async function loadDebateAdmin(){
 async function saveDebate(){
   const q=document.getElementById('debateQIn').value.trim();
   if(!q){ showToast('Escribe una pregunta','error'); return; }
-  await db.from('debate').update({active:false}).eq('active',true);
-  await db.from('debate').insert([{question:q,yes_count:0,no_count:0,active:true}]);
+  const btn=document.querySelector('[onclick="saveDebate()"]');
+  if(btn){btn.disabled=true;btn.textContent='Guardando…';}
+  const {error:e1}=await db.from('debate').update({active:false}).eq('active',true);
+  const {error:e2}=await db.from('debate').insert([{question:q,yes_count:0,no_count:0,active:true}]);
+  if(btn){btn.disabled=false;btn.textContent='✓ Activar nueva pregunta';}
+  if(e2){showToast('Error al guardar: '+e2.message,'error');return;}
   document.getElementById('debateQIn').value='';
-  showToast('Debate activado');
+  showToast('✅ Debate activado y visible en la web');
   loadDebateAdmin();
-  loadDebate();
+  await loadDebateFromDB(); // Actualizar directamente desde DB, no el fallback local
+  syncDebateInline();
 }
 
 /* ── CONTRIBUTOR REQUESTS ── */
@@ -2949,20 +2983,45 @@ async function submitContrib(){
   showToast('¡Recibido! Te contactaremos pronto 🎉');
 }
 async function loadContribs(){
-  const {data}=await db.from('contributor_requests').select('*').order('created_at',{ascending:false});
   const el=document.getElementById('contribsList');
+  el.innerHTML='<p style="color:var(--muted);font-size:.84rem">Cargando…</p>';
+  const {data,error}=await db.from('contributor_requests').select('*').order('created_at',{ascending:false});
+  if(error){
+    el.innerHTML=`<div style="color:#d64040;font-size:.84rem;padding:12px;background:rgba(214,64,64,.07);border-radius:8px;border:1px solid rgba(214,64,64,.2)">
+      <strong>Error al cargar:</strong> ${esc(error.message)}<br/>
+      <span style="font-size:.78rem;color:var(--muted)">Asegúrate de que la tabla <code>contributor_requests</code> existe en Supabase con las políticas RLS correctas.</span>
+    </div>`;
+    return;
+  }
   if(!data||!data.length){ el.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay solicitudes todavía.</p>'; return; }
   el.innerHTML=data.map(c=>{
-    const fecha=new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
-    return `<div class="adm-comment-row">
-      <div class="adm-comment-info">
+    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    const estado=c.status||'pendiente';
+    const estadoColor=estado==='aprobado'?'#22c55e':estado==='rechazado'?'#d64040':'#C9A227';
+    return `<div class="adm-comment-row" style="gap:12px">
+      <div class="adm-comment-info" style="flex:1">
         <div class="adm-comment-name">${esc(c.name||'Sin nombre')}</div>
-        <div class="adm-comment-body">${esc(c.email)}</div>
-        <div class="adm-comment-date">${fecha}</div>
+        <div class="adm-comment-body" style="font-weight:600;color:var(--blue-lt)">${esc(c.email)}</div>
+        ${c.message?`<div class="adm-comment-body" style="margin-top:4px;color:var(--muted)">${esc(c.message)}</div>`:''}
+        <div class="adm-comment-date">${fecha} · <span style="color:${estadoColor};font-weight:600">${estado}</span></div>
       </div>
-      <button class="btn-sm" style="color:#d64040;border-color:rgba(214,64,64,.3);flex-shrink:0" onclick="deleteContrib(${c.id})">Eliminar</button>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <select class="fin" style="font-size:.75rem;padding:4px 8px" onchange="updateContribStatus(${c.id},this.value)">
+          <option value="pendiente"${estado==='pendiente'?' selected':''}>Pendiente</option>
+          <option value="contactado"${estado==='contactado'?' selected':''}>Contactado</option>
+          <option value="aprobado"${estado==='aprobado'?' selected':''}>Aprobado</option>
+          <option value="rechazado"${estado==='rechazado'?' selected':''}>Rechazado</option>
+        </select>
+        <button class="btn-sm" style="color:#d64040;border-color:rgba(214,64,64,.3)" onclick="deleteContrib(${c.id})">Eliminar</button>
+      </div>
     </div>`;
   }).join('');
+}
+
+async function updateContribStatus(id, status){
+  const {error}=await db.from('contributor_requests').update({status}).eq('id',id);
+  if(error){showToast('Error al actualizar estado','error');return;}
+  showToast('Estado actualizado: '+status);
 }
 async function deleteContrib(id){
   if(!confirm('¿Eliminar esta solicitud?')) return;
@@ -4008,6 +4067,8 @@ async function loadGlossary(){
   const {data,error} = await db.from('glossary').select('*').order('term',{ascending:true});
   if(error){console.error('Error cargando glosario:',error.message);return;}
   GLOSSARY = data||[];
+  // Re-render si la vista glosario ya está activa (ej: carga directa desde /glosario/)
+  if(!document.getElementById('view-glosario')?.classList.contains('hide')) renderGlossary();
 }
 
 function buildGlossCats(){
