@@ -1,5 +1,5 @@
 /* El Despacho de Overton — Service Worker v1 */
-const CACHE = 'overton-v1';
+const CACHE = 'overton-v2';
 const PRECACHE = [
   '/',
   '/sentencias/',
@@ -11,7 +11,9 @@ const PRECACHE = [
   '/otros/',
   '/about/',
   '/debate-del-dia/',
-  '/manifest.json'
+  '/pregunta/',
+  '/manifest.json',
+  '/logo.png'
 ];
 
 self.addEventListener('install', e => {

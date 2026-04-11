@@ -10,7 +10,7 @@
 // Convierte /sentencias/ en /?_v=sentencias y luego index.html restaura la URL
 (function(){
   var path = location.pathname;
-  var views = ['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about','debate-del-dia'];
+  var views = ['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about','debate-del-dia','pregunta'];
   var view = path.replace(/^\/|\/$/g,'');
   if(views.indexOf(view) !== -1){
     sessionStorage.setItem('__overton_view__', view === 'debate-del-dia' ? 'home' : view);

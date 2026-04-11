@@ -1090,6 +1090,72 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 /* Card depth upgrade */
 .card{transition:transform .22s,box-shadow .22s,border-color .22s}
 .card:hover{transform:translateY(-5px);box-shadow:var(--sh-md);border-color:rgba(26,79,140,.18)}
+
+/* ══════════ PREGUNTA DEL DÍA ══════════ */
+.dq-wrap{max-width:820px;margin:0 auto;padding:52px 24px 80px}
+.dq-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.dq-badge{display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);background:rgba(26,79,140,.09);padding:5px 13px;border-radius:20px;border:1px solid rgba(26,79,140,.15)}
+[data-theme=dark] .dq-badge{color:#7AB8E8;background:rgba(122,184,232,.1);border-color:rgba(122,184,232,.18)}
+.dq-badge-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:dq-pulse 2s ease-in-out infinite}
+@keyframes dq-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.dq-topic-tag{font-size:.71rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);background:rgba(201,162,39,.1);padding:4px 11px;border-radius:12px;border:1px solid rgba(201,162,39,.2)}
+.dq-timer{font-size:.7rem;color:var(--faint);text-align:right}
+.dq-timer strong{color:var(--muted);font-weight:600}
+.dq-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px 40px;box-shadow:var(--sh-md);margin-bottom:24px}
+@media(max-width:600px){.dq-card{padding:24px 20px}}
+.dq-question{font-family:var(--fh);font-size:1.45rem;font-weight:700;color:var(--text);line-height:1.38;margin-bottom:28px}
+@media(max-width:600px){.dq-question{font-size:1.18rem}}
+.dq-opts{display:flex;flex-direction:column;gap:11px}
+.dq-opt{display:flex;align-items:center;gap:14px;padding:14px 18px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;background:var(--surf2);font-size:.92rem;font-weight:500;color:var(--text);text-align:left;width:100%}
+.dq-opt:hover{border-color:var(--blue-mid);background:rgba(26,79,140,.06);transform:translateX(3px)}
+[data-theme=dark] .dq-opt:hover{background:rgba(122,184,232,.07)}
+.dq-opt.selected{border-color:var(--blue);background:rgba(26,79,140,.1);color:var(--blue)}
+[data-theme=dark] .dq-opt.selected{border-color:#7AB8E8;background:rgba(122,184,232,.12);color:#7AB8E8}
+.dq-opt.winner{border-color:var(--gold);background:rgba(201,162,39,.08)}
+.dq-opt-letter{width:28px;height:28px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;transition:all .2s}
+.dq-opt.selected .dq-opt-letter{background:var(--blue);color:#fff}
+[data-theme=dark] .dq-opt.selected .dq-opt-letter{background:#7AB8E8;color:#0A1828}
+.dq-opt.winner .dq-opt-letter{background:var(--gold);color:#0c1929}
+.dq-opt-text{flex:1}
+.dq-opt-bar-wrap{flex:1;display:none;flex-direction:column;gap:4px}
+.dq-opt-bar-bg{width:100%;height:7px;background:var(--border);border-radius:10px;overflow:hidden}
+.dq-opt-bar-fill{height:100%;background:var(--blue);border-radius:10px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.dq-opt.winner .dq-opt-bar-fill{background:var(--gold)}
+.dq-opt.selected .dq-opt-bar-fill{background:var(--blue)}
+.dq-opt-pct{font-size:.73rem;font-weight:700;color:var(--faint);min-width:38px;text-align:right;display:none}
+.dq-opt-votes{font-size:.68rem;color:var(--faint);display:none}
+.dq-results-state .dq-opt-bar-wrap,.dq-results-state .dq-opt-pct{display:flex}
+.dq-results-state .dq-opt-votes{display:inline}
+.dq-vote-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.dq-total-votes{font-size:.77rem;color:var(--faint)}
+.dq-change-vote{font-size:.75rem;color:var(--blue);cursor:pointer;border:none;background:none;padding:0;text-decoration:underline;text-underline-offset:3px}
+.dq-change-vote:hover{opacity:.7}
+.dq-vs-community{font-size:.78rem;font-weight:600;padding:5px 12px;border-radius:20px;background:rgba(34,197,94,.1);color:#16a34a;border:1px solid rgba(34,197,94,.2)}
+.dq-vs-community.minority{background:rgba(239,68,68,.08);color:#dc2626;border-color:rgba(239,68,68,.18)}
+[data-theme=dark] .dq-vs-community{color:#4ade80;background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.15)}
+[data-theme=dark] .dq-vs-community.minority{color:#f87171;background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.15)}
+
+/* Analysis card */
+.dq-analysis{background:linear-gradient(135deg,rgba(26,79,140,.07),rgba(201,162,39,.05));border:1px solid rgba(26,79,140,.14);border-radius:14px;padding:24px 28px;margin-top:0}
+[data-theme=dark] .dq-analysis{background:linear-gradient(135deg,rgba(122,184,232,.06),rgba(201,162,39,.04));border-color:rgba(122,184,232,.12)}
+.dq-analysis-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.dq-analysis-text{font-size:.88rem;line-height:1.7;color:var(--muted);font-style:italic}
+.dq-analysis-cite{font-size:.74rem;color:var(--faint);margin-top:10px;font-style:normal;border-top:1px solid var(--border);padding-top:8px}
+
+/* History */
+.dq-history-wrap{margin-top:36px}
+.dq-history-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--blue);background:none;border:1px solid var(--border);border-radius:8px;padding:9px 16px;transition:all .2s;width:100%}
+.dq-history-toggle:hover{background:var(--surf2)}
+.dq-history-list{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.dq-hist-item{background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:14px 18px}
+.dq-hist-q{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:8px}
+.dq-hist-bars{display:flex;flex-direction:column;gap:5px}
+.dq-hist-bar-row{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--faint)}
+.dq-hist-bar-label{width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dq-hist-bar-bg{flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden}
+.dq-hist-bar-fill{height:100%;background:var(--blue);border-radius:10px}
+.dq-hist-pct{min-width:36px;text-align:right;font-weight:600}
+.dq-hist-topic{font-size:.67rem;color:var(--gold);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
 </style>
 </head>
 <body>
@@ -1191,6 +1257,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <a class="nl"    data-v="glosario"     href="/#glosario"          onclick="goView('glosario');return false;">§ Glosario</a>
       <a class="nl"    data-v="comunidad"    href="/#comunidad"         onclick="goView('comunidad');return false;">› Comunidad</a>
       <a class="nl"    data-v="about"        href="/#about"             onclick="goView('about');return false;">Sobre nosotros</a>
+      <a class="nl"    data-v="pregunta"     href="/pregunta/"          onclick="goView('pregunta');return false;">❓ Pregunta</a>
     </nav>
     <div class="nav-r">
       <div class="srch-w">
@@ -1231,6 +1298,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <a class="mnl" data-v="glosario"      href="/#glosario"     onclick="goView('glosario');closeMobileMenu();return false;">§ Glosario</a>
     <a class="mnl" data-v="comunidad"     href="/#comunidad"    onclick="goView('comunidad');closeMobileMenu();return false;">› Comunidad</a>
     <a class="mnl" data-v="about"         href="/#about"        onclick="goView('about');closeMobileMenu();return false;">Sobre nosotros</a>
+    <a class="mnl" data-v="pregunta"      href="/pregunta/"     onclick="goView('pregunta');closeMobileMenu();return false;">❓ Pregunta del día</a>
   </div>
 </div>
 
@@ -2174,6 +2242,49 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   </div>
 </div>
 
+<!-- ════════════════════ PREGUNTA DEL DÍA ════════════════════ -->
+<div id="view-pregunta" class="hide">
+  <div class="dq-wrap">
+
+    <div class="dq-header">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="dq-badge"><span class="dq-badge-dot"></span>Pregunta del día</div>
+        <span class="dq-topic-tag" id="dqTopicTag">Derecho UE</span>
+      </div>
+      <div class="dq-timer">Siguiente pregunta en <strong id="dqCountdown">—</strong></div>
+    </div>
+
+    <!-- Main question card -->
+    <div class="dq-card" id="dqCard">
+      <h2 class="dq-question" id="dqQuestionText">Cargando pregunta…</h2>
+      <div class="dq-opts" id="dqOpts"></div>
+      <div class="dq-vote-meta hide" id="dqVoteMeta">
+        <span class="dq-total-votes" id="dqTotalVotes"></span>
+        <span class="dq-vs-community hide" id="dqVsCommunity"></span>
+        <button class="dq-change-vote hide" id="dqChangeVote" onclick="dqResetVote()">↺ Cambiar voto</button>
+      </div>
+    </div>
+
+    <!-- Analysis card (shown after vote) -->
+    <div class="dq-analysis hide" id="dqAnalysis">
+      <div class="dq-analysis-label">⚖ Análisis jurídico</div>
+      <p class="dq-analysis-text" id="dqAnalysisText"></p>
+      <p class="dq-analysis-cite" id="dqAnalysisCite"></p>
+    </div>
+
+    <!-- History -->
+    <div class="dq-history-wrap">
+      <button class="dq-history-toggle" onclick="dqToggleHistory(this)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.04"/></svg>
+        Preguntas anteriores
+        <svg class="dq-hist-chevron" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="dq-history-list hide" id="dqHistoryList"></div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ════════════════════ FOOTER ════════════════════ -->
 </main><!-- /main-content -->
 
@@ -2414,7 +2525,7 @@ const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
 /* ── ROUTING STATE ── */
 let _routerPush = true; // false cuando goView viene de popstate o init (usa replaceState)
-const VALID_VIEWS = ['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about'];
+const VALID_VIEWS = ['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about','pregunta'];
 
 /* ── STATE ── */
 let loggedIn     = false;
@@ -2484,7 +2595,7 @@ function toggleTheme(){
 }
 
 /* ── VIEWS ── */
-const ALL_VIEWS = ['view-home','view-blog','view-about','view-admin','view-glosario','view-comunidad'];
+const ALL_VIEWS = ['view-home','view-blog','view-about','view-admin','view-glosario','view-comunidad','view-pregunta'];
 function goView(name){
   ALL_VIEWS.forEach(id => document.getElementById(id).classList.add('hide'));
   if(name==='home'){
@@ -2529,6 +2640,9 @@ function goView(name){
     syncDebateInline();
     loadComments(true);
     subscribeRealtime();
+  } else if(name==='pregunta'){
+    document.getElementById('view-pregunta').classList.remove('hide');
+    dqInit();
   }
   document.querySelectorAll('.nl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
   document.querySelectorAll('.mnl').forEach(n=>n.classList.toggle('on',n.dataset.v===name));
@@ -2553,6 +2667,7 @@ const SEO_META={
   comunidad:{title:'Foro de Debate sobre Derecho Europeo — El Despacho de Overton',               desc:'Foro de la comunidad para debatir sobre derecho europeo. Participa sin registro en debates sobre sentencias TJUE, directivas y derechos fundamentales.'},
   about:{    title:'Sobre El Despacho de Overton — Equipo y misión',                               desc:'Conoce al equipo de El Despacho de Overton: juristas y académicos especializados en derecho de la Unión Europea.'},
   otros:{    title:'Documentos y Análisis de Derecho Europeo — El Despacho de Overton',           desc:'Análisis, documentos e informes sobre derecho europeo en diversas materias.'},
+  pregunta:{ title:'Pregunta del Día — Debate Jurídico Europeo | El Despacho de Overton',          desc:'Vota cada dos días en una nueva pregunta de Derecho de la UE: Bruselas I, Roma I y II, protección del consumidor y más. Análisis jurídico automático.'},
 };
 
 function updateSEOMeta(name){
@@ -5111,6 +5226,393 @@ if(location.hash && location.hash.length > 1){
   if(VALID_VIEWS.includes(h)){
     history.replaceState({view:h},'','/'+h+'/');
   }
+}
+
+/* ════════════════════════════════════════════════════════════
+   PREGUNTA DEL DÍA — Sistema autónomo de preguntas jurídicas
+════════════════════════════════════════════════════════════ */
+
+/* ── BANCO DE PREGUNTAS (90 preguntas) ─────────────────────
+   Cada entrada: { q, t(tema), o(opciones), an(análisis por opción), c(casos TJUE) }
+─────────────────────────────────────────────────────────── */
+const DQ_BANK = [
+// ── Bruselas I / Competencia judicial internacional ──
+{q:"¿Debe el principio de autonomía de la voluntad en la elección de foro prevalecer sobre la protección especial del consumidor en el Reglamento Bruselas I bis?",t:"Bruselas I bis",o:["Sí, la autonomía debe prevalecer","No, la protección del consumidor es prioritaria","Solo si el consumidor es profesional","Depende del valor del contrato"],an:["Una interpretación que privilegia la autonomía privada resulta coherente con los principios del mercado interior, aunque ignora la asimetría informativa que el Reglamento 1215/2012 reconoce explícitamente en sus arts. 17-19.","La mayoría se alinea con la jurisprudencia del TJUE, que ha reafirmado sistemáticamente el carácter imperativo de las normas de protección del consumidor frente a cláusulas de sumisión. Los acuerdos de elección de foro que perjudiquen al consumidor son nulos de pleno derecho.","La distinción entre consumidor activo y pasivo ha sido matizada por el TJUE, que exige valorar la actividad comercial dirigida al Estado del domicilio del consumidor.","Un criterio cuantitativo para determinar la protección procesal carece de base en el Reglamento y contradiría el principio de efectividad del derecho de la UE."],c:"TJUE: Océano Grupo C-240/98; Pammer C-585/08; Mühlleitner C-190/11"},
+{q:"Cuando dos tribunales de distintos Estados miembros conocen del mismo litigio, ¿debería el tribunal ante el que se ejercita la acción en segundo lugar suspender siempre su procedimiento sin excepciones?",t:"Litispendencia",o:["Sí, la regla prior tempore es absoluta","No, caben excepciones por abuso procesal","Solo si hay identidad estricta de partes","El tribunal segundo debe declinar competencia inmediatamente"],an:["La aplicación automática de la regla prior tempore del art. 29 Bruselas I bis garantiza seguridad jurídica, aunque puede ser instrumentalizada estratégicamente mediante el denominado 'torpedo italiano'.","El TJUE ha reconocido en Erich Gasser que la regla es en principio absoluta, pero la doctrina mayoritaria propugna excepciones fundadas en el abuso del derecho cuando el primer procedimiento es claramente dilatorio.","La identidad de partes y objeto es un requisito ineludible; la interpretación autónoma del TJUE sobre estos conceptos determina el alcance real de la litispendencia.","La declinación inmediata supondría anticipar el resultado del proceso pendiente, vulnerando el principio de confianza mutua entre órganos jurisdiccionales."],c:"TJUE: Erich Gasser C-116/02; Tatry C-406/92; Overseas Union C-351/89"},
+{q:"¿Debe interpretarse el foro de la obligación contractual incumplida del art. 7.1 Bruselas I bis de forma autónoma o según el derecho nacional aplicable al contrato?",t:"Bruselas I bis",o:["Interpretación autónoma del Derecho UE","Según el derecho nacional designado por Roma I","Autónoma solo para compraventas y servicios","Cada tribunal aplica su propio criterio procesal"],an:["La interpretación autónoma garantiza la uniformidad en el espacio judicial europeo y es el criterio que el TJUE ha consolidado desde Tessili hasta Industria Tessuti. La aplicación del derecho nacional fragmentaría el sistema.","Remitir a Roma I para determinar la competencia crearía un reenvío circular que el TJUE rechazó explícitamente en Tessili al establecer la interpretación autónoma del lugar de cumplimiento.","El art. 7.1.b) establece presunciones específicas para compraventa y servicios precisamente para evitar remisiones al derecho material; la interpretación autónoma se extiende a todos los contratos.","La diversidad de criterios nacionales destruiría la previsibilidad del sistema de Bruselas y violaría los arts. 7 y 25 del Reglamento."],c:"TJUE: Tessili C-12/76; Zelger C-56/79; Car Trim C-381/08"},
+{q:"¿Puede el tribunal de origen denegar el reconocimiento de una resolución extranjera UE por contrariar su propia jurisprudencia nacional consolidada?",t:"Reconocimiento y ejecución",o:["No, el orden público no ampara meras discrepancias jurídicas","Sí, si afecta principios constitucionales fundamentales","Solo si la resolución es manifiestamente errónea","Depende de si la parte lo alega expresamente"],an:["La posición mayoritaria es correcta: el TJUE ha establecido que el orden público procesal solo puede invocarse cuando el reconocimiento atenta de forma manifiesta a un principio fundamental del ordenamiento, no ante meras divergencias de interpretación jurídica.","La distinción entre principios constitucionales y meras discrepancias jurídicas es la clave: el reconocimiento tiene límites en derechos fundamentales, no en preferencias dogmáticas nacionales.","Un estándar de 'manifiesto error' no tiene base en los arts. 45-46 Bruselas I bis; el sistema descansa en la confianza mutua y la revisión de fondo está expresamente prohibida.","La invocación del orden público no puede depender de la iniciativa de parte; el tribunal lo examina de oficio cuando el reconocimiento atenta a sus principios fundamentales."],c:"TJUE: Renault C-38/98; Gambazzi C-394/07; Apostolides C-420/07"},
+{q:"¿Debe el TJUE extender la doctrina de los acuerdos de elección de foro a los contratos de agencia comercial cuando el agente es parte débil?",t:"Acuerdos de sumisión",o:["Sí, el agente merece protección similar al trabajador","No, el agente actúa con ánimo de lucro empresarial","Solo si el agente es autónomo de facto","La solución debe venir del legislador, no del TJUE"],an:["Extender la protección de los foros exclusivos de los contratos individuales de trabajo al agente comercial refleja una visión evolutiva que atiende a la realidad económica de la dependencia, aunque el Reglamento establece una distinción clara entre ambas figuras.","La distinción entre agente y trabajador es deliberada en el Reglamento: el agente es un empresario independiente y los tribunales no deben crear categorías intermedias de protección no previstas por el legislador.","La calificación formal como autónomo puede enmascarar relaciones de dependencia real; el TJUE ha mostrado apertura a la sustancia sobre la forma en otros ámbitos del derecho social.","La laguna regulatoria sobre contratos de agencia en Bruselas I bis debe colmarse por vía legislativa para garantizar seguridad jurídica y no por extensión analógica judicial."],c:"TJUE: Holterman C-47/14; Benincasa C-269/95; Corman-Collins C-9/12"},
+{q:"¿Es compatible con el Reglamento Bruselas I bis una cláusula de sumisión recogida en las condiciones generales cuando el adherente no las leyó?",t:"Acuerdos de sumisión",o:["No es válida sin confirmación expresa del adherente","Válida si están disponibles y son accesibles","Válida solo en contratos entre empresas","Válida solo si el texto destaca visualmente la cláusula"],an:["El art. 25 exige que el acuerdo sea por escrito o con confirmación escrita. La mera disponibilidad de condiciones generales no satisface este requisito salvo que sean efectivamente conocidas por el adherente, según la jurisprudencia de MSG.","La accesibilidad objetiva de las condiciones generales, en particular en el comercio electrónico, puede satisfacer el requisito formal si la cláusula permite al adherente conocerla con diligencia ordinaria.","La protección reforzada en contratos B2C convierte la cláusula en inoperante respecto al consumidor; entre empresas la aplicación es más flexible conforme a los usos del sector.","El requisito de visibilidad tipográfica ha sido aplicado por varios tribunales nacionales como criterio de validez del acuerdo de sumisión en condiciones generales."],c:"TJUE: MSG C-106/95; Estasis Saloti C-784/79; Coreck Maritime C-387/98"},
+{q:"Cuando el domicilio del demandado es incierto, ¿deben los tribunales de la UE aplicar las reglas de competencia residual del derecho nacional o admitir una competencia subsidiaria europea?",t:"Bruselas I bis",o:["Competencia residual del derecho nacional (art. 6)","Debería existir un foro subsidiario europeo","Competencia del último domicilio conocido en la UE","Incompetencia y remisión a la parte actora"],an:["El sistema actual remite al art. 6 y al derecho nacional cuando el demandado no está domiciliado en la UE, lo que fragmenta la protección. Esta solución es coherente con el principio de que Bruselas I bis no regula la competencia universal.","La ausencia de un foro subsidiario europeo genera asimetrías y puede facilitar la evasión procesal. La doctrina propone de lege ferenda un foro de necesidad europeo análogo al que existe en algunos sistemas nacionales.","El foro del último domicilio conocido es reconocido en algunos sistemas nacionales como solución pragmática, aunque carece de base expresa en el Reglamento.","Remitir el riesgo a la parte actora contradice el derecho de acceso a la tutela judicial efectiva reconocido en el art. 47 CDFUE."],c:"TJUE: Owusu C-281/02; A v B C-112/13"},
+{q:"¿Debe la excepción de orden público del art. 45.1.a) Bruselas I bis interpretarse de forma estricta aunque la resolución extranjera vulnere un derecho fundamental reconocido en la CDFUE?",t:"Reconocimiento y ejecución",o:["Interpretación siempre estricta, incluso ante CDFUE","La CDFUE justifica excepciones más amplias","Depende de si el Estado de origen es miembro del CEDH","El TJUE debe armonizar los umbrales de orden público"],an:["La interpretación estricta del orden público es el principio rector del sistema Bruselas: la confianza mutua entre Estados miembros exige que las excepciones sean verdaderamente excepcionales, incluso cuando se invoca la CDFUE.","El TJUE ha reconocido en Doris Povse y Melloni que la confianza mutua no es absoluta y que la CDFUE puede justificar excepciones cuando la protección de los derechos fundamentales está en juego de forma manifiesta.","La pertenencia al CEDH de todos los Estados miembros proporciona un suelo mínimo de protección, pero no elimina la competencia del TJUE para determinar el estándar de orden público de la UE.","La armonización de los umbrales de orden público es una necesidad doctrinal reconocida para evitar divergencias que socaven el principio de reconocimiento mutuo."],c:"TJUE: Melloni C-399/11; Doris Povse C-211/10; Avotins C-17/14"},
+{q:"En un contrato de trabajo con prestaciones en múltiples Estados miembros, ¿cuál debe ser el foro prioritario para el trabajador demandante?",t:"Contratos de trabajo",o:["El Estado donde realiza principalmente su actividad","El domicilio del empresario demandado","El Estado donde fue contratado","Donde se ubique la sede operativa del empleador"],an:["El art. 21.1.b) Bruselas I bis atribuye competencia al lugar donde el trabajador realiza habitualmente su trabajo, lo que el TJUE ha concretado como el lugar desde donde gestiona principalmente sus actividades: criterio del 'centro efectivo'.","Atribuir competencia al domicilio del empresario sería contrario a la ratio de los arts. 20-23 que protegen al trabajador como parte débil, privándole del foro más cercano a su situación.","El lugar de contratación puede resultar artificioso o instrumentalizado; el TJUE lo ha relegado a criterio subsidiario cuando no existe un lugar habitual de trabajo predominante.","El concepto de 'sede operativa' aproxima la solución al criterio del art. 21.1.b) in fine, pero puede generar incertidumbre cuando la organización empresarial es compleja."],c:"TJUE: Mulox C-125/92; Rutten C-383/95; Pugliese C-437/00; Holterman C-47/14"},
+{q:"¿Debería el Reglamento Bruselas I bis extenderse a las relaciones con terceros Estados no miembros para colmar las lagunas del sistema actual?",t:"Bruselas I bis",o:["Sí, con carácter residual uniforme","No, corresponde a los convenios bilaterales","Solo para empresas con actividad significativa en la UE","El actual sistema de forum necessitatis es suficiente"],an:["La extensión residual uniforme del Reglamento a litigios con terceros Estados eliminaría las asimetrías actuales y reforzaría la posición de los litigantes domiciliados en la UE, aunque plantea problemas de compatibilidad con el derecho internacional público.","Los convenios bilaterales ofrecen soluciones adaptadas a la relación específica entre dos sistemas jurídicos, aunque generan fragmentación y no cubren todos los terceros Estados relevantes.","Un umbral de actividad significativa conectaría el foro europeo con la realidad económica y alinearía el sistema con el enfoque del TJUE en materia de responsabilidad extracontractual.","El forum necessitatis como válvula de escape ya existe en varios Reglamentos sectoriales y podría generalizarse como solución sistémica sin necesidad de extensión plena."],c:"TJUE: Owusu C-281/02; Proposal Recast Brussels I COM(2010) 748"},
+// ── Protección del consumidor ──
+{q:"¿Es abusiva una cláusula de arbitraje en un contrato de consumo que obliga al consumidor a litigar en una ciudad distante a su domicilio?",t:"Protección del consumidor",o:["Sí, es abusiva per se","Solo si el consumidor puede probar perjuicio","Depende del importe del contrato","No si el árbitro es independiente"],an:["El TJUE ha declarado en Océano Grupo y posteriormente en Mostaza Claro que las cláusulas que imponen foros desfavorables al consumidor son abusivas en el sentido de la Directiva 93/13/CE y deben ser inaplicadas de oficio por el tribunal.","Un criterio basado en la prueba del perjuicio efectivo contradice la naturaleza objetiva del control de abusividad: la cláusula es abusiva per se cuando genera un desequilibrio significativo en perjuicio del consumidor.","Introducir un umbral cuantitativo supondría una regresión respecto al estándar de la Directiva 93/13 y crearía inseguridad jurídica para consumidores y empresas.","La independencia del árbitro no subsana el perjuicio procesal derivado de la lejanía del foro; la protección del consumidor opera independientemente de la imparcialidad del tercero."],c:"TJUE: Océano Grupo C-240/98; Mostaza Claro C-168/05; Asturcom C-40/08"},
+{q:"¿Puede un Estado miembro establecer un nivel de protección del consumidor más alto que el previsto en las directivas de la UE?",t:"Protección del consumidor",o:["Sí, las directivas fijan mínimos","No, la armonización plena lo impide en muchos ámbitos","Solo en materia de derechos de desistimiento","Solo si no distorsiona el mercado interior"],an:["El principio de armonización mínima permite a los Estados miembros elevar el nivel de protección en numerosos ámbitos, aunque la tendencia hacia la armonización plena (como en la Directiva 2011/83) restringe este margen en áreas específicas.","La armonización plena ha sido el instrumento elegido para las directivas más recientes; en esos casos, la doctrina de la armonización mínima cede ante el objetivo de mercado interior uniforme.","Los derechos de desistimiento son precisamente uno de los ámbitos donde la Directiva 2011/83 establece armonización plena, eliminando la posibilidad de mejora unilateral.","El test de distorsión del mercado introduce un criterio económico en una materia donde el estándar jurídico es la base legal armonizada, no el impacto competitivo."],c:"TJUE: Caja de Ahorros C-484/08; AIA C-602/10; Directive 2011/83"},
+{q:"¿Debe el juez nacional comprobar de oficio el carácter abusivo de una cláusula contractual aunque el consumidor no lo haya alegado?",t:"Protección del consumidor",o:["Sí, siempre que disponga de los elementos necesarios","No, rige el principio dispositivo","Solo en procedimientos de ejecución hipotecaria","Solo si la cláusula es nula de pleno derecho"],an:["El TJUE ha establecido en Pannon y reiterado en numerosas sentencias que el juez nacional está obligado a examinar de oficio el carácter abusivo de las cláusulas cuando dispone de los elementos fácticos y jurídicos necesarios para ello.","El principio dispositivo del derecho procesal nacional debe ceder ante la exigencia de efectividad del derecho de la UE cuando los consumidores, por ignorancia o por la asimetría de poder, no ejercitan sus derechos.","La obligación de control de oficio no se limita a la ejecución hipotecaria; Pannon generalizó esta doctrina a todos los procedimientos, que fue confirmada en Banco Español de Crédito.","La distinción entre nulidad absoluta y abusividad es relevante en algunos sistemas nacionales, pero el TJUE ha optado por una categoría autónoma de ineficacia que obliga al control de oficio con independencia de la tipología nacional."],c:"TJUE: Pannon C-243/08; Banco Español de Crédito C-618/10; Aziz C-415/11"},
+{q:"¿El período de desistimiento en contratos a distancia debe computarse desde la recepción de los bienes o desde la confirmación del pedido?",t:"Protección del consumidor",o:["Desde la recepción física de los bienes","Desde la confirmación del pedido","Desde que se suministra la información precontractual correcta","El plazo no debería comenzar sin información completa"],an:["El art. 9.2 de la Directiva 2011/83 establece expresamente que el plazo comienza con la recepción de los bienes, criterio que además facilita el examen físico antes de decidir el desistimiento.","La confirmación del pedido no es el momento oportuno ya que el consumidor aún no ha tenido acceso físico al producto; computar el plazo desde ese momento perjudica al consumidor.","La Directiva vincula el inicio del plazo a la recepción de información adecuada en algunos supuestos, pero la regla general es la recepción material del bien.","La regla de que el plazo no comienza sin información completa fue introducida por la Directiva 2011/83 para penalizar el incumplimiento del deber de información: el plazo se extiende hasta 12 meses."],c:"Directiva 2011/83 art. 9; TJUE: Walbusch Walter Busch C-430/17"},
+// ── Competencia exclusiva ──
+{q:"¿Debe la competencia exclusiva en materia de derechos reales inmobiliarios (art. 24.1 Bruselas I bis) extenderse a los contratos de arrendamiento de larga duración?",t:"Competencia exclusiva",o:["Sí, todo arrendamiento sobre inmueble cae bajo art. 24","No, los arrendamientos de corta duración se excluyen","Solo arrendamientos que impliquen derechos reales","El art. 24.1 no se extiende a obligaciones personales"],an:["La interpretación extensiva del art. 24.1 afecta a la previsibilidad del litigante: el TJUE ha insistido en que los foros exclusivos son de interpretación estricta. Solo cuando el litigio versa sobre la existencia, la constitución o la extinción de derechos reales procede la competencia exclusiva.","El Reglamento excluye expresamente los arrendamientos de duración máxima de 6 meses cuando el arrendatario sea persona física y no sea profesional; el criterio temporal indica que no todos los arrendamientos entran en el art. 24.1.","El TJUE ha distinguido entre acciones basadas en derechos reales y acciones que derivan de obligaciones contractuales, aunque recaigan sobre inmuebles. Solo las primeras activan la competencia exclusiva.","La competencia exclusiva del art. 24 opera al margen de la voluntad de las partes y no puede ser alterada por acuerdo de sumisión; su interpretación estricta protege la coherencia del sistema."],c:"TJUE: Reichert C-115/88; Rösler C-241/83; Sanders C-73/77"},
+{q:"¿Puede un tribunal de un Estado miembro controlar la validez de una patente registrada en otro Estado miembro al hilo de un litigio contractual?",t:"Competencia exclusiva",o:["No, el art. 24.4 atribuye competencia exclusiva al Estado de registro","Sí, si la validez es cuestión incidental","Sí, pero solo con efectos inter partes","El tribunal debe suspender y remitir al Estado de registro"],an:["El TJUE estableció en Roche Nederland que el art. 22.4 (hoy 24.4) crea competencia exclusiva del Estado de registro para litigios sobre validez, incluso cuando surge como cuestión incidental, para evitar decisiones contradictorias sobre el mismo título.","La doctrina GAT v LuK (hoy ratificada en Brite Strike) consagra la interpretación más amplia: siempre que se cuestione la validez de una patente, aunque sea incidentalmente, opera la competencia exclusiva del art. 24.4.","La restricción de efectos inter partes no satisface el objetivo de la competencia exclusiva: garantizar que solo el tribunal con mayor vínculo con el registro sea quien decide sobre la validez del título.","La suspensión y remisión no está prevista en el Reglamento; el sistema de competencias exclusivas resuelve el problema atribuyendo competencia directamente al tribunal del Estado de registro."],c:"TJUE: GAT v LuK C-4/03; Roche Nederland C-539/03; Brite Strike C-230/15"},
+// ── Medidas provisionales ──
+{q:"¿Puede el tribunal que conoce del fondo otorgar medidas cautelares con efectos en otro Estado miembro sin violar el art. 35 Bruselas I bis?",t:"Medidas provisionales",o:["Sí, el tribunal del fondo tiene competencia plena","No, solo el tribunal del lugar de ejecución","Solo para medidas no coercitivas","Solo si el demandado no tiene bienes en el Estado del fondo"],an:["El art. 35 permite solicitar medidas cautelares al tribunal de cualquier Estado miembro aunque carezca de competencia sobre el fondo; la competencia del tribunal del fondo es independiente y más amplia, aunque la ejecución en otro Estado puede requerir reconocimiento.","La ejecución transfronteriza de medidas cautelares depende del Estado de ejecución; el tribunal que las dicta puede carecer de competencia territorial para ordenar medidas en otro Estado sin habilitación específica.","La distinción entre medidas coercitivas y no coercitivas es relevante para la libre circulación, pero no determina la competencia para dictarlas.","La ausencia de bienes en el Estado del fondo es irrelevante para la competencia; lo que limita la efectividad es la necesidad de reconocimiento en el Estado de ejecución."],c:"TJUE: Van Uden C-391/95; Mietz C-99/96; St. Paul Dairy C-104/03"},
+{q:"¿Las anti-suit injunctions dictadas por tribunales de Estados miembros para impedir litigar en otro Estado miembro son compatibles con Bruselas I bis?",t:"Medidas provisionales",o:["No, vulneran el principio de confianza mutua","Sí, si hay acuerdo de arbitraje válido","Solo frente a procedimientos en terceros Estados","Sí, si el tribunal del foro tiene competencia exclusiva"],an:["El TJUE declaró en Turner y después en Allianz/West Tankers que las anti-suit injunctions son incompatibles con el Reglamento Bruselas I ya que interfieren en la competencia de los tribunales de otros Estados miembros y vulneran el principio de confianza mutua.","La excepción para litigios con conexión arbitral es la cuestión más debatida: West Tankers prohibió las anti-suit injunctions incluso para proteger acuerdos de arbitraje, aunque la doctrina critica esta solución como excesivamente restrictiva.","Frente a procedimientos en terceros Estados, el Reglamento no impide anti-suit injunctions; la prohibición del TJUE solo afecta a las relaciones intra-UE.","La competencia exclusiva del art. 24 no habilita per se a dictar anti-suit injunctions; el problema es la interferencia con la jurisdicción de otro tribunal de la UE."],c:"TJUE: Turner C-159/02; Allianz/West Tankers C-185/07"},
+// ── Ejecución de resoluciones ──
+{q:"¿Debe suprimirse el procedimiento de exequátur en el espacio judicial europeo para agilizar la ejecución transfronteriza?",t:"Reconocimiento y ejecución",o:["Sí, la abolición total mejoraría la eficiencia","No, el exequátur garantiza el control previo a la ejecución","Un sistema mixto según tipo de resolución es preferible","La supresión debe ir acompañada de mayor armonización procesal"],an:["El Reglamento 1215/2012 suprimió el exequátur para la mayoría de resoluciones en la UE; la tendencia hacia la supresión refleja la confianza en los sistemas judiciales nacionales y el principio de reconocimiento mutuo.","El mantenimiento de controles mínimos en la ejecución (orden público, notificación) equilibra la eficiencia con la protección de los derechos fundamentales del ejecutado.","Un sistema diferenciado según la naturaleza de la resolución es el modelo adoptado: exequátur suprimido para la generalidad, mantenido para ciertas materias sensibles como el estado civil.","La supresión del exequátur sin armonización procesal mínima puede generar desigualdades en el nivel de protección del ejecutado según el Estado de ejecución."],c:"Reglamento 1215/2012 considerando 26; TJUE: Prism Investments C-139/10"},
+{q:"¿Puede denegarse la ejecución de una resolución de otro Estado miembro cuando el deudor ha iniciado un procedimiento de insolvencia en el Estado de ejecución?",t:"Reconocimiento y ejecución",o:["Sí, la insolvencia suspende la ejecución individual","No, Bruselas I bis es independiente del Reglamento de Insolvencia","Solo si el crédito ha sido reconocido en el concurso","Depende de si la resolución es anterior o posterior a la apertura"],an:["El solapamiento entre el Reglamento 1215/2012 y el Reglamento de Insolvencia 2015/848 genera colisiones normativas; la apertura del procedimiento concursal activa el stay automático que suspende las ejecuciones individuales conforme a la lex concursus.","Los reglamentos operan en principio en esferas separadas; sin embargo, la apertura del concurso en el Estado de ejecución activa el derecho nacional aplicable que puede suspender la ejecución de la resolución extranjera.","El reconocimiento del crédito en el concurso no es condición de la suspensión; la suspensión opera ope legis por la apertura del procedimiento.","La cronología es relevante: las resoluciones firmes anteriores a la apertura del concurso pueden haberse convertido en créditos concursales; las posteriores plantean el problema de la violación del stay."],c:"Reglamento 2015/848 art. 20; TJUE: Seagon C-339/07; F-Tex C-213/10"},
+// ── Roma I / Ley aplicable a los contratos ──
+{q:"¿Puede las partes de un contrato de consumo elegir la ley de un tercer Estado que ofrezca menos protección que la del Estado del consumidor?",t:"Roma I",o:["No, el art. 6.2 Roma I protege al consumidor","Sí, si el consumidor lo acepta expresamente","Solo para contratos de alto valor","Sí, si la ley elegida es de la UE"],an:["El art. 6.2 del Reglamento Roma I permite la elección de ley en contratos de consumo, pero establece que esa elección no puede privar al consumidor de la protección de las normas imperativas de su Estado de residencia habitual; es la regla de favor.","La aceptación expresa del consumidor no subsana la privación de protección imperativa; la regla del art. 6.2 es una limitación que opera objetivamente al margen de la voluntad del consumidor.","Un umbral cuantitativo para la aplicación del art. 6.2 Roma I no existe en el Reglamento; la protección del consumidor es independiente del valor del contrato.","La restricción a leyes de la UE no tiene base en Roma I; el Reglamento permite elegir la ley de cualquier Estado, incluidos terceros, con el límite de las normas imperativas del Estado del consumidor."],c:"Reglamento Roma I art. 6; TJUE: Verein für Konsumenteninformation C-191/15"},
+{q:"¿Puede un contrato de trabajo someterse a la ley de un Estado con menor protección del trabajador mediante cláusula de elección de ley?",t:"Roma I",o:["No, las normas imperativas del Estado habitual de trabajo prevalecen","Sí, si el trabajador lo acepta libremente","Solo si el contrato se celebra fuera del Estado habitual","Sí, con límite en el orden público internacional"],an:["El art. 8.1 Roma I es explícito: la elección de ley en contratos individuales de trabajo no puede privar al trabajador de la protección que le otorgan las disposiciones que no pueden excluirse por acuerdo conforme a la ley que sería aplicable a falta de elección.","La aceptación libre del trabajador no modifica la aplicación del art. 8.1; la protección es objetiva e irrenunciable, aunque el trabajador puede beneficiarse de condiciones más favorables.","El criterio del lugar de celebración del contrato ha sido desplazado por el del lugar habitual de trabajo como elemento de conexión principal; el primero es solo subsidiario.","El orden público internacional es el último recurso; el art. 8 Roma I ofrece una protección anterior y más específica que no requiere invocar el orden público."],c:"Reglamento Roma I art. 8; TJUE: Schlecker C-64/12; Koelzsch C-29/10"},
+{q:"¿Debe la ley rectora del contrato determinar también la existencia y validez del consentimiento al acuerdo de elección de ley?",t:"Roma I",o:["Sí, la putative applicable law rige la validez formal","No, la ley del lugar de celebración rige el consentimiento","La validez del consentimiento se determina autónomamente","Debe aplicarse la ley más favorable a la validez"],an:["El art. 10.1 Roma I establece que la existencia y validez del consentimiento se determinan conforme a la ley que regiría el contrato si fuera válido (lex causae putativa), regla circular pero funcionalmente eficiente.","El recurso a la ley del lugar de celebración es un residuo histórico del principio locus regit actum, incompatible con el sistema Roma I que abandona el criterio del lugar de celebración como elemento de conexión principal.","La interpretación autónoma del consentimiento en el contexto del derecho de contratos europeo es tentadora pero carece de base positiva en Roma I; el Reglamento remite a las leyes nacionales.","El favor negotii es un principio que opera en materia de forma (art. 11), pero no puede extenderse sin más a la determinación de la ley rectora del consentimiento."],c:"Reglamento Roma I art. 10; Giuliano-Lagarde Report"},
+// ── Roma II / Responsabilidad extracontractual ──
+{q:"En un accidente de tráfico transfronterizo, ¿debe aplicarse la ley del lugar del accidente o la del lugar de residencia habitual común de las partes?",t:"Roma II",o:["Ley del lugar del accidente (lex loci delicti)","Ley de residencia habitual común si coincide","Las partes pueden elegir la ley aplicable tras el accidente","La ley más favorable a la víctima"],an:["El art. 4.1 Roma II establece como regla general la lex loci damni (lugar del daño directo). El lugar del accidente es el punto de conexión primario, salvo que las partes tengan residencia habitual común en el mismo Estado.","El art. 4.2 Roma II introduce la excepción de residencia habitual común como conexión más estrecha; cuando ambas partes son residentes del mismo Estado, se aplica la ley de ese Estado aunque el accidente ocurra en otro.","La elección de ley posterior al hecho dañoso está permitida por el art. 14 Roma II, aunque con limitaciones para los supuestos que afecten a terceros o al orden público.","El favor victimae como criterio de conexión fue debatido durante la elaboración de Roma II pero rechazado en favor de la previsibilidad que ofrece la lex loci damni."],c:"Reglamento Roma II art. 4; TJUE: Homawoo C-350/10; Folien Fischer C-133/11"},
+{q:"¿Debe la ley aplicable a la difamación en internet determinarse por el lugar del servidor, el domicilio del autor o el lugar de acceso al contenido?",t:"Roma II",o:["Lugar del daño principal (residencia del difamado)","Lugar del servidor o publicación","Domicilio del autor del contenido","El afectado elige entre varias leyes concurrentes"],an:["La materia de difamación fue expresamente excluida de Roma II (art. 1.2.g) por no alcanzarse acuerdo político; en consecuencia, se aplican las normas de conflicto nacionales, generando fragmentación. La lex loci damni sería el punto de partida lógico de un futuro instrumento europeo.","El lugar del servidor es un criterio técnico manipulable que no refleja la conexión real del ilícito con ningún ordenamiento; es el criterio más débil de todos los propuestos.","El domicilio del autor puede coincidir con el lugar de origen de la difamación, pero no necesariamente con el lugar donde el daño es más intenso, que suele ser el Estado de residencia del difamado.","La opción por el afectado es la solución adoptada en el TJUE para la competencia judicial (eDate), pero trasladarla a la ley aplicable generaría una elección unilateral post hoc incompatible con los principios de Roma II."],c:"TJUE: eDate Advertising C-509/09; Roma II art. 1.2.g)"},
+// ── Derecho procesal europeo ──
+{q:"¿El Proceso Europeo de Escasa Cuantía garantiza suficientemente el derecho de defensa cuando se tramita íntegramente por escrito?",t:"Proceso Europeo",o:["Sí, la eficiencia justifica la limitación del procedimiento oral","No, la audiencia oral debe ser siempre disponible","Solo si el demandado lo solicita expresamente","Depende del tipo de conflicto y del importe"],an:["El Reglamento 861/2007 prevé la tramitación preferentemente escrita del proceso de escasa cuantía como elemento diferencial de eficiencia; el TJUE ha validado esta opción legislativa siempre que se garantice el principio de contradicción.","El derecho a ser oído no implica necesariamente audiencia oral; el TEDH ha reconocido que procedimientos escritos satisfacen el art. 6 CEDH cuando las partes pueden presentar sus alegaciones de forma efectiva.","La posibilidad de solicitar audiencia oral existe en el Reglamento 861/2007 pero el tribunal puede denegarla; el equilibrio entre eficiencia y defensa se fija caso por caso.","La adecuación del procedimiento escrito varía según el tipo de prueba necesaria: litigios documentales se prestan mejor al procedimiento escrito que los que requieren testimonio oral."],c:"Reglamento 861/2007; TEDH: Fischer c. Austria; Reglamento 2015/2421"},
+{q:"¿Debe el Requerimiento Europeo de Pago (REP) ser revisado por el órgano jurisdiccional antes de su expedición aunque sea de forma sumaria?",t:"Proceso Europeo",o:["Sí, algún control judicial es indispensable","No, el examen automático basta para créditos documentados","Solo para cuantías superiores al umbral de escasa cuantía","El control debe ser posterior, a instancia del deudor"],an:["El Reglamento 1896/2006 establece que el tribunal examina la solicitud sobre la base de la información proporcionada, sin posibilidad de valorar la autenticidad documental en profundidad; la revisión sumaria es el equilibrio adoptado entre velocidad y legitimidad.","El examen puramente automático plantearía problemas de compatibilidad con el art. 6 CEDH y el art. 47 CDFUE; algún grado de cognición judicial, por sumaria que sea, es constitucionalmente necesario.","Un umbral cuantitativo para el nivel de control no tiene base en el Reglamento y generaría disparidades en el nivel de protección según el importe del crédito.","El control posterior a instancia del deudor (oposición) es el mecanismo principal de protección, complementario al examen previo sumario."],c:"Reglamento 1896/2006; TJUE: eco cosmetics C-119/13"},
+{q:"¿Debe el juicio de exequátur ser eliminado también para las resoluciones en materia de alimentos transfronterizos?",t:"Proceso Europeo",o:["Ya fue eliminado por el Reglamento 4/2009","No, la sensibilidad de la materia justifica el control","Solo para resoluciones dictadas en Estados con protocolos de La Haya","El modelo depende de la reciprocidad del Estado de origen"],an:["El Reglamento 4/2009 sobre alimentos ya eliminó el exequátur para resoluciones dictadas en Estados miembros vinculados por el Protocolo de La Haya de 2007, anticipándose al modelo general de Bruselas I bis.","La sensibilidad familiar de los alimentos no justifica mantener el exequátur una vez que existe armonización de las normas de conflicto y confianza mutua entre sistemas judiciales; la demora perjudica precisamente a los acreedores más vulnerables.","La distinción entre Estados vinculados y no vinculados por los Protocolos de La Haya es la solución del Reglamento 4/2009; crea un sistema a dos velocidades dentro de la UE.","La reciprocidad es un criterio propio del derecho internacional convencional clásico, incompatible con la lógica del espacio judicial europeo basado en la confianza mutua."],c:"Reglamento 4/2009; TJUE: Hengst Import C-474/93"},
+// ── Arbitraje y Derecho UE ──
+{q:"¿Debe el árbitro con sede en un Estado miembro de la UE aplicar el derecho de la competencia europeo aunque las partes hayan elegido otro derecho?",t:"Arbitraje y DUE",o:["Sí, el derecho de la competencia UE es imperativo","No, la autonomía arbitral prevalece sobre normas imperativas","Solo si el contrato afecta al comercio intracomunitario","El árbitro aplica la ley elegida por las partes sin excepciones"],an:["El TJUE estableció en Eco Swiss que el derecho de la competencia europeo (art. 101 TFUE) constituye orden público en el sentido del Convenio de Nueva York; los tribunales nacionales pueden y deben denegar el reconocimiento del laudo que lo infrinja, y el árbitro debe aplicarlo de oficio.","La autonomía arbitral tiene límites claros: las normas de orden público de la UE no son disponibles para las partes. La aplicación del derecho de la competencia europeo no depende de la voluntad de las partes ni de su elección de ley.","El umbral de afectación del comercio intracomunitario es relevante para determinar cuándo se aplica el art. 101 TFUE; si no se alcanza, solo se aplica el derecho nacional de la competencia.","La posición de aplicación sin excepciones de la ley elegida es incompatible con la doctrina Eco Swiss y con el principio de effet utile del derecho de la competencia de la UE."],c:"TJUE: Eco Swiss C-126/97; Courage C-453/99; Manfredi C-295/04"},
+{q:"¿Es compatible con el derecho de la UE que un acuerdo de arbitraje en un TBI intracomunitario excluya la jurisdicción de los tribunales de los Estados miembros?",t:"Arbitraje y DUE",o:["No, Achmea lo declaró incompatible","Sí, los TBI son tratados internacionales válidos","Solo para inversiones anteriores a la adhesión","El TJUE debe reconocer el arbitraje de inversiones intracomunitario"],an:["El TJUE declaró en Achmea que las cláusulas de arbitraje de los TBI intracomunitarios son incompatibles con los arts. 267 y 344 TFUE porque sustraen litigios al sistema jurisdiccional de la UE, privando al TJUE de la posibilidad de pronunciarse sobre la interpretación del derecho de la UE.","La calificación de los TBI como tratados internacionales válidos no los inmuniza frente al derecho de la UE; tras la adhesión, el derecho de la UE tiene primacía y los TBI intracomunitarios incompatibles con él deben ser inaplicados.","La distinción entre inversiones anteriores y posteriores a la adhesión fue planteada pero no constituyó el criterio decisivo del TJUE en Achmea; la incompatibilidad opera por la naturaleza del procedimiento, no por la fecha.","El reconocimiento del arbitraje de inversiones intracomunitario requeriría una modificación del TFUE o un instrumento multilateral que garantice la supervisión del TJUE sobre las cuestiones de derecho de la UE."],c:"TJUE: Achmea C-284/16; Komstroy C-741/19; PL Holdings C-109/20"},
+// ── GDPR y Jurisdicción ──
+{q:"¿Puede un ciudadano de la UE demandar a un responsable del tratamiento de datos domiciliado en EEUU ante los tribunales de su Estado de residencia?",t:"GDPR y Jurisdicción",o:["Sí, art. 79.2 GDPR atribuye competencia al Estado del interesado","Solo ante los tribunales del responsable del tratamiento","Solo a través de la autoridad de control nacional","Solo si el responsable tiene representante en la UE"],an:["El art. 79.2 GDPR reconoce expresamente al interesado la opción de interponer recurso ante los tribunales del Estado miembro donde tenga su residencia habitual, además de ante los del Estado miembro donde esté establecido el responsable.","Limitar la competencia al domicilio del responsable haría inaccesible la tutela judicial efectiva para la gran mayoría de ciudadanos y contradiría el art. 79.2 GDPR y el art. 47 CDFUE.","La autoridad de control es un mecanismo alternativo, no excluyente; el art. 79.1 GDPR reconoce el derecho a recurso judicial efectivo independientemente del procedimiento administrativo.","La obligación de designar representante en la UE (art. 27 GDPR) facilita la demanda pero no es condición para ejercer la competencia del art. 79.2."],c:"GDPR art. 79; TJUE: Fashion ID C-40/17; Google Spain C-131/12"},
+{q:"¿Puede la acción colectiva de una organización de consumidores reclamar daños por infracción del GDPR en nombre de sus miembros sin mandato expreso?",t:"GDPR y Jurisdicción",o:["Sí, art. 80.2 GDPR lo permite expresamente","No, el daño por datos es personal e intransferible","Solo organizaciones acreditadas por el supervisor nacional","Solo daños patrimoniales, no daños morales"],an:["El art. 80.2 GDPR permite a los Estados miembros facultar a organizaciones a interponer reclamaciones independientemente de si el interesado ha conferido mandato, aunque no todos los Estados han implementado esta facultad.","La transmisión de derechos subjetivos personales como la protección de datos plantea problemas dogmáticos, aunque el TJUE ha reconocido en SCHUFA que el interés legítimo de las organizaciones en la tutela colectiva de datos puede prevalecer.","La acreditación por el supervisor no es condición del art. 80.2; basta con ser una entidad sin ánimo de lucro que tenga entre sus objetivos estatutarios la defensa de los intereses de los interesados.","La distinción entre daños patrimoniales y morales no está en el art. 80 GDPR; el art. 82 GDPR reconoce expresamente la indemnización del daño material e inmaterial."],c:"TJUE: Meta Platforms C-252/21; SCHUFA C-26/22; Österreichische Post C-300/21"},
+// ── Insolvencia transfronteriza ──
+{q:"¿Debe determinarse el COMI del deudor en el momento de apertura del procedimiento de insolvencia o en el de presentación de la solicitud?",t:"Insolvencia transfronteriza",o:["En el momento de presentación de la solicitud","En la apertura del procedimiento","El COMI debe ser estable durante un período mínimo previo","El tribunal puede elegir el momento más favorable para la masa"],an:["El Reglamento de Insolvencia 2015/848 y la jurisprudencia del TJUE (Eurofood) apuntan al momento de presentación de la solicitud como referencia temporal para determinar el COMI, aunque el Reglamento exige que no haya habido traslado artificioso en los 3 meses anteriores.","La apertura del procedimiento puede producirse con significativo retraso; usar ese momento crearía incertidumbre sobre cuál tribunal es competente durante la fase previa a la apertura.","La exigencia de estabilidad del COMI durante un período mínimo es la solución adoptada por el Reglamento para combatir el forum shopping abusivo en insolvencia.","Atribuir al tribunal la elección del momento valorativo comprometería la seguridad jurídica y abre la puerta a la manipulación de la competencia."],c:"TJUE: Eurofood C-341/04; Interedil C-396/09; Reglamento 2015/848 art. 3"},
+{q:"¿Pueden los acreedores de un procedimiento de insolvencia secundario obtener pagos más allá de los bienes situados en el Estado de apertura del procedimiento secundario?",t:"Insolvencia transfronteriza",o:["No, el procedimiento secundario opera sobre activos locales","Sí, si el procedimiento principal no proporciona equivalencia","Solo con autorización del síndico principal","El art. 35 del Reglamento permite la distribución coordinada"],an:["El Reglamento 2015/848 limita el procedimiento secundario a los bienes situados en el Estado de apertura, reforzando así el principio de territorialidad del procedimiento secundario y la primacía del procedimiento principal.","La posibilidad de recurrir a activos exteriores al Estado del procedimiento secundario vaciaría de contenido la distinción entre procedimiento principal y secundario y comprometería la coordinación prevista en el Reglamento.","La autorización del síndico principal es el mecanismo de coordinación previsto en el Reglamento para situaciones excepcionales; sin ese control centralizado, la distribución de activos sería caótica.","El art. 35 del Reglamento 2015/848 establece la regla del hotchpot, que impide a los acreedores del procedimiento secundario participar en el procedimiento principal hasta que los acreedores de la misma categoría del otro procedimiento hayan recibido un trato equivalente."],c:"Reglamento 2015/848 arts. 35, 36; TJUE: Nortel Networks C-694/15"},
+// ── Competencia (antitrust) ──
+{q:"¿Puede una empresa víctima de un cártel europeo demandar a todos los participantes ante el tribunal del domicilio del autor principal?",t:"Competencia",o:["Sí, art. 8.1 Bruselas I bis permite acumular demandas","Solo ante el tribunal del lugar del daño","Solo si todos los demandados son codemandados necesarios","Sí, pero requiere autorización judicial previa"],an:["El art. 8.1 Bruselas I bis permite demandar a múltiples demandados ante el tribunal del domicilio de uno de ellos si las demandas están relacionadas de modo que exista riesgo de resoluciones inconciliables; el TJUE aplicó este criterio al cartel CDC en el asunto Daimler.","El foro del lugar del daño del art. 7.2 es aplicable en acciones por infracción del derecho de la competencia, pero no permite acumular demandas contra demandados domiciliados en otros Estados.","La distinción entre codemandados necesarios y contingentes no existe en el art. 8.1; el criterio es la conexidad de las demandas y el riesgo de resoluciones inconciliables.","Un requisito de autorización judicial previa no está previsto en el Reglamento; la competencia surge directamente de las condiciones del art. 8.1."],c:"TJUE: CDC Hydrogen Peroxide C-352/13; Daimler C-30/20; flyLAL C-27/17"},
+{q:"¿Debe el daño causado por un cártel de precios localizarse en el lugar de la compra sobrevaluada o en el domicilio del comprador?",t:"Competencia",o:["Lugar de la compra (lugar del perjuicio directo)","Domicilio del comprador (lugar donde se siente el daño)","Sede del cártel o del infractor principal","El comprador puede elegir entre ambos foros"],an:["El TJUE estableció en flyLAL que el daño directo en acciones por infracción del derecho de la competencia se produce en el mercado afectado, es decir, donde se realizaron las compras sobrevaluadas; este criterio garantiza previsibilidad.","La doctrina del domicilio del comprador como lugar donde se percibe la pérdida patrimonial fue propuesta en la AG pero rechazada por el Pleno en flyLAL; permitiría una atomización de los foros que comprometería la coherencia del sistema.","La sede del cártel puede ser relevante para el art. 8.1 (demandado-ancora), pero no es el criterio del art. 7.2 para localizar el daño extracontractual.","Una elección abierta entre foros favorecería a los demandantes pero crearía inseguridad para los demandados y potenciaría el forum shopping en litigios de daños por competencia."],c:"TJUE: flyLAL C-27/17; CDC C-352/13; Tibor Trans C-451/18"},
+// ── Familia y sucesiones ──
+{q:"¿Debe el interés superior del menor prevalecer sobre los derechos de custodia del progenitor en caso de sustracción internacional de menores?",t:"Bruselas IIter",o:["El interés superior del menor debe prevalecer siempre","Los derechos de custodia garantizan el retorno automático","Un equilibrio caso a caso entre ambos principios","El Estado de residencia habitual tiene siempre la última palabra"],an:["El principio del interés superior del menor es el eje del Reglamento Bruselas IIter y del Convenio de La Haya de 1980; sin embargo, el Reglamento presupone que el retorno inmediato sirve al interés del menor, salvo excepciones tasadas.","El retorno automático es el mecanismo del Convenio de La Haya, pero el Reglamento Bruselas IIter y la jurisprudencia del TEDH han reconocido excepciones basadas en el riesgo grave para el menor; no existe automatismo absoluto.","La valoración caso a caso es el enfoque que el TJUE ha adoptado en Rinau y Povse, equilibrando el principio de retorno con las excepciones humanitarias y los derechos fundamentales del menor.","La competencia del Estado de residencia habitual anterior es el criterio de Bruselas IIter, pero el TJUE ha matizado que el tribunal del Estado de retorno puede denegar la ejecución cuando concurren circunstancias excepcionales."],c:"TJUE: Rinau C-195/08; Povse C-211/10; Reglamento 2019/1111"},
+{q:"¿Puede un ciudadano de la UE elegir la ley de su nacionalidad para regular su sucesión en lugar de la ley de su residencia habitual?",t:"Sucesiones",o:["Sí, el Reglamento 650/2012 lo permite expresamente","No, la ley de residencia habitual es imperativa","Solo para bienes inmuebles","Solo si la ley elegida es más favorable a los herederos forzosos"],an:["El art. 22 del Reglamento 650/2012 reconoce expresamente la professio iuris: el causante puede elegir la ley de su nacionalidad en el momento de la elección o del fallecimiento para regir la totalidad de su sucesión.","La ley de residencia habitual es la regla general en ausencia de elección (art. 21), no una norma imperativa; el Reglamento valora la autonomía de la voluntad en sucesiones como novedad significativa respecto a los sistemas anteriores.","La distinción entre bienes muebles e inmuebles fue propia de los antiguos sistemas de escisión; el Reglamento 650/2012 adopta el principio de unidad de la sucesión con una sola ley rectora.","El favor para las legítimas es un límite material del derecho aplicable, no un criterio para la elección de ley; las normas de orden público del foro protegen a los herederos forzosos con independencia de la ley elegida."],c:"Reglamento 650/2012 arts. 21, 22; TJUE: Kubicka C-218/16; Mahnkopf C-558/16"},
+// ── Notificaciones y obtención de prueba ──
+{q:"¿Debe el tribunal requirente verificar que la notificación del acto de inicio del procedimiento fue efectivamente recibida por el demandado antes de dictar resolución en rebeldía?",t:"Notificación y rebeldía",o:["Sí, la recepción efectiva es requisito de tutela judicial","No, la notificación regular crea presunción de conocimiento","Solo si el demandado está domiciliado fuera de la UE","Solo para procedimientos sancionadores"],an:["El art. 45.1.b) Bruselas I bis y el art. 22 del Reglamento 1393/2007 exigen que el demandado haya podido conocer la demanda con tiempo suficiente para preparar su defensa; el TJUE ha interpretado este requisito de forma protectora en casos de notificación deficiente.","La presunción de conocimiento derivada de una notificación regular satisface el principio de contradicción en la mayoría de los casos, pero cede cuando el demandado demuestra que no tuvo conocimiento efectivo y sin culpa propia.","La distinción basada en el domicilio dentro o fuera de la UE no modifica el requisito de tutela judicial; el derecho de defensa opera con independencia de la ubicación del demandado.","La distinción entre procedimientos sancionadores y civiles es relevante en el CEDH (art. 6.3 garantías específicas), pero el derecho de defensa en rebeldía civil también exige garantías suficientes de conocimiento."],c:"TJUE: Hypoteční banka C-327/10; G C-292/10; Reglamento 1393/2007"},
+{q:"¿Puede un tribunal de la UE ordenar la práctica de prueba en otro Estado miembro directamente sin pasar por el Reglamento sobre obtención de prueba?",t:"Obtención de prueba",o:["No, el Reglamento 1206/2001 es el cauce exclusivo","Sí, si el otro Estado lo consiente","Solo para prueba documental","El Reglamento 2020/1783 permite mayor flexibilidad"],an:["El Reglamento 1206/2001 (actualizado por el 2020/1783) establece el cauce procesal para la obtención de prueba transfronteriza; sin embargo, no prohíbe que un tribunal tome prueba directamente con la cooperación del tribunal del otro Estado y cuando ese Estado lo permite.","El Reglamento 2020/1783 introdujo la videoconferencia directa como mecanismo alternativo, ampliando significativamente la posibilidad de obtención directa de prueba sin la intermediación del tribunal requerido.","La distinción entre prueba documental y testimonial es relevante en algunos sistemas nacionales, pero el Reglamento no establece esta distinción para los mecanismos de obtención.","El nuevo Reglamento 2020/1783, aplicable desde 2022, moderniza el sistema y facilita la obtención directa de declaraciones por videoconferencia, reduciendo la dependencia del cauce rogatorio clásico."],c:"Reglamento 2020/1783; TJUE: ProRail C-332/11"},
+// ── Títulos ejecutivos europeos ──
+{q:"¿Debe el Título Ejecutivo Europeo (TEE) para créditos no impugnados eliminar toda posibilidad de control en el Estado de ejecución?",t:"Títulos ejecutivos europeos",o:["Sí, la supresión total del exequátur es el objetivo","No, deben mantenerse controles mínimos de orden público","Solo para resoluciones recaídas en procedimiento contradictorio","El ejecutado debe poder alegar defectos de notificación"],an:["El Reglamento 805/2004 suprimió el exequátur para créditos no impugnados certificados como TEE, aunque mantiene la posibilidad de suspensión de la ejecución en el Estado requerido por motivos procesales tasados; la supresión total es el modelo adoptado.","El mantenimiento de un control mínimo de orden público en el Estado de ejecución es la válvula de seguridad que preserva los derechos fundamentales del ejecutado, aunque limita la eficiencia del sistema.","La exigencia de procedimiento contradictorio podría desbordar el ámbito del Reglamento, que fue diseñado precisamente para resolver créditos no impugnados con mayor agilidad.","El control de la regularidad de la notificación es el principal mecanismo de protección del ejecutado en el sistema TEE; el Reglamento establece requisitos mínimos de notificación que deben cumplirse para la certificación."],c:"Reglamento 805/2004; TJUE: eco cosmetics C-119/13; Lebek C-70/15"},
+// ── Derechos fundamentales y proceso ──
+{q:"¿Puede un Estado miembro limitar la asistencia jurídica gratuita en litigios transfronterizos civiles por razones presupuestarias?",t:"Asistencia jurídica",o:["No, el art. 47 CDFUE garantiza el acceso a la justicia","Sí, el Estado tiene margen de apreciación en recursos","Solo para nacionales de terceros Estados","Sí, si existen mecanismos alternativos de resolución"],an:["El art. 47 CDFUE y la Directiva 2003/8/CE reconocen el derecho a asistencia jurídica gratuita en litigios transfronterizos; el TJUE ha establecido que las restricciones basadas exclusivamente en motivos presupuestarios pueden vulnerar el derecho a tutela judicial efectiva.","El margen de apreciación de los Estados en la configuración del sistema de asistencia jurídica es reconocido, pero tiene límites: la restricción no puede vaciar de contenido el derecho garantizado por el art. 47 CDFUE.","La Directiva 2003/8 aplica a todos los residentes en la UE independientemente de su nacionalidad; la distinción por origen nacional solo cabe respecto a nacionales de terceros Estados no cubiertos por la Directiva.","Los MASC como alternativa a la asistencia jurídica gratuita pueden ser complementarios, pero no sustitutivos cuando el litigante no puede costear un proceso judicial."],c:"Directiva 2003/8; TJUE: DEB C-279/09; Samba Diouf C-69/10"},
+{q:"¿El principio ne bis in idem del art. 50 CDFUE impide el doble enjuiciamiento en dos Estados miembros cuando el primero archivó la causa por falta de pruebas?",t:"Derechos fundamentales",o:["Sí, el archivo definitivo activa el ne bis in idem","No, el archivo por falta de pruebas no cierra definitivamente el asunto","Depende del efecto preclusivo del archivo en el Estado de origen","Solo si el archivo produjo cosa juzgada formal"],an:["El TJUE declaró en Gözütok y Brügge que las resoluciones que ponen fin definitivamente a la acción penal tras un examen sobre el fondo activan el ne bis in idem, aunque un archivo por insuficiencia de prueba sin examen del fondo puede no satisfacer este requisito.","La ausencia de examen del fondo en el archivo diferencia esta situación de la sentencia absolutoria; el TJUE ha adoptado un criterio material que distingue entre archivos definitivos con efectos sustantivos y archivos meramente procedimentales.","El efecto preclusivo del archivo en el Estado de origen es el criterio determinante para el TJUE: si el derecho nacional confiere efecto de cosa juzgada al archivo, el ne bis in idem opera plenamente.","La cosa juzgada formal es condición necesaria pero no siempre suficiente; el TJUE examina también si hubo evaluación del fondo del asunto para activar la protección del art. 50 CDFUE."],c:"TJUE: Gözütok C-187/01; Van Esbroeck C-436/04; Miraglia C-469/03"},
+// ── Mediación y MASC ──
+{q:"¿Debería la mediación ser obligatoria en litigios civiles transfronterizos antes de acceder a los tribunales?",t:"Mediación",o:["Sí, reduce la saturación judicial y los costes","No, viola el derecho de acceso a la justicia","Solo para litigios de consumo o escasa cuantía","Solo si existe mediador acreditado en ambos Estados"],an:["La mediación obligatoria como paso previo plantea tensión con el art. 47 CDFUE; el TJUE declaró en Alassini que una mediación obligatoria con efecto no vinculante y sin coste excesivo es compatible con el derecho de acceso a la justicia.","La obligatoriedad total comprometería el art. 6 CEDH y el art. 47 CDFUE si el coste o la duración del MASC hace ilusorio el acceso posterior a los tribunales.","La limitación a litigios de consumo y escasa cuantía es el modelo adoptado por varios Estados miembros tras la Directiva 2013/11 (ADR consumo) y es la posición de mínima restricción al acceso a la justicia.","La acreditación bilateral de mediadores es un requisito de calidad, no de admisibilidad; exigirla como condición del MASC previo crearía barreras de acceso desproporcionadas."],c:"TJUE: Alassini C-317/08; Directiva 2008/52; Directiva 2013/11"},
+// ── Nuevas tecnologías y jurisdicción ──
+{q:"¿Dónde se localiza el daño derivado de la infracción del derecho de autor cometida en internet a efectos del art. 7.2 Bruselas I bis?",t:"Propiedad intelectual digital",o:["En todos los Estados desde donde es accesible el contenido","Solo en el Estado del servidor o del infractor","En el Estado del centro de intereses del titular","El art. 7.2 no es aplicable a infracciones online"],an:["El TJUE adoptó en Pinckney y Hejduk la doctrina de la ubicuidad limitada: cada tribunal es competente por el daño producido en su territorio (competencia fraccionada), lo que puede generar multiplicidad de foros pero respeta la territorialidad de los derechos de autor.","El lugar del servidor es un criterio técnico manipulable y ajeno a la protección de los derechos de autor; el TJUE lo ha rechazado como criterio determinante en favor del lugar del daño.","El centro de intereses del titular es el criterio adoptado para la difamación en internet (eDate), pero el TJUE lo limitó a derechos de la personalidad, sin extenderlo a los derechos de propiedad intelectual.","El art. 7.2 es plenamente aplicable a infracciones online; la naturaleza digital del ilícito no excluye la regla general del foro del lugar del daño."],c:"TJUE: Pinckney C-170/12; Hejduk C-441/13; eDate C-509/09"},
+{q:"¿Pueden los contratos de licencia de software celebrados con clic de aceptación cumplir el requisito formal del art. 25 Bruselas I bis para los acuerdos de sumisión?",t:"Contratos digitales",o:["Sí, el clic constituye confirmación por escrito","No, se requiere firma o confirmación expresa","Solo si se registra el clic en un sistema verificable","Depende del derecho aplicable al contrato"],an:["El TJUE ha reconocido en el contexto del comercio electrónico que medios electrónicos que permiten consignar duraderam el consentimiento satisfacen el requisito de forma del art. 25; el clic de aceptación con posibilidad de registro satisface este estándar.","La exigencia de firma o confirmación expresa adicional al clic contradeciría la doctrina del TJUE sobre la adaptación de los requisitos formales al medio digital y el principio de equivalencia funcional.","El registro verificable del clic es un requisito de prueba, no de validez del consentimiento; la forma puede satisfacerse por cualquier medio electrónico que permita constatar el acuerdo.","Remitir la validez del acuerdo de sumisión al derecho aplicable al contrato contradice la interpretación autónoma del art. 25, que establece requisitos de forma uniformes."],c:"TJUE: Jaouad El Majdoub C-322/14; MSG C-106/95"},
+// ── Preguntas adicionales variadas ──
+{q:"¿El tribunal de origen puede rechazar expedir el certificado del art. 53 Bruselas I bis cuando sospecha que la resolución vulnera derechos fundamentales?",t:"Bruselas I bis",o:["No, el art. 53 es de expedición automática","Sí, el tribunal tiene un deber de control previo","Solo si el vulneración es manifiesta","Solo si el demandado ha solicitado la suspensión"],an:["La expedición del certificado del art. 53 es en principio automática y no supone un control de fondo de la resolución; corresponde al tribunal de ejecución aplicar los motivos de denegación del art. 45.","El control previo por el tribunal de origen no está previsto en el Reglamento; incorporarlo equivaldría a reintroducir el exequátur por la puerta trasera.","Incluso en caso de vulneración manifiesta de derechos fundamentales, el sistema atribuye el control al tribunal del Estado de ejecución mediante los motivos del art. 45.","La solicitud de suspensión del ejecutado es un mecanismo posterior a la expedición del certificado; no condiciona la emisión del mismo."],c:"Reglamento 1215/2012 arts. 53, 45; TJUE: Gambazzi C-394/07"},
+{q:"¿Debe la carga de la prueba en acciones de daños por infracción del derecho de la competencia ser distribuida de forma especial para facilitar el acceso a la justicia de las víctimas?",t:"Competencia",o:["Sí, presunción de daño una vez probada la infracción","No, la carga ordinaria garantiza el equilibrio procesal","Solo para cárteles declarados por la Comisión","Sí, con límite en el derecho de defensa del infractor"],an:["La Directiva 2014/104 introdujo la presunción irrefutable de que los cárteles causan daño y la presunción refutable del 10% de sobreprecio, invirtiendo parcialmente la carga probatoria para facilitar las acciones follow-on.","La carga ordinaria de probar el daño causado por una infracción compleja y técnica como un cártel haría ilusorio el derecho a indemnización reconocido en Courage y Manfredi; la distribución especial es una exigencia del principio de efectividad.","La distinción entre cárteles declarados por la Comisión y otras infracciones es la base del sistema follow-on vs. stand-alone; las presunciones de la Directiva se aplican principalmente a las acciones derivadas de decisiones sancionadoras.","El equilibrio con el derecho de defensa del infractor se garantiza mediante el carácter refutable de las presunciones y el derecho de acceso a los archivos de las autoridades de competencia con límites."],c:"Directiva 2014/104; TJUE: Courage C-453/99; Manfredi C-295/04"},
+{q:"¿Es el foro del 'establecimiento' del art. 7.5 Bruselas I bis aplicable a las actividades de una filial cuando la matriz es la demandada?",t:"Bruselas I bis",o:["Solo si la filial actuó como agente dependiente de la matriz","No, la personalidad jurídica separada excluye el foro","Sí, si las decisiones se tomaron en la sede de la filial","Depende del grado de control de la matriz sobre la filial"],an:["El TJUE ha interpretado restrictivamente el art. 7.5: el 'establecimiento' debe haber actuado como centro de operaciones de la demandada, no como entidad jurídicamente separada. La existencia de control societario no convierte a la filial en establecimiento del art. 7.5.","La personalidad jurídica separada de la filial es la razón por la que el art. 7.5 no se activa automáticamente; levantar el velo societario requiere un fraude o abuso que trasciende el control ordinario de la matriz.","El criterio de dónde se tomaron las decisiones conecta más con el lugar de gestión que con el concepto de establecimiento del art. 7.5; el TJUE exige que el establecimiento participe directamente en la contratación.","El grado de control como criterio indeterminado generaría inseguridad jurídica y podría convertir toda relación matriz-filial en fundamento del foro del establecimiento."],c:"TJUE: Somafer C-33/78; SAR Schotte C-218/86; Mahamdia C-154/11"},
+{q:"¿Puede el principio de confianza legítima proteger al litigante que, razonablemente, presentó la demanda ante el tribunal designado en un acuerdo de sumisión que resulta inválido?",t:"Acuerdos de sumisión",o:["Sí, la confianza legítima debe protegerse en el proceso","No, la invalidez del acuerdo priva de competencia al tribunal","Solo si el error fue excusable y la otra parte no lo objetó","El tribunal debe remitir de oficio sin importar la conducta de las partes"],an:["La confianza legítima en el proceso civil europeo tiene límites: si el acuerdo de sumisión es inválido, el tribunal carece de competencia y no puede adquirirla por mera apariencia de validez, aunque este resultado puede ser contrario a las expectativas del litigante diligente.","La invalidez formal del acuerdo es sancionada por el Reglamento con la pérdida de competencia; el principio de confianza legítima no puede subsanar un defecto de forma que opera como conditio sine qua non de la competencia.","La sumisión tácita del art. 26 puede operar cuando el demandado comparece sin impugnar la competencia; este mecanismo ofrece una válvula de protección para la confianza legítima sin necesidad de recurrir a principios generales.","El control de oficio de la competencia previsto en el art. 27 garantiza que los tribunales no conserven competencia derivada de un acuerdo inválido, con independencia de la buena fe de las partes."],c:"TJUE: Elefanten Schuh C-150/80; Reglamento 1215/2012 arts. 25, 26, 27"},
+{q:"¿Debe el Reglamento de Insolvencia 2015/848 incluir mecanismos de reestructuración preventiva coordinados a nivel europeo?",t:"Insolvencia transfronteriza",o:["Sí, la Directiva 2019/1023 debe coordinarse con el Reglamento","No, la reestructuración es materia nacional","Solo para grupos de sociedades transfronterizos","El marco ya es suficiente con los protocolos voluntarios"],an:["La Directiva 2019/1023 sobre marcos de reestructuración preventiva y el Reglamento de Insolvencia 2015/848 tienen zonas de solapamiento que generan incertidumbre; la coordinación a nivel europeo es una necesidad doctrinal y práctica reconocida por la Comisión.","La reestructuración preventiva tiene base competencial nacional, pero la dimensión transfronteriza de los grupos empresariales hace ineficaz una solución puramente interna.","La coordinación para grupos de sociedades ya existe parcialmente en el capítulo V del Reglamento 2015/848; su extensión a la reestructuración preventiva es el paso lógico siguiente.","Los protocolos voluntarios entre administradores concursales tienen limitaciones: no son vinculantes y dependen de la cooperación de los síndicos nacionales sin un marco legal que los respalde."],c:"Reglamento 2015/848 cap. V; Directiva 2019/1023; TJUE: Nortel C-694/15"},
+{q:"¿Puede una cláusula de hardship en un contrato internacional suspender automáticamente las obligaciones del deudor sin declaración judicial?",t:"Roma I",o:["No, requiere declaración judicial o arbitral","Sí, si la cláusula lo establece expresamente","Depende de la ley rectora del contrato","Solo para contratos de larga duración"],an:["La eficacia de las cláusulas de hardship depende de la ley rectora del contrato (Roma I); la autonomía contractual permite pactar la suspensión automática, pero la mayoría de los sistemas nacionales exigen al menos notificación formal y período de negociación antes de la suspensión.","La suspensión automática sin declaración plantea problemas de certidumbre jurídica y puede generar incumplimientos en cadena; el art. 6.2.3 de los Principios UNIDROIT y los Principios PECL exigen negociación previa.","La ley rectora determina los requisitos de eficacia de la cláusula; algunos sistemas permiten la suspensión unilateral notificada mientras que otros exigen intervención judicial.","Los contratos de larga duración tienen mayor exposición a cambios imprevisibles de circunstancias, pero la distinción temporal no es el criterio definitivo para la eficacia automática de la cláusula."],c:"UNIDROIT Principles art. 6.2; PECL art. 6:111; Reglamento Roma I art. 12"},
+{q:"¿Es la elección de los Principios UNIDROIT como ley del contrato válida bajo el Reglamento Roma I?",t:"Roma I",o:["No, Roma I exige elegir la ley de un Estado","Sí, la autonomía material lo permite para contratos internacionales","Solo en arbitraje internacional, no ante tribunales estatales","Solo si los Principios coinciden con una ley nacional"],an:["El art. 3 Roma I exige que la elección recaiga sobre la ley de un país; los Principios UNIDROIT, al no ser la ley de ningún Estado, no satisfacen este requisito. Sin embargo, pueden incorporarse al contrato como términos contractuales con el límite de las normas imperativas.","La autonomía material permite incorporar instrumentos no estatales como cláusulas contractuales, pero no desplaza la lex causae elegida o determinada por el Reglamento; los Principios UNIDROIT coexisten con la ley nacional aplicable.","La distinción entre arbitraje y tribunales estatales es relevante: los árbitros tienen mayor libertad para aplicar normas transnacionales, mientras que los jueces estatales están vinculados por Roma I.","Buscar coincidencia entre los Principios UNIDROIT y una ley nacional elimina el valor añadido de los principios transnacionales y contradice su vocación de neutralidad."],c:"Reglamento Roma I art. 3; Recital 13; TJUE: Unamar C-184/12"},
+{q:"¿El Reglamento Roma II debería incluir una cláusula de elección de ley para delitos informáticos y ciberataques?",t:"Roma II",o:["Sí, la autonomía de la voluntad debe extenderse a los ilícitos digitales","No, la lex loci damni es suficiente para ciberilícitos","Solo para relaciones B2B con partes sofisticadas","El marco actual con la cláusula de estrecha conexión es adecuado"],an:["El art. 14 Roma II ya permite la elección de ley post-hoc y, con limitaciones, a priori en relaciones comerciales; extender la autonomía de la voluntad a los ciberilícitos en relaciones B2B recoge una demanda del sector tecnológico para aumentar la previsibilidad.","La lex loci damni es problemática en ciberilícitos porque el daño puede producirse simultáneamente en múltiples jurisdicciones; la cláusula de estrecha conexión del art. 4.3 ofrece flexibilidad suficiente para los tribunales.","La distinción B2B/B2C es el criterio del art. 14.1.b) para la elección previa de ley; en relaciones con consumidores, las normas imperativas nacionales mantienen su función protectora.","La cláusula de estrecha conexión del art. 4.3 es la válvula de seguridad del sistema; permite al juez alejarse de la lex loci damni cuando otra ley tiene conexión manifiestamente más estrecha con el ciberilícito."],c:"Reglamento Roma II art. 4, 14; Propuesta de Revisión COM(2022) 753"},
+{q:"¿Debe el TJUE tener competencia para pronunciarse sobre la validez de normas procesales nacionales que incidan en el principio de equivalencia?",t:"Autonomía procesal",o:["Sí, el principio de equivalencia exige control europeo","No, la autonomía procesal nacional debe respetarse","Solo cuando la norma nacional discrimina directamente el derecho UE","El test de efectividad y equivalencia ya es suficiente sin ampliar la competencia del TJUE"],an:["El principio de equivalencia exige que los procedimientos para hacer valer el derecho de la UE no sean menos favorables que los aplicables a reclamaciones similares de derecho nacional; el TJUE ejerce ya esta competencia de control, aunque de forma indirecta a través de la cuestión prejudicial.","La autonomía procesal nacional es un principio reconocido por el TJUE, pero con el límite del doble test de efectividad y equivalencia; ampliar formalmente la competencia del TJUE no es necesario si los mecanismos prejudiciales funcionan.","La discriminación directa activa el principio de equivalencia con mayor claridad; los supuestos de discriminación encubierta son más complejos y requieren la valoración casuística que realiza el TJUE.","El doble test Rewe/Comet sigue siendo el marco operativo; la cuestión prejudicial permite al TJUE intervenir sin necesidad de ampliar formalmente sus competencias en materia procesal."],c:"TJUE: Rewe C-33/76; Comet C-45/76; Unibet C-432/05; Lesoochranárske zoskupenie C-240/09"},
+{q:"¿Puede la cláusula de nación más favorecida de un tratado de inversión intracomunitario activar derechos más amplios que los del propio tratado tras Achmea?",t:"Arbitraje y DUE",o:["No, Achmea invalida el mecanismo de arbitraje del TBI","Solo si la cláusula amplía derechos sustantivos, no procesales","La cláusula MFN no puede extenderse a mecanismos de resolución de disputas","Las cláusulas MFN son independientes de la invalidez del arbitraje"],an:["Tras Achmea, el mecanismo de arbitraje de los TBI intracomunitarios es incompatible con el TFUE; la cláusula de nación más favorecida no puede activar un mecanismo procesal (arbitraje de otro TBI) que tampoco sería compatible con el derecho de la UE.","La doctrina sobre cláusulas MFN distingue entre sustancia (derechos materiales ampliables) y procedimiento (mecanismos de resolución no ampliables); esta distinción es relevante tras Achmea para determinar qué aspectos de otros TBI pueden invocarse.","El consenso doctrinal mayoritario rechaza que la cláusula MFN extienda los mecanismos de resolución de disputas; su función es ampliar el trato sustantivo, no crear nuevas vías procesales.","La invalidez del mecanismo de arbitraje no afecta a la validez de las cláusulas sustantivas del TBI; inversores intracomunitarios pueden invocar esas cláusulas ante los tribunales nacionales."],c:"TJUE: Achmea C-284/16; Maffezini v Spain; Komstroy C-741/19"},
+{q:"¿Debe la Comisión Europea poder interponer acciones ante el TJUE por incumplimiento del derecho procesal de la UE por parte de los Estados miembros?",t:"Autonomía procesal",o:["Sí, el procedimiento por incumplimiento del art. 258 TFUE es suficiente","Sí, pero se necesita un procedimiento especial para incumplimientos procesales","No, la autonomía procesal nacional es un límite al art. 258","Solo para incumplimientos que vulneren la Carta de Derechos Fundamentales"],an:["El art. 258 TFUE ya permite a la Comisión actuar contra incumplimientos del derecho procesal de la UE cuando este está armonizado; la Comisión ha ejercido esta acción en materia de plazos de transposición de directivas procesales.","La creación de un procedimiento especial para incumplimientos procesales permitiría una intervención más ágil y focalizada, dado que las normas procesales afectan de forma difusa al conjunto del ordenamiento.","La autonomía procesal no es un escudo absoluto frente al art. 258; el TJUE ha declarado que cuando el derecho nacional incumple sistemáticamente las exigencias del principio de efectividad, la acción por incumplimiento es procedente.","La vinculación al art. 47 CDFUE es el enfoque más garantista: el incumplimiento procesal que vulnere el derecho a la tutela judicial efectiva activa de forma más clara la acción por incumplimiento."],c:"TJUE: Comisión v Portugal C-62/98; Comisión v Italia C-39/72; Rewe C-33/76"},
+];
+
+/* ── CONFIGURACIÓN DE ROTACIÓN ──────────────────────── */
+const DQ_BASE_DATE = new Date('2025-01-01T00:00:00Z'); // fecha base fija
+
+function getDQIndex(){
+  const now = new Date();
+  const msPerDay = 86400000;
+  const daysSinceBase = Math.floor((now - DQ_BASE_DATE) / msPerDay);
+  return Math.floor(daysSinceBase / 2) % DQ_BANK.length;
+}
+
+function getDQHistoryIndices(count){
+  const cur = getDQIndex();
+  const out = [];
+  for(let i = 1; i <= count; i++){
+    const idx = ((cur - i) % DQ_BANK.length + DQ_BANK.length) % DQ_BANK.length;
+    out.push(idx);
+  }
+  return out;
+}
+
+function getDQNextChange(){
+  const now = new Date();
+  const msPerDay = 86400000;
+  const daysSinceBase = Math.floor((now - DQ_BASE_DATE) / msPerDay);
+  const msIntoCycle = (now - DQ_BASE_DATE) - daysSinceBase * msPerDay;
+  const cycleDay = daysSinceBase % 2; // 0 o 1
+  const msLeft = (2 - cycleDay) * msPerDay - msIntoCycle;
+  const h = Math.floor(msLeft / 3600000);
+  const m = Math.floor((msLeft % 3600000) / 60000);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+/* ── IDENTIFICADOR ANÓNIMO DEL USUARIO ──────────────── */
+function getDQUserId(){
+  let uid = localStorage.getItem('overton_uid');
+  if(!uid){
+    uid = 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2,9);
+    localStorage.setItem('overton_uid', uid);
+  }
+  return uid;
+}
+
+/* ── ESTADO ─────────────────────────────────────────── */
+let dqState = {
+  idx: 0,         // índice en DQ_BANK
+  dbId: null,     // id en daily_questions (si existe)
+  voted: null,    // option_index votado o null
+  counts: [],     // array de conteos por opción [c0, c1, c2, ...]
+  loading: false
+};
+
+/* ── ANÁLISIS AUTOMÁTICO ────────────────────────────── */
+function generateAnalysis(q, winnerIdx, counts){
+  const total = counts.reduce((a,b)=>a+b,0);
+  const winPct = total > 0 ? Math.round(counts[winnerIdx]/total*100) : 0;
+  let margin = winPct >= 75 ? 'abrumadora' : winPct >= 60 ? 'clara' : 'ajustada';
+  let prefix = winPct >= 75
+    ? `Una <strong>mayoría ${margin} (${winPct}%)</strong> de los participantes`
+    : winPct >= 55
+    ? `Con una <strong>mayoría ${margin} (${winPct}%)</strong>, los participantes`
+    : `En un resultado muy ajustado, el <strong>${winPct}%</strong> de los participantes`;
+  const text = `${prefix} se inclina por la opción <em>"${q.o[winnerIdx]}"</em>. ${q.an[winnerIdx]}`;
+  return { text, cite: q.c || '' };
+}
+
+/* ── RENDERIZADO PRINCIPAL ──────────────────────────── */
+function dqRender(){
+  const q = DQ_BANK[dqState.idx];
+  const voted = dqState.voted;
+  const counts = dqState.counts;
+  const total = counts.reduce((a,b)=>a+b,0);
+  const winnerIdx = counts.length
+    ? counts.indexOf(Math.max(...counts))
+    : -1;
+
+  // Encabezado
+  document.getElementById('dqTopicTag').textContent = q.t;
+  document.getElementById('dqQuestionText').textContent = q.q;
+  document.getElementById('dqCountdown').textContent = getDQNextChange();
+
+  // Opciones
+  const card = document.getElementById('dqCard');
+  const optsEl = document.getElementById('dqOpts');
+  optsEl.innerHTML = '';
+  const isResults = voted !== null;
+  card.classList.toggle('dq-results-state', isResults);
+
+  q.o.forEach((opt, i) => {
+    const pct = (total > 0 && isResults) ? Math.round(counts[i]/total*100) : 0;
+    const isSelected = voted === i;
+    const isWinner = isResults && i === winnerIdx;
+    const btn = document.createElement('button');
+    btn.className = 'dq-opt' + (isSelected ? ' selected' : '') + (isWinner && isResults ? ' winner' : '');
+    btn.disabled = isResults;
+    btn.onclick = () => dqVote(i);
+    btn.innerHTML = `
+      <span class="dq-opt-letter">${String.fromCharCode(65+i)}</span>
+      <span class="dq-opt-text">${opt}</span>
+      <span class="dq-opt-bar-wrap">
+        <div class="dq-opt-bar-bg"><div class="dq-opt-bar-fill" style="width:${pct}%"></div></div>
+        <span class="dq-opt-votes">${counts[i]||0} ${(counts[i]||0)===1?'voto':'votos'}</span>
+      </span>
+      <span class="dq-opt-pct">${pct}%</span>`;
+    optsEl.appendChild(btn);
+  });
+
+  // Meta (total votos + vs comunidad + cambiar voto)
+  const meta = document.getElementById('dqVoteMeta');
+  const vsCom = document.getElementById('dqVsCommunity');
+  const changeBtn = document.getElementById('dqChangeVote');
+  if(isResults){
+    meta.classList.remove('hide');
+    document.getElementById('dqTotalVotes').textContent = `${total} ${total===1?'voto':'votos'} totales`;
+    if(voted !== null && winnerIdx >= 0){
+      const inMajority = voted === winnerIdx;
+      vsCom.classList.remove('hide');
+      vsCom.classList.toggle('minority', !inMajority);
+      vsCom.textContent = inMajority ? '✓ Estás con la mayoría' : '← Estás en minoría';
+    }
+    changeBtn.classList.remove('hide');
+  } else {
+    meta.classList.add('hide');
+    vsCom.classList.add('hide');
+    changeBtn.classList.add('hide');
+  }
+
+  // Análisis jurídico
+  const analysisEl = document.getElementById('dqAnalysis');
+  if(isResults && total > 0 && winnerIdx >= 0){
+    const { text, cite } = generateAnalysis(q, winnerIdx, counts);
+    document.getElementById('dqAnalysisText').innerHTML = text;
+    document.getElementById('dqAnalysisCite').textContent = cite ? `📚 Jurisprudencia: ${cite}` : '';
+    analysisEl.classList.remove('hide');
+  } else {
+    analysisEl.classList.add('hide');
+  }
+}
+
+/* ── VOTACIÓN ────────────────────────────────────────── */
+async function dqVote(optIdx){
+  if(dqState.loading || dqState.voted !== null) return;
+  dqState.loading = true;
+  dqState.voted = optIdx;
+  dqState.counts[optIdx] = (dqState.counts[optIdx]||0) + 1;
+  // Persistencia local inmediata
+  const key = `dq_vote_${dqState.idx}`;
+  localStorage.setItem(key, String(optIdx));
+  dqRender();
+  // Persistir en Supabase
+  try {
+    const uid = getDQUserId();
+    // Obtener o crear daily_question en DB
+    let qId = dqState.dbId;
+    if(!qId){
+      const {data} = await db.from('daily_questions')
+        .select('id').eq('sort_index', dqState.idx).maybeSingle();
+      if(data) qId = data.id;
+    }
+    if(qId){
+      await db.rpc('upsert_dq_vote', {
+        p_question_id: qId,
+        p_user_id: uid,
+        p_option_index: optIdx
+      });
+      // Recargar conteos reales
+      await dqLoadCounts(qId);
+    }
+  } catch(e){ console.warn('dqVote error:', e); }
+  dqState.loading = false;
+}
+
+async function dqResetVote(){
+  const key = `dq_vote_${dqState.idx}`;
+  const old = dqState.voted;
+  dqState.voted = null;
+  if(old !== null && dqState.counts[old] > 0) dqState.counts[old]--;
+  localStorage.removeItem(key);
+  // Actualizar en Supabase (voto nuevo al hacer clic)
+  dqRender();
+}
+
+/* ── CARGA DE CONTEOS ────────────────────────────────── */
+async function dqLoadCounts(qId){
+  try {
+    const {data} = await db.rpc('get_dq_vote_counts', {p_question_id: qId});
+    if(!data) return;
+    const q = DQ_BANK[dqState.idx];
+    const newCounts = new Array(q.o.length).fill(0);
+    data.forEach(row => { if(row.option_index < q.o.length) newCounts[row.option_index] = Number(row.cnt); });
+    // Preservar voto local si el servidor aún no lo tiene
+    if(dqState.voted !== null){
+      const localKey = `dq_vote_${dqState.idx}`;
+      const localVote = localStorage.getItem(localKey);
+      if(localVote !== null && newCounts[Number(localVote)] === 0) newCounts[Number(localVote)] = 1;
+    }
+    dqState.counts = newCounts;
+    dqRender();
+  } catch(e){ console.warn('dqLoadCounts:', e); }
+}
+
+/* ── HISTORIAL ───────────────────────────────────────── */
+function dqToggleHistory(btn){
+  const list = document.getElementById('dqHistoryList');
+  const isOpen = !list.classList.contains('hide');
+  list.classList.toggle('hide', isOpen);
+  if(!isOpen) dqRenderHistory();
+}
+
+async function dqRenderHistory(){
+  const list = document.getElementById('dqHistoryList');
+  const indices = getDQHistoryIndices(5);
+  list.innerHTML = '<div style="font-size:.78rem;color:var(--faint);padding:8px 0">Cargando historial…</div>';
+  // Cargar conteos de historial desde Supabase
+  const items = [];
+  for(const idx of indices){
+    const q = DQ_BANK[idx];
+    const localKey = `dq_vote_${idx}`;
+    const voted = localStorage.getItem(localKey);
+    let counts = new Array(q.o.length).fill(0);
+    try {
+      const {data} = await db.from('daily_questions')
+        .select('id').eq('sort_index', idx).maybeSingle();
+      if(data){
+        const {data: vc} = await db.rpc('get_dq_vote_counts', {p_question_id: data.id});
+        if(vc) vc.forEach(r=>{ if(r.option_index < q.o.length) counts[r.option_index] = Number(r.cnt); });
+      }
+    } catch(e){}
+    items.push({q, idx, voted, counts});
+  }
+  list.innerHTML = '';
+  if(!items.length){ list.innerHTML = '<p style="font-size:.8rem;color:var(--faint)">No hay preguntas anteriores disponibles aún.</p>'; return; }
+  items.forEach(({q, idx, voted, counts}) => {
+    const total = counts.reduce((a,b)=>a+b,0);
+    const div = document.createElement('div');
+    div.className = 'dq-hist-item';
+    const barsHtml = q.o.map((opt,i)=>{
+      const pct = total > 0 ? Math.round(counts[i]/total*100) : 0;
+      return `<div class="dq-hist-bar-row">
+        <span class="dq-hist-bar-label" title="${opt}">${opt}</span>
+        <div class="dq-hist-bar-bg"><div class="dq-hist-bar-fill" style="width:${pct}%"></div></div>
+        <span class="dq-hist-pct">${pct}%</span>
+      </div>`;
+    }).join('');
+    div.innerHTML = `<div class="dq-hist-q">${q.q}</div>
+      <div class="dq-hist-bars">${barsHtml}</div>
+      <div class="dq-hist-topic">${q.t}${voted!==null?' · Tu voto: '+q.o[Number(voted)]:''}</div>`;
+    list.appendChild(div);
+  });
+}
+
+/* ── INICIALIZACIÓN ──────────────────────────────────── */
+async function dqInit(){
+  dqState.idx = getDQIndex();
+  const q = DQ_BANK[dqState.idx];
+  // Recuperar voto local
+  const localKey = `dq_vote_${dqState.idx}`;
+  const localVote = localStorage.getItem(localKey);
+  dqState.voted = localVote !== null ? Number(localVote) : null;
+  dqState.counts = new Array(q.o.length).fill(0);
+  dqState.dbId = null;
+  // Render inmediato con datos locales
+  dqRender();
+  // Cargar desde Supabase
+  try {
+    // Obtener o crear la daily_question via RPC (SECURITY DEFINER — funciona con anon key)
+    const {data: rows} = await db.rpc('get_or_create_dq', {
+      p_sort_index: dqState.idx,
+      p_question: q.q,
+      p_options: q.o,
+      p_topic: q.t
+    });
+    const existing = rows && rows[0] ? rows[0] : null;
+    if(existing){
+      dqState.dbId = existing.id;
+      // Cargar conteos reales
+      await dqLoadCounts(existing.id);
+      // Recuperar voto guardado en DB
+      if(dqState.voted === null){
+        const uid = getDQUserId();
+        const {data: vRow} = await db.from('dq_votes')
+          .select('option_index')
+          .eq('question_id', existing.id)
+          .eq('user_id', uid)
+          .maybeSingle();
+        if(vRow){
+          dqState.voted = vRow.option_index;
+          localStorage.setItem(localKey, String(vRow.option_index));
+          dqRender();
+        }
+      }
+    }
+  } catch(e){ console.warn('dqInit:', e); }
+  // Actualizar countdown cada minuto
+  setInterval(()=>{
+    const el = document.getElementById('dqCountdown');
+    if(el && el.closest('#view-pregunta') && !document.getElementById('view-pregunta').classList.contains('hide')){
+      el.textContent = getDQNextChange();
+    }
+  }, 60000);
 }
 
 </script>
