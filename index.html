@@ -2925,14 +2925,22 @@ function voteDebate(vote){
   if(!debateData) return;
   const key=debateData.id;
   if(localStorage.getItem(key)){showToast('Ya has votado en este debate');return;}
+  // Bloquear botones durante el voto
+  const yBtn=document.getElementById('debateYes');
+  const nBtn=document.getElementById('debateNo');
+  if(yBtn) yBtn.disabled=true;
+  if(nBtn) nBtn.disabled=true;
   localStorage.setItem(key,vote);
   if(debateData.dbId){
-    // Debate de Supabase: actualizar contadores en DB
     debateData.yes_count=(debateData.yes_count||0)+(vote==='yes'?1:0);
     debateData.no_count=(debateData.no_count||0)+(vote==='no'?1:0);
-    db.rpc('vote_debate',{p_id:debateData.dbId,p_vote:vote}).catch(()=>{});
+    console.log('[Debate] Votando en DB id='+debateData.dbId, vote);
+    db.rpc('vote_debate',{p_id:debateData.dbId,p_vote:vote})
+      .then(({error})=>{
+        if(error){ console.error('[Debate] Error RPC:', error); showToast('Error al registrar voto','error'); }
+        else { console.log('[Debate] Voto guardado en DB'); }
+      });
   } else {
-    // Debate del array local: guardar en localStorage
     const dayIdx=Math.floor(Date.now()/86400000)%DAILY_DEBATES.length;
     const votesKey='overton_debate_votes_'+dayIdx;
     const votes=JSON.parse(localStorage.getItem(votesKey)||'{"yes":0,"no":0}');
@@ -2944,73 +2952,142 @@ function voteDebate(vote){
   showDebateResults(debateData,vote);
   syncDebateInlineResults(debateData,vote);
   showToast('¡Voto registrado! 🗳️');
+  // Desbloquear (ya votado, quedan como voted)
+  if(yBtn) yBtn.disabled=false;
+  if(nBtn) nBtn.disabled=false;
 }
 async function loadDebateAdmin(){
-  const {data}=await db.from('debate').select('*').order('created_at',{ascending:false}).limit(5);
+  const {data,error}=await db.from('debate').select('*').order('created_at',{ascending:false}).limit(10);
   const el=document.getElementById('debateAdmInfo');
-  if(!data||!data.length){ el.textContent='No hay debates todavía.'; return; }
-  el.innerHTML=data.map(d=>`
-    <div style="background:var(--surf2);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:10px">
-      <div style="font-weight:700;font-size:.87rem;margin-bottom:6px">${esc(d.question)} ${d.active?'<span style="color:#22c55e;font-size:.7rem">● Activo</span>':''}</div>
-      <div style="font-size:.76rem;color:var(--muted)">Sí: ${d.yes_count} · No: ${d.no_count} · Total: ${(d.yes_count||0)+(d.no_count||0)}</div>
-    </div>`).join('');
+  if(error){ el.innerHTML=`<p style="color:#d64040;font-size:.84rem">Error: ${esc(error.message)}</p>`; return; }
+  if(!data||!data.length){ el.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay debates todavía. Crea uno arriba.</p>'; return; }
+  el.innerHTML=data.map(d=>{
+    const total=(d.yes_count||0)+(d.no_count||0);
+    const yesPct=total?Math.round((d.yes_count||0)/total*100):0;
+    const fecha=new Date(d.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
+    return `<div style="background:var(--surf2);border:1px solid ${d.active?'#4ade80':' var(--border)'};border-radius:9px;padding:14px 16px;margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div style="font-weight:700;font-size:.87rem;flex:1">${esc(d.question)}</div>
+        ${d.active
+          ?`<span style="color:#22c55e;font-size:.7rem;font-weight:700;white-space:nowrap">● ACTIVO</span>`
+          :`<button class="btn-sm" style="font-size:.7rem;padding:3px 10px" onclick="activateDebate(${d.id})">Activar</button>`}
+      </div>
+      <div style="font-size:.76rem;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap">
+        <span>✓ Sí: <strong>${d.yes_count||0}</strong></span>
+        <span>✗ No: <strong>${d.no_count||0}</strong></span>
+        <span>Total: <strong>${total}</strong></span>
+        ${total?`<span>Sí: ${yesPct}%</span>`:''}
+        <span style="margin-left:auto">${fecha}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function activateDebate(id){
+  if(!confirm('¿Activar este debate como el debate del día?')) return;
+  await db.from('debate').update({active:false}).eq('active',true);
+  const {error}=await db.from('debate').update({active:true}).eq('id',id);
+  if(error){ showToast('Error al activar: '+error.message,'error'); return; }
+  showToast('✅ Debate activado');
+  loadDebateAdmin();
+  await loadDebateFromDB();
+  syncDebateInline();
 }
 async function saveDebate(){
   const q=document.getElementById('debateQIn').value.trim();
   if(!q){ showToast('Escribe una pregunta','error'); return; }
+  if(q.length < 10){ showToast('La pregunta es demasiado corta','error'); return; }
+  // Verificar sesión activa antes de intentar escribir en DB
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){ showToast('Sesión expirada. Vuelve a iniciar sesión.','error'); return; }
   const btn=document.querySelector('[onclick="saveDebate()"]');
   if(btn){btn.disabled=true;btn.textContent='Guardando…';}
-  const {error:e1}=await db.from('debate').update({active:false}).eq('active',true);
-  const {error:e2}=await db.from('debate').insert([{question:q,yes_count:0,no_count:0,active:true}]);
-  if(btn){btn.disabled=false;btn.textContent='✓ Activar nueva pregunta';}
-  if(e2){showToast('Error al guardar: '+e2.message,'error');return;}
-  document.getElementById('debateQIn').value='';
-  showToast('✅ Debate activado y visible en la web');
-  loadDebateAdmin();
-  await loadDebateFromDB(); // Actualizar directamente desde DB, no el fallback local
-  syncDebateInline();
+  console.log('[Debate] Guardando nueva pregunta:', q);
+  try{
+    const {error:e1}=await db.from('debate').update({active:false}).eq('active',true);
+    if(e1) console.warn('[Debate] No se pudo desactivar debate anterior:', e1.message);
+    const {error:e2}=await db.from('debate').insert([{question:q,yes_count:0,no_count:0,active:true}]);
+    if(e2){ showToast('Error al guardar: '+e2.message,'error'); console.error('[Debate] Insert error:', e2); return; }
+    document.getElementById('debateQIn').value='';
+    showToast('✅ Debate activado y visible en la web');
+    console.log('[Debate] Pregunta guardada correctamente');
+    loadDebateAdmin();
+    await loadDebateFromDB();
+    syncDebateInline();
+  } catch(e){
+    console.error('[Debate] Excepción:', e);
+    showToast('Error inesperado al guardar el debate','error');
+  } finally{
+    if(btn){btn.disabled=false;btn.textContent='✓ Activar nueva pregunta';}
+  }
 }
 
 /* ── CONTRIBUTOR REQUESTS ── */
 async function submitContrib(){
   const name=document.getElementById('contribName').value.trim();
   const email=document.getElementById('contribEmail').value.trim();
-  if(!email||!email.includes('@')){ showToast('Introduce un email válido','error'); return; }
-  const {error}=await db.from('contributor_requests').insert([{name,email}]);
-  if(error){ showToast('Error: '+error.message,'error'); return; }
-  document.getElementById('contribName').value='';
-  document.getElementById('contribEmail').value='';
-  showToast('¡Recibido! Te contactaremos pronto 🎉');
+  // Validación robusta
+  if(!name){ showToast('Escribe tu nombre','error'); return; }
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Email no válido','error'); return; }
+  // Loading state
+  const btn=document.querySelector('[onclick="submitContrib()"]');
+  const origTxt=btn?.textContent||'Quiero publicar →';
+  if(btn){ btn.disabled=true; btn.textContent='Enviando…'; }
+  console.log('[Contrib] Enviando solicitud:', {name, email});
+  try{
+    const {error}=await db.from('contributor_requests').insert([{name,email}]);
+    if(error){
+      console.error('[Contrib] Error Supabase:', error);
+      showToast('Error: '+error.message,'error');
+      return;
+    }
+    document.getElementById('contribName').value='';
+    document.getElementById('contribEmail').value='';
+    console.log('[Contrib] Solicitud guardada correctamente');
+    showToast('¡Recibido! Te contactaremos pronto 🎉');
+  } catch(e){
+    console.error('[Contrib] Excepción inesperada:', e);
+    showToast('Error inesperado. Inténtalo de nuevo.','error');
+  } finally{
+    if(btn){ btn.disabled=false; btn.textContent=origTxt; }
+  }
 }
 async function loadContribs(){
   const el=document.getElementById('contribsList');
   el.innerHTML='<p style="color:var(--muted);font-size:.84rem">Cargando…</p>';
+  console.log('[Contribs] Cargando solicitudes…');
   const {data,error}=await db.from('contributor_requests').select('*').order('created_at',{ascending:false});
   if(error){
+    console.error('[Contribs] Error SELECT:', error);
     el.innerHTML=`<div style="color:#d64040;font-size:.84rem;padding:12px;background:rgba(214,64,64,.07);border-radius:8px;border:1px solid rgba(214,64,64,.2)">
-      <strong>Error al cargar:</strong> ${esc(error.message)}<br/>
-      <span style="font-size:.78rem;color:var(--muted)">Asegúrate de que la tabla <code>contributor_requests</code> existe en Supabase con las políticas RLS correctas.</span>
+      <strong>Error al cargar (${error.code}):</strong> ${esc(error.message)}<br/>
+      <span style="font-size:.78rem;color:var(--muted)">Verifica la tabla <code>contributor_requests</code> y las políticas RLS en Supabase.</span>
     </div>`;
     return;
   }
+  console.log('[Contribs] Solicitudes cargadas:', data?.length||0);
   if(!data||!data.length){ el.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay solicitudes todavía.</p>'; return; }
-  el.innerHTML=data.map(c=>{
+  const pending=data.filter(c=>c.status==='pendiente').length;
+  el.innerHTML=`<div style="font-size:.78rem;color:var(--muted);margin-bottom:12px">${data.length} solicitudes · <span style="color:#C9A227;font-weight:700">${pending} pendientes</span></div>`
+  +data.map(c=>{
     const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'—';
     const estado=c.status||'pendiente';
-    const estadoColor=estado==='aprobado'?'#22c55e':estado==='rechazado'?'#d64040':'#C9A227';
-    return `<div class="adm-comment-row" style="gap:12px">
+    const estadoColor={'aprobado':'#22c55e','rechazado':'#d64040','contactado':'#3b82f6'}[estado]||'#C9A227';
+    return `<div class="adm-comment-row" style="gap:12px;align-items:flex-start">
       <div class="adm-comment-info" style="flex:1">
         <div class="adm-comment-name">${esc(c.name||'Sin nombre')}</div>
-        <div class="adm-comment-body" style="font-weight:600;color:var(--blue-lt)">${esc(c.email)}</div>
-        ${c.message?`<div class="adm-comment-body" style="margin-top:4px;color:var(--muted)">${esc(c.message)}</div>`:''}
-        <div class="adm-comment-date">${fecha} · <span style="color:${estadoColor};font-weight:600">${estado}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:3px 0">
+          <span class="adm-comment-body" style="font-weight:700;color:var(--blue-lt)">${esc(c.email)}</span>
+          <button class="btn-sm" style="font-size:.65rem;padding:1px 7px" onclick="navigator.clipboard.writeText('${c.email.replace(/'/g,"\\'")}').then(()=>showToast('Email copiado'))">📋</button>
+        </div>
+        ${c.message?`<div class="adm-comment-body" style="margin-top:4px;font-style:italic;color:var(--muted)">"${esc(c.message)}"</div>`:''}
+        <div class="adm-comment-date">${fecha} · <span style="color:${estadoColor};font-weight:700">${estado}</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-        <select class="fin" style="font-size:.75rem;padding:4px 8px" onchange="updateContribStatus(${c.id},this.value)">
+        <select class="fin" style="font-size:.73rem;padding:4px 8px" onchange="updateContribStatus(${c.id},this.value)">
           <option value="pendiente"${estado==='pendiente'?' selected':''}>Pendiente</option>
           <option value="contactado"${estado==='contactado'?' selected':''}>Contactado</option>
-          <option value="aprobado"${estado==='aprobado'?' selected':''}>Aprobado</option>
-          <option value="rechazado"${estado==='rechazado'?' selected':''}>Rechazado</option>
+          <option value="aprobado"${estado==='aprobado'?' selected':''}>Aprobado ✓</option>
+          <option value="rechazado"${estado==='rechazado'?' selected':''}>Rechazado ✗</option>
         </select>
         <button class="btn-sm" style="color:#d64040;border-color:rgba(214,64,64,.3)" onclick="deleteContrib(${c.id})">Eliminar</button>
       </div>
@@ -3019,13 +3096,16 @@ async function loadContribs(){
 }
 
 async function updateContribStatus(id, status){
+  console.log('[Contribs] Actualizando estado id='+id, status);
   const {error}=await db.from('contributor_requests').update({status}).eq('id',id);
-  if(error){showToast('Error al actualizar estado','error');return;}
-  showToast('Estado actualizado: '+status);
+  if(error){ console.error('[Contribs] Error UPDATE:', error); showToast('Error al actualizar estado','error'); return; }
+  showToast('Estado → '+status);
+  loadContribs();
 }
 async function deleteContrib(id){
   if(!confirm('¿Eliminar esta solicitud?')) return;
-  await db.from('contributor_requests').delete().eq('id',id);
+  const {error}=await db.from('contributor_requests').delete().eq('id',id);
+  if(error){ showToast('Error al eliminar','error'); return; }
   loadContribs();
 }
 
@@ -4729,28 +4809,51 @@ async function postReply(parentId){
 
 async function voteComment(id, btn){
   const key=getVotedKey(id);
-  if(localStorage.getItem(key)){showToast('Ya votaste este mensaje');return;}
-  // Optimistic UI: update instantly before Supabase responds
-  localStorage.setItem(key,'1');
-  btn.classList.add('voted');
-  btn.disabled=true;
+  const alreadyVoted=!!localStorage.getItem(key);
   const vc=btn.querySelector('.vc,.fp-vote-n');
   const oldVal=parseInt(vc?.textContent||0);
-  if(vc) vc.textContent=oldVal+1;
-  // Update localStorage immediately
-  const posts=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:(m.votes||0)+1}:m);
-  saveLocalPosts(posts);
-  // Send to Supabase
-  const {error}=await db.rpc('increment_forum_votes',{p_id:id});
-  btn.disabled=false;
-  if(error){
-    // Rollback optimistic update
+  // Optimistic UI inmediato
+  btn.disabled=true;
+  if(alreadyVoted){
+    // TOGGLE OFF: quitar voto
     localStorage.removeItem(key);
     btn.classList.remove('voted');
-    if(vc) vc.textContent=oldVal;
-    const posts2=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:Math.max(0,(m.votes||0)-1)}:m);
-    saveLocalPosts(posts2);
-    showToast('Error al votar','error');
+    if(vc) vc.textContent=Math.max(0,oldVal-1);
+    const posts=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:Math.max(0,(m.votes||0)-1)}:m);
+    saveLocalPosts(posts);
+    console.log('[Vote] Toggle OFF post id='+id);
+    const {error}=await db.rpc('decrement_forum_votes',{p_id:id});
+    btn.disabled=false;
+    if(error){
+      // Rollback
+      localStorage.setItem(key,'1');
+      btn.classList.add('voted');
+      if(vc) vc.textContent=oldVal;
+      const posts2=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:(m.votes||0)+1}:m);
+      saveLocalPosts(posts2);
+      console.error('[Vote] Error decrement:', error);
+      showToast('Error al quitar voto','error');
+    }
+  } else {
+    // TOGGLE ON: añadir voto
+    localStorage.setItem(key,'1');
+    btn.classList.add('voted');
+    if(vc) vc.textContent=oldVal+1;
+    const posts=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:(m.votes||0)+1}:m);
+    saveLocalPosts(posts);
+    console.log('[Vote] Toggle ON post id='+id);
+    const {error}=await db.rpc('increment_forum_votes',{p_id:id});
+    btn.disabled=false;
+    if(error){
+      // Rollback
+      localStorage.removeItem(key);
+      btn.classList.remove('voted');
+      if(vc) vc.textContent=oldVal;
+      const posts2=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:Math.max(0,(m.votes||0)-1)}:m);
+      saveLocalPosts(posts2);
+      console.error('[Vote] Error increment:', error);
+      showToast('Error al votar','error');
+    }
   }
 }
 
