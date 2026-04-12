@@ -10,7 +10,7 @@
      SEO — TITLE & DESCRIPTION
 ══════════════════════════════════════════════ -->
 <title>El Despacho de Overton — Derecho Europeo, Sentencias TJUE y Debates</title>
-<meta name="description" content="Análisis de sentencias del TJUE, directivas de la UE y debates sobre derecho europeo. Glosario jurídico, foro de la comunidad y newsletter semanal. Derecho UE explicado sin tecnicismos."/>
+<meta name="description" content="Las leyes europeas te afectan. El TJUE decide sobre tus datos, tu trabajo y tus derechos. Te lo explicamos como si importara, porque importa. Debates, análisis y comunidad."/>
 <meta name="keywords" content="derecho europeo, sentencias TJUE, directivas UE, debate derecho europeo, foro derecho europeo, análisis jurídico, Tribunal de Justicia UE, normativa europea, glosario jurídico europeo, derecho comunitario"/>
 <meta name="author" content="El Despacho de Overton"/>
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
@@ -811,6 +811,9 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 /* ── ROTATING TAGLINE ── */
 .hero-tagline-wrap{height:1.6rem;overflow:hidden;margin-bottom:20px;display:flex;justify-content:center}
 .hero-tagline{font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);animation:tagFade 8s ease-in-out infinite;text-align:center}
+/* ── FOUNDER VOICE ── */
+.hero-founder-quote{margin-top:22px;font-size:.82rem;color:rgba(255,255,255,.42);font-style:italic;letter-spacing:.01em;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.65;border-top:1px solid rgba(255,255,255,.1);padding-top:16px}
+.com-founder-line{font-size:.82rem;color:var(--faint);font-style:italic;margin-bottom:20px;padding-left:12px;border-left:2px solid var(--gold);margin-top:4px}
 @keyframes tagFade{0%,8%{opacity:0;transform:translateY(6px)}15%,85%{opacity:1;transform:translateY(0)}92%,100%{opacity:0;transform:translateY(-6px)}}
 .foot-tagline{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:18px;min-height:1.2rem;animation:tagFadeLight 8s ease-in-out infinite}
 @keyframes tagFadeLight{0%,8%{opacity:0}15%,85%{opacity:1}92%,100%{opacity:0}}
@@ -1244,20 +1247,15 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       </div>
       <div>
         <div class="logo-name">El Despacho <em>de Overton</em></div>
-        <span class="logo-sub">Derecho UE · Claro y objetivo</span>
+        <span class="logo-sub">Europa explicada. Sin filtros.</span>
       </div>
     </a>
     <nav class="nav-links" id="navLinks" aria-label="Navegación principal">
-      <a class="nl on" data-v="home"         href="/"                   onclick="goView('home');return false;">Inicio</a>
-      <a class="nl"    data-v="sentencias"   href="/#sentencias"        onclick="goView('sentencias');return false;">Sentencias</a>
-      <a class="nl"    data-v="directivas"   href="/#directivas"        onclick="goView('directivas');return false;">Directivas</a>
-      <a class="nl"    data-v="medioambiente" href="/#medioambiente"    onclick="goView('medioambiente');return false;">Medio Ambiente</a>
-      <a class="nl"    data-v="opinion"      href="/#opinion"           onclick="goView('opinion');return false;">Opinión</a>
-      <a class="nl"    data-v="otros"        href="/#otros"             onclick="goView('otros');return false;">Otros</a>
-      <a class="nl"    data-v="glosario"     href="/#glosario"          onclick="goView('glosario');return false;">§ Glosario</a>
-      <a class="nl"    data-v="comunidad"    href="/#comunidad"         onclick="goView('comunidad');return false;">› Comunidad</a>
-      <a class="nl"    data-v="about"        href="/#about"             onclick="goView('about');return false;">Sobre nosotros</a>
-      <a class="nl"    data-v="pregunta"     href="/pregunta/"          onclick="goView('pregunta');return false;">❓ Pregunta</a>
+      <a class="nl on" data-v="home"      href="/"           onclick="goView('home');return false;">Inicio</a>
+      <a class="nl"    data-v="home"      href="/"           onclick="goView('home');setTimeout(scrollToGrid,260);return false;">Contenido</a>
+      <a class="nl"    data-v="pregunta"  href="/pregunta/"  onclick="goView('pregunta');return false;">Debates</a>
+      <a class="nl"    data-v="glosario"  href="/#glosario"  onclick="goView('glosario');return false;">Glosario</a>
+      <a class="nl"    data-v="comunidad" href="/#comunidad" onclick="goView('comunidad');return false;">Comunidad</a>
     </nav>
     <div class="nav-r">
       <div class="srch-w">
@@ -1289,16 +1287,11 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <button class="ico-btn" onclick="closeMobileMenu()">✕</button>
   </div>
   <div class="mobile-nav-links">
-    <a class="mnl" data-v="home"          href="/"              onclick="goView('home');closeMobileMenu();return false;">Inicio</a>
-    <a class="mnl" data-v="sentencias"    href="/#sentencias"   onclick="goView('sentencias');closeMobileMenu();return false;">Sentencias</a>
-    <a class="mnl" data-v="directivas"    href="/#directivas"   onclick="goView('directivas');closeMobileMenu();return false;">Directivas</a>
-    <a class="mnl" data-v="medioambiente" href="/#medioambiente" onclick="goView('medioambiente');closeMobileMenu();return false;">Medio Ambiente</a>
-    <a class="mnl" data-v="opinion"       href="/#opinion"      onclick="goView('opinion');closeMobileMenu();return false;">Opinión</a>
-    <a class="mnl" data-v="otros"         href="/#otros"        onclick="goView('otros');closeMobileMenu();return false;">Otros</a>
-    <a class="mnl" data-v="glosario"      href="/#glosario"     onclick="goView('glosario');closeMobileMenu();return false;">§ Glosario</a>
-    <a class="mnl" data-v="comunidad"     href="/#comunidad"    onclick="goView('comunidad');closeMobileMenu();return false;">› Comunidad</a>
-    <a class="mnl" data-v="about"         href="/#about"        onclick="goView('about');closeMobileMenu();return false;">Sobre nosotros</a>
-    <a class="mnl" data-v="pregunta"      href="/pregunta/"     onclick="goView('pregunta');closeMobileMenu();return false;">❓ Pregunta del día</a>
+    <a class="mnl" data-v="home"      href="/"           onclick="goView('home');closeMobileMenu();return false;">Inicio</a>
+    <a class="mnl" data-v="home"      href="/"           onclick="goView('home');setTimeout(scrollToGrid,260);closeMobileMenu();return false;">Contenido</a>
+    <a class="mnl" data-v="pregunta"  href="/pregunta/"  onclick="goView('pregunta');closeMobileMenu();return false;">Debates</a>
+    <a class="mnl" data-v="glosario"  href="/#glosario"  onclick="goView('glosario');closeMobileMenu();return false;">Glosario</a>
+    <a class="mnl" data-v="comunidad" href="/#comunidad" onclick="goView('comunidad');closeMobileMenu();return false;">Comunidad</a>
   </div>
 </div>
 
@@ -1321,14 +1314,15 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <!-- Content -->
     <div class="hero-content">
       <div class="eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
-      <div class="hero-pill">🇪🇺 Unión Europea · Derecho accesible</div>
-      <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">El Derecho Europeo como espacio de debate</div></div>
-      <h1 id="heroTitle">Sentencias y directivas,<br/><em>sin tecnicismos</em></h1>
-      <p class="hero-p" id="heroDesc">Analizamos las sentencias del <strong>Tribunal de Justicia de la UE</strong> y las directivas europeas de forma objetiva y comprensible. El <strong>derecho europeo</strong> explicado para todos.</p>
+      <div class="hero-pill">🇪🇺 450 millones de personas. Una sola ley. ¿La entiendes?</div>
+      <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">Europa no es aburrida. Te la han explicado mal.</div></div>
+      <h1 id="heroTitle">Las leyes europeas te afectan.<br/><em>Aquí las entenderás.</em></h1>
+      <p class="hero-p" id="heroDesc">El TJUE decide sobre tus datos, tu trabajo y tus derechos. Te explicamos cada decisión como si importara, porque importa.</p>
       <div class="hero-btns">
-        <button class="btn-gold" onclick="scrollToGrid()">Ver publicaciones</button>
-        <button class="btn-ghost" onclick="goView('about')">¿Qué es este blog?</button>
+        <button class="btn-gold" onclick="scrollToGrid()">Empezar a leer →</button>
+        <button class="btn-ghost" onclick="goView('comunidad')">Unirme al debate</button>
       </div>
+      <p class="hero-founder-quote">Si has llegado hasta aquí, es porque sabes que algo no cuadra en cómo te explican Europa.</p>
     </div>
     <div class="hero-caption" id="heroCaption">Parlamento Europeo · Estrasburgo</div>
   </section>
@@ -1336,11 +1330,11 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   <!-- STAT BAR -->
   <div class="stats-bar">
     <div class="stats-in">
-      <div class="stat"><div class="stat-n" id="stS">0</div><div class="stat-l">Sentencias</div></div>
-      <div class="stat"><div class="stat-n" id="stD">0</div><div class="stat-l">Directivas</div></div>
-      <div class="stat"><div class="stat-n" id="stO">0</div><div class="stat-l">Otros</div></div>
-      <div class="stat"><div class="stat-n" id="stOp">0</div><div class="stat-l">Opinión</div></div>
-      <div class="stat"><div class="stat-n" id="stC">0</div><div class="stat-l">Categorías</div></div>
+      <div class="stat"><div class="stat-n" id="stS">0</div><div class="stat-l">Sentencias analizadas</div></div>
+      <div class="stat"><div class="stat-n" id="stD">0</div><div class="stat-l">Directivas explicadas</div></div>
+      <div class="stat"><div class="stat-n" id="stOp">0</div><div class="stat-l">Artículos de opinión</div></div>
+      <div class="stat"><div class="stat-n" id="stC">0</div><div class="stat-l">Áreas del derecho UE</div></div>
+      <div class="stat"><div class="stat-n">90</div><div class="stat-l">Preguntas del debate</div></div>
     </div>
   </div>
 
@@ -1352,7 +1346,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
           <div class="sec-title">🗺️ La UE <em>en el mapa</em></div>
           <div class="sec-bar"></div>
         </div>
-        <span style="font-size:.82rem;color:var(--muted)">Haz clic en un país para ver sus datos</span>
+        <span style="font-size:.82rem;color:var(--muted)">27 países. Las mismas reglas. Haz clic para explorar.</span>
       </div>
       <div class="eu-map-layout">
         <!-- SVG MAP -->
@@ -1537,6 +1531,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
         <div class="sec-bar"></div>
       </div>
     </div>
+    <p id="secSubline" style="color:var(--muted);font-size:.84rem;margin:-14px 0 18px;font-style:italic">Aquí no hace falta que seas experto. Hace falta que tengas criterio.</p>
     <div class="chips" id="chipsRow"></div>
     <div class="grid" id="grid"></div>
   </div>
@@ -2062,7 +2057,8 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
           <div class="sec-bar"></div>
         </div>
       </div>
-      <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:22px">Términos y conceptos clave del Derecho de la Unión Europea, explicados de forma clara. Fuentes: EUR-Lex, TJUE, Comisión Europea.</p>
+      <p style="color:var(--text);font-size:.92rem;max-width:620px;margin-bottom:6px;font-weight:500">Las palabras que los políticos usan para que no les entiendas. Aquí las explicamos para que sí lo hagas.</p>
+      <p style="color:var(--muted);font-size:.82rem;max-width:620px;margin-bottom:22px">Términos clave del Derecho UE. Fuentes: EUR-Lex, TJUE, Comisión Europea.</p>
       <div class="glos-search-row">
         <input class="glos-srch" id="glosSearch" type="text" placeholder="🔍 Buscar término…" oninput="renderGlossary()"/>
       </div>
@@ -2093,11 +2089,13 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <div class="com-head">
       <div class="sec-head">
         <div>
-          <h2 class="sec-title" id="comunidad">› Comunidad <span class="sr-only">— Foro de debate sobre derecho europeo</span></h2>
+          <h2 class="sec-title" id="comunidad">Comunidad <span class="sr-only">— Foro de debate sobre derecho europeo</span></h2>
           <div class="sec-bar"></div>
         </div>
       </div>
-      <p style="color:var(--muted);font-size:.88rem;max-width:620px;margin-bottom:24px">Foro de debate sobre <strong>derecho europeo</strong>. Participa sin registro en debates sobre sentencias del TJUE, directivas y derechos fundamentales de la UE.</p>
+      <p style="color:var(--text);font-size:1.05rem;font-weight:600;max-width:620px;margin-bottom:6px">Únete al debate. Tu análisis puede cambiar cómo otros entienden Europa.</p>
+      <p style="color:var(--muted);font-size:.88rem;max-width:580px;margin-bottom:8px">No hace falta ser abogado. Hace falta pensar.</p>
+      <p class="com-founder-line">Aquí no vienes a memorizar. Vienes a entender y a opinar.</p>
     </div>
 
     <!-- ── DEBATE INLINE ── -->
@@ -2139,7 +2137,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
         <div class="forum-composer-av" id="composerAv">?</div>
         <div class="forum-composer-fields">
           <input class="forum-composer-name" id="comName" type="text" placeholder="Tu nombre o apodo…" maxlength="60" oninput="updateComposerAv()"/>
-          <textarea class="forum-composer-body" id="comBody" placeholder="¿Qué opinas sobre derecho europeo? Escribe aquí…" maxlength="600" rows="3" oninput="updateCharCount()"></textarea>
+          <textarea class="forum-composer-body" id="comBody" placeholder="¿Qué piensas? Aquí no hay respuestas incorrectas, solo argumentos. Escribe el tuyo." maxlength="600" rows="3" oninput="updateCharCount()"></textarea>
         </div>
       </div>
       <div class="forum-composer-footer">
@@ -2293,8 +2291,8 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   <div class="foot-nl-band">
     <div class="foot-nl-band-in">
       <div>
-        <div class="foot-nl-band-title">📬 Recibe el análisis que importa</div>
-        <div class="foot-nl-band-sub">Sin spam. Solo derecho europeo.</div>
+        <div class="foot-nl-band-title">📬 Una vez a la semana. Sin rollo.</div>
+        <div class="foot-nl-band-sub">Esto no es otro newsletter. Es el resumen que nadie más hace.</div>
       </div>
       <div class="foot-nl-row" style="max-width:380px;flex:1">
         <input class="foot-nl-in" id="nlEmail" type="email" placeholder="tu@email.com"/>
@@ -2310,7 +2308,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <div class="foot-col foot-col-brand">
         <div><img class="foot-logo-img" src="/logo.png" alt="El Despacho de Overton" loading="lazy"/></div>
         <div class="foot-logo-new">El Despacho <em>de Overton</em></div>
-        <p class="foot-brand-txt">Derecho de la Unión Europea explicado de forma objetiva y accesible. Análisis de sentencias, directivas e instituciones europeas.</p>
+        <p class="foot-brand-txt">Esto no es otro blog jurídico. Aquí vienes a entender lo que te afecta de verdad.<br/><br/>Europa no es aburrida. Te la han explicado mal.</p>
         <div class="foot-socials">
           <a class="foot-soc-new" href="#" title="X / Twitter" aria-label="Twitter">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -2598,31 +2596,38 @@ function toggleTheme(){
 const ALL_VIEWS = ['view-home','view-blog','view-about','view-admin','view-glosario','view-comunidad','view-pregunta'];
 function goView(name){
   ALL_VIEWS.forEach(id => document.getElementById(id).classList.add('hide'));
+  const secSubline = document.getElementById('secSubline');
   if(name==='home'){
     document.getElementById('view-home').classList.remove('hide');
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('all');
     document.getElementById('secTitle').innerHTML='Últimas <em>publicaciones</em>';
+    if(secSubline) secSubline.style.display='';
   } else if(name==='sentencias'){
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('sentencia');
     document.getElementById('secTitle').innerHTML='Sentencias <em>del TJUE</em>';
+    if(secSubline) secSubline.style.display='none';
   } else if(name==='directivas'){
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('directiva');
     document.getElementById('secTitle').innerHTML='Directivas <em>de la UE</em>';
+    if(secSubline) secSubline.style.display='none';
   } else if(name==='medioambiente'){
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('medioambiente');
     document.getElementById('secTitle').innerHTML='Medio Ambiente <em>· Normativa UE</em>';
+    if(secSubline) secSubline.style.display='none';
   } else if(name==='opinion'){
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('opinion');
     document.getElementById('secTitle').innerHTML='Artículos <em>de opinión</em>';
+    if(secSubline) secSubline.style.display='none';
   } else if(name==='otros'){
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('otro');
     document.getElementById('secTitle').innerHTML='Otros <em>documentos</em>';
+    if(secSubline) secSubline.style.display='none';
   } else if(name==='about'){
     document.getElementById('view-about').classList.remove('hide');
     applyAbout();
@@ -2658,13 +2663,13 @@ function goView(name){
 }
 
 const SEO_META={
-  home:{     title:'El Despacho de Overton — Derecho Europeo, Sentencias TJUE y Debates',        desc:'Análisis de sentencias del TJUE, directivas de la UE y debates sobre derecho europeo. Glosario jurídico y foro de la comunidad.'},
+  home:{     title:'El Despacho de Overton — Las leyes europeas te afectan. Aquí las entenderás.',  desc:'El TJUE decide sobre tus datos, tu trabajo y tus derechos. Te lo explicamos como si importara, porque importa. Debates, análisis y comunidad.'},
   sentencias:{title:'Sentencias del TJUE — El Despacho de Overton',                               desc:'Análisis y comentarios de las sentencias más relevantes del Tribunal de Justicia de la Unión Europea. Derecho europeo explicado con rigor.'},
   directivas:{title:'Directivas de la Unión Europea — El Despacho de Overton',                    desc:'Análisis de las directivas europeas más importantes: DSA, DMA, AI Act, RGPD y más. Qué significan y cómo afectan a ciudadanos y empresas.'},
   medioambiente:{title:'Derecho Europeo de Medio Ambiente — El Despacho de Overton',              desc:'Normativa medioambiental de la UE: directivas, reglamentos y sentencias sobre clima, biodiversidad y sostenibilidad.'},
   opinion:{  title:'Opinión sobre Derecho Europeo — El Despacho de Overton',                      desc:'Artículos de opinión y análisis crítico sobre el derecho de la Unión Europea. Juristas y académicos especializados.'},
   glosario:{ title:'Glosario de Derecho Europeo — El Despacho de Overton',                        desc:'Diccionario y glosario de términos del derecho comunitario europeo. Definiciones claras de conceptos jurídicos de la UE.'},
-  comunidad:{title:'Foro de Debate sobre Derecho Europeo — El Despacho de Overton',               desc:'Foro de la comunidad para debatir sobre derecho europeo. Participa sin registro en debates sobre sentencias TJUE, directivas y derechos fundamentales.'},
+  comunidad:{title:'Comunidad — Debate sobre Derecho Europeo | El Despacho de Overton',           desc:'Únete al debate. Tu análisis puede cambiar cómo otros entienden Europa. No hace falta ser abogado. Hace falta pensar. Sin registro.'},
   about:{    title:'Sobre El Despacho de Overton — Equipo y misión',                               desc:'Conoce al equipo de El Despacho de Overton: juristas y académicos especializados en derecho de la Unión Europea.'},
   otros:{    title:'Documentos y Análisis de Derecho Europeo — El Despacho de Overton',           desc:'Análisis, documentos e informes sobre derecho europeo en diversas materias.'},
   pregunta:{ title:'Pregunta del Día — Debate Jurídico Europeo | El Despacho de Overton',          desc:'Vota cada dos días en una nueva pregunta de Derecho de la UE: Bruselas I, Roma I y II, protección del consumidor y más. Análisis jurídico automático.'},
