@@ -829,16 +829,28 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .glos-cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px}
 .glos-chip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:all .18s}
 .glos-chip:hover,.glos-chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.glos-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow-x:auto;box-shadow:var(--sh)}
-.glos-table{width:100%;border-collapse:collapse}
-.glos-table thead tr{background:var(--surf2)}
-.glos-table th{padding:12px 18px;text-align:left;font-size:.71rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);border-bottom:1px solid var(--border)}
-.glos-table td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:top;font-size:.84rem;line-height:1.6}
-.glos-table tr:last-child td{border-bottom:none}
-.glos-table tr:hover td{background:var(--surf2)}
-.glos-term{font-weight:700;color:var(--blue);font-size:.9rem}
+/* Cards */
+.glos-cards{display:flex;flex-direction:column;gap:8px}
+.glos-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:box-shadow .18s,border-color .18s}
+.glos-card:hover{box-shadow:var(--sh);border-color:var(--blue-mid)}
+.glos-card-hdr{display:flex;align-items:center;gap:10px;padding:15px 20px;cursor:pointer;user-select:none}
+.glos-term{font-weight:700;color:var(--blue);font-size:.93rem;flex:1}
 [data-theme=dark] .glos-term{color:#7AB8E8}
-.glos-cat-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.64rem;font-weight:700;letter-spacing:.07em;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,162,39,.25)}
+.glos-cat-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.63rem;font-weight:700;letter-spacing:.07em;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,162,39,.25);white-space:nowrap;flex-shrink:0}
+.glos-expand-ico{color:var(--faint);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.glos-card.open .glos-expand-ico{transform:rotate(180deg)}
+.glos-card-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border)}
+.glos-card.open .glos-card-body{display:block}
+.glos-def{color:var(--text);font-size:.87rem;line-height:1.75;margin:15px 0 14px}
+.glos-trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:12px}
+.glos-block{background:var(--surf2);border-radius:8px;padding:11px 14px}
+.glos-block-lbl{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:5px}
+.glos-block-txt{font-size:.82rem;color:var(--muted);line-height:1.65}
+.glos-src-row{font-size:.71rem;color:var(--faint);margin-top:10px}
+.glos-src-row a{color:var(--blue-lt);text-decoration:none}
+.glos-src-row a:hover{text-decoration:underline}
+.glos-empty{padding:32px;text-align:center;color:var(--faint);font-size:.85rem}
+@media(max-width:640px){.glos-trio{grid-template-columns:1fr}}
 .glos-src{font-size:.68rem;color:var(--faint);margin-top:4px}
 .glos-empty{text-align:center;padding:60px 24px;color:var(--muted)}
 .glos-count{font-size:.78rem;color:var(--faint);margin-bottom:12px}
@@ -2019,8 +2031,20 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
               <input class="fin" id="glosSrcIn" type="text" placeholder="Ej: eur-lex.europa.eu"/>
             </div>
             <div class="fgrp fg-full">
-              <label class="flbl">Definición *</label>
-              <textarea class="ftxt" id="glosDefIn" rows="4" style="min-height:100px" placeholder="Explica el término de forma clara y accesible…"></textarea>
+              <label class="flbl">Definición * (3-4 líneas, lenguaje claro)</label>
+              <textarea class="ftxt" id="glosDefIn" rows="4" style="min-height:90px" placeholder="Explica el término de forma clara y accesible…"></textarea>
+            </div>
+            <div class="fgrp fg-full">
+              <label class="flbl">En palabras simples (1-2 líneas)</label>
+              <textarea class="ftxt" id="glosSimpleIn" rows="2" style="min-height:56px" placeholder="Versión aún más accesible, sin jerga…"></textarea>
+            </div>
+            <div class="fgrp fg-full">
+              <label class="flbl">Ejemplo práctico</label>
+              <textarea class="ftxt" id="glosExampleIn" rows="2" style="min-height:56px" placeholder="Caso real de la vida cotidiana…"></textarea>
+            </div>
+            <div class="fgrp fg-full">
+              <label class="flbl">Por qué importa</label>
+              <textarea class="ftxt" id="glosWhyIn" rows="2" style="min-height:56px" placeholder="Impacto directo en la vida del usuario…"></textarea>
             </div>
           </div>
           <div class="f-actions" style="margin-top:16px">
@@ -2065,20 +2089,8 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
       <div class="glos-cats" id="glosCats"></div>
     </div>
     <div class="glos-count" id="glosCount"></div>
-    <div class="glos-table-wrap">
-      <table class="glos-table">
-        <thead>
-          <tr>
-            <th>Término</th>
-            <th>Definición</th>
-            <th>Categoría</th>
-            <th>Fuente</th>
-          </tr>
-        </thead>
-        <tbody id="glosBody">
-          <tr><td colspan="4" class="glos-empty">Cargando glosario…</td></tr>
-        </tbody>
-      </table>
+    <div class="glos-cards" id="glosCards">
+      <div class="glos-empty">Cargando glosario…</div>
     </div>
   </div>
 </div>
@@ -4301,24 +4313,47 @@ function renderGlossary(){
   const q=(document.getElementById('glosSearch')?.value||'').toLowerCase().trim();
   const filtered=GLOSSARY.filter(g=>{
     if(glosActiveCat!=='all'&&g.category!==glosActiveCat) return false;
-    if(q&&!(g.term.toLowerCase().includes(q)||g.definition.toLowerCase().includes(q))) return false;
+    if(q&&!(
+      g.term.toLowerCase().includes(q)||
+      (g.definition||'').toLowerCase().includes(q)||
+      (g.simple_explanation||'').toLowerCase().includes(q)||
+      (g.practical_example||'').toLowerCase().includes(q)
+    )) return false;
     return true;
   });
   const countEl=document.getElementById('glosCount');
-  if(countEl) countEl.textContent=`Mostrando ${filtered.length} de ${GLOSSARY.length} términos`;
-  const body=document.getElementById('glosBody');
-  if(!body) return;
+  if(countEl) countEl.textContent=`${filtered.length} de ${GLOSSARY.length} términos`;
+  const container=document.getElementById('glosCards');
+  if(!container) return;
   if(!filtered.length){
-    body.innerHTML=`<tr><td colspan="4" class="glos-empty">No se encontraron términos para "${q||glosActiveCat}".</td></tr>`;
+    container.innerHTML=`<div class="glos-empty">No se encontraron términos para "<strong>${esc(q||glosActiveCat)}</strong>".</div>`;
     return;
   }
-  body.innerHTML=filtered.map(g=>`
-    <tr>
-      <td><div class="glos-term">${esc(g.term)}</div></td>
-      <td>${esc(g.definition)}</td>
-      <td><span class="glos-cat-badge">${esc(g.category||'')}</span></td>
-      <td><div class="glos-src"><a href="https://${esc(g.source||'')}" target="_blank" rel="noopener" style="color:var(--blue-lt)">${esc(g.source||'—')}</a></div></td>
-    </tr>`).join('');
+  container.innerHTML=filtered.map(g=>{
+    const sid='gc-'+String(g.id);
+    const hasExtra=!!(g.simple_explanation||g.practical_example||g.why_it_matters);
+    const srcUrl=g.source?(g.source.startsWith('http')?g.source:'https://'+g.source):null;
+    return `<div class="glos-card" id="${sid}">
+      <div class="glos-card-hdr" onclick="toggleGlosCard('${sid}')">
+        <div class="glos-term">${esc(g.term)}</div>
+        <span class="glos-cat-badge">${esc(g.category||'')}</span>
+        ${hasExtra?`<span class="glos-expand-ico">▾</span>`:''}
+      </div>
+      ${hasExtra?`<div class="glos-card-body">
+        <p class="glos-def">${esc(g.definition||'')}</p>
+        <div class="glos-trio">
+          ${g.simple_explanation?`<div class="glos-block"><div class="glos-block-lbl">En palabras simples</div><div class="glos-block-txt">${esc(g.simple_explanation)}</div></div>`:''}
+          ${g.practical_example?`<div class="glos-block"><div class="glos-block-lbl">Ejemplo práctico</div><div class="glos-block-txt">${esc(g.practical_example)}</div></div>`:''}
+          ${g.why_it_matters?`<div class="glos-block"><div class="glos-block-lbl">Por qué importa</div><div class="glos-block-txt">${esc(g.why_it_matters)}</div></div>`:''}
+        </div>
+        ${srcUrl?`<div class="glos-src-row">Fuente: <a href="${srcUrl}" target="_blank" rel="noopener">${esc(g.source)}</a></div>`:''}
+      </div>`:`<div class="glos-card-body"><p class="glos-def">${esc(g.definition||'')}</p>${srcUrl?`<div class="glos-src-row">Fuente: <a href="${srcUrl}" target="_blank" rel="noopener">${esc(g.source)}</a></div>`:''}</div>`}
+    </div>`;
+  }).join('');
+}
+function toggleGlosCard(id){
+  const card=document.getElementById(id);
+  if(card) card.classList.toggle('open');
 }
 
 /* Admin glosario */
@@ -4349,16 +4384,17 @@ function editGlossTerm(id){
   document.getElementById('glosDefIn').value=g.definition||'';
   document.getElementById('glosCatIn').value=g.category||'Principios';
   document.getElementById('glosSrcIn').value=g.source||'';
+  document.getElementById('glosSimpleIn').value=g.simple_explanation||'';
+  document.getElementById('glosExampleIn').value=g.practical_example||'';
+  document.getElementById('glosWhyIn').value=g.why_it_matters||'';
   document.getElementById('glosAdmFormTitle').textContent='Editar término';
   document.getElementById('glosTermIn').focus();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function resetGlosForm(){
-  document.getElementById('glosEditId').value='';
-  document.getElementById('glosTermIn').value='';
-  document.getElementById('glosDefIn').value='';
-  document.getElementById('glosSrcIn').value='';
+  ['glosEditId','glosTermIn','glosDefIn','glosSrcIn','glosSimpleIn','glosExampleIn','glosWhyIn']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('glosAdmFormTitle').textContent='Nuevo término';
 }
 
@@ -4367,13 +4403,17 @@ async function saveGlossTerm(){
   const definition=document.getElementById('glosDefIn').value.trim();
   const category=document.getElementById('glosCatIn').value;
   const source=document.getElementById('glosSrcIn').value.trim();
+  const simple_explanation=document.getElementById('glosSimpleIn').value.trim();
+  const practical_example=document.getElementById('glosExampleIn').value.trim();
+  const why_it_matters=document.getElementById('glosWhyIn').value.trim();
   if(!term||!definition){showToast('El término y la definición son obligatorios','error');return;}
   const editId=document.getElementById('glosEditId').value;
+  const payload={term,definition,category,source,simple_explanation,practical_example,why_it_matters};
   let error;
   if(editId){
-    ({error}=await db.from('glossary').update({term,definition,category,source}).eq('id',editId));
+    ({error}=await db.from('glossary').update(payload).eq('id',editId));
   } else {
-    ({error}=await db.from('glossary').insert([{term,definition,category,source}]));
+    ({error}=await db.from('glossary').insert([payload]));
   }
   if(error){showToast('Error al guardar: '+error.message,'error');return;}
   showToast(editId?'Término actualizado':'Término añadido');
