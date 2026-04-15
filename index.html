@@ -841,6 +841,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .glos-card.open .glos-expand-ico{transform:rotate(180deg)}
 .glos-card-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border)}
 .glos-card.open .glos-card-body{display:block}
+.glos-card-simple{padding:0 20px 16px;border-top:1px solid var(--border)}
 .glos-def{color:var(--text);font-size:.87rem;line-height:1.75;margin:15px 0 14px}
 .glos-trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:12px}
 .glos-block{background:var(--surf2);border-radius:8px;padding:11px 14px}
@@ -4333,13 +4334,27 @@ function renderGlossary(){
     const sid='gc-'+String(g.id);
     const hasExtra=!!(g.simple_explanation||g.practical_example||g.why_it_matters);
     const srcUrl=g.source?(g.source.startsWith('http')?g.source:'https://'+g.source):null;
+    if(!hasExtra){
+      // Término básico: definición siempre visible, sin toggle
+      return `<div class="glos-card" id="${sid}">
+        <div class="glos-card-hdr" style="cursor:default">
+          <div class="glos-term">${esc(g.term)}</div>
+          <span class="glos-cat-badge">${esc(g.category||'')}</span>
+        </div>
+        <div class="glos-card-simple">
+          <p class="glos-def">${esc(g.definition||'')}</p>
+          ${srcUrl?`<div class="glos-src-row">Fuente: <a href="${srcUrl}" target="_blank" rel="noopener">${esc(g.source)}</a></div>`:''}
+        </div>
+      </div>`;
+    }
+    // Término rico: expandible con 3 bloques
     return `<div class="glos-card" id="${sid}">
       <div class="glos-card-hdr" onclick="toggleGlosCard('${sid}')">
         <div class="glos-term">${esc(g.term)}</div>
         <span class="glos-cat-badge">${esc(g.category||'')}</span>
-        ${hasExtra?`<span class="glos-expand-ico">▾</span>`:''}
+        <span class="glos-expand-ico">▾</span>
       </div>
-      ${hasExtra?`<div class="glos-card-body">
+      <div class="glos-card-body">
         <p class="glos-def">${esc(g.definition||'')}</p>
         <div class="glos-trio">
           ${g.simple_explanation?`<div class="glos-block"><div class="glos-block-lbl">En palabras simples</div><div class="glos-block-txt">${esc(g.simple_explanation)}</div></div>`:''}
@@ -4347,7 +4362,7 @@ function renderGlossary(){
           ${g.why_it_matters?`<div class="glos-block"><div class="glos-block-lbl">Por qué importa</div><div class="glos-block-txt">${esc(g.why_it_matters)}</div></div>`:''}
         </div>
         ${srcUrl?`<div class="glos-src-row">Fuente: <a href="${srcUrl}" target="_blank" rel="noopener">${esc(g.source)}</a></div>`:''}
-      </div>`:`<div class="glos-card-body"><p class="glos-def">${esc(g.definition||'')}</p>${srcUrl?`<div class="glos-src-row">Fuente: <a href="${srcUrl}" target="_blank" rel="noopener">${esc(g.source)}</a></div>`:''}</div>`}
+      </div>
     </div>`;
   }).join('');
 }
@@ -4395,6 +4410,8 @@ function editGlossTerm(id){
 function resetGlosForm(){
   ['glosEditId','glosTermIn','glosDefIn','glosSrcIn','glosSimpleIn','glosExampleIn','glosWhyIn']
     .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const catSel=document.getElementById('glosCatIn');
+  if(catSel) catSel.value=catSel.options[0]?.value||'Principios';
   document.getElementById('glosAdmFormTitle').textContent='Nuevo término';
 }
 
