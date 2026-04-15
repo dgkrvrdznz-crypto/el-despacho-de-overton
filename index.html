@@ -2713,7 +2713,8 @@ function goView(name){
     loadCustomize();
   } else if(name==='glosario'){
     document.getElementById('view-glosario').classList.remove('hide');
-    renderGlossary();
+    if(GLOSSARY.length) renderGlossary();
+    else loadGlossary(); // carga datos y llama renderGlossary() al terminar
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
     syncDebateInline();
@@ -4493,10 +4494,26 @@ function euClick(cc){
    GLOSARIO
 ══════════════════════════════════════ */
 async function loadGlossary(){
-  const {data,error} = await db.from('glossary').select('*').order('term',{ascending:true});
-  if(error){console.error('Error cargando glosario:',error.message);return;}
-  GLOSSARY = data||[];
-  // Re-render si la vista glosario ya está activa (ej: carga directa desde /glosario/)
+  const container=document.getElementById('glosCards');
+  const isVisible=!document.getElementById('view-glosario')?.classList.contains('hide');
+  // Mostrar spinner solo si la vista está activa y no hay datos previos
+  if(isVisible&&!GLOSSARY.length&&container){
+    container.innerHTML='<div class="glos-empty" style="padding:40px 0"><span style="font-size:1.5rem">⏳</span><br>Cargando glosario…</div>';
+  }
+  const {data,error}=await db.from('glossary').select('*').order('term',{ascending:true});
+  if(error){
+    console.error('Error cargando glosario:',error.message);
+    if(isVisible&&container){
+      container.innerHTML=`<div class="glos-empty">
+        <span style="font-size:1.3rem">⚠️</span><br>
+        Error al cargar el glosario.<br>
+        <button class="btn-secondary" onclick="loadGlossary()" style="margin-top:12px;font-size:.82rem">Reintentar</button>
+      </div>`;
+    }
+    return;
+  }
+  GLOSSARY=data||[];
+  // Siempre re-render si la vista está activa
   if(!document.getElementById('view-glosario')?.classList.contains('hide')) renderGlossary();
 }
 
@@ -4529,8 +4546,16 @@ function renderGlossary(){
   if(countEl) countEl.textContent=`${filtered.length} de ${GLOSSARY.length} términos`;
   const container=document.getElementById('glosCards');
   if(!container) return;
+  if(!GLOSSARY.length){
+    // Aún no han llegado datos — lanzar carga y mostrar spinner
+    container.innerHTML='<div class="glos-empty" style="padding:40px 0"><span style="font-size:1.5rem">⏳</span><br>Cargando glosario…</div>';
+    loadGlossary();
+    return;
+  }
   if(!filtered.length){
-    container.innerHTML=`<div class="glos-empty">No se encontraron términos para "<strong>${esc(q||glosActiveCat)}</strong>".</div>`;
+    const msg=q?`No se encontraron términos para "<strong>${esc(q)}</strong>".`:
+                `No hay términos en la categoría <strong>${esc(glosActiveCat)}</strong>.`;
+    container.innerHTML=`<div class="glos-empty">${msg}</div>`;
     return;
   }
   container.innerHTML=filtered.map(g=>{
@@ -4646,6 +4671,8 @@ async function saveGlossTerm(){
   }
   showToast(editId?'✅ Término actualizado':'✅ Término añadido al glosario');
   resetGlosForm();
+  // Recargar datos (actualiza GLOSSARY cache) y re-render admin
+  await loadGlossary();
   renderAdmGlossary();
 }
 
