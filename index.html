@@ -1644,7 +1644,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
             <input class="fin" id="fRef" type="text" placeholder="C-507/23 · TJUE"/>
           </div>
           <div class="fgrp">
-            <label class="flbl">Minutos de lectura</label>
+            <label class="flbl">Minutos de lectura <span id="fMinsAuto" style="font-size:.72rem;color:var(--faint);font-style:italic"></span></label>
             <input class="fin" id="fMins" type="number" min="1" max="60" value="5"/>
           </div>
           <div class="fgrp">
@@ -1706,7 +1706,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
         <div class="fc-title" style="margin-bottom:16px">Explicación detallada</div>
         <div class="fgrp">
           <label class="flbl">Desarrollo completo *</label>
-          <textarea class="ftxt" id="fDetail" rows="8" style="min-height:190px" placeholder="Explica el trasfondo, los argumentos del tribunal o las obligaciones de la directiva. Lenguaje accesible pero riguroso.&#10;&#10;Puedes usar saltos de línea para separar párrafos."></textarea>
+          <textarea class="ftxt" id="fDetail" rows="8" style="min-height:190px" placeholder="Explica el trasfondo, los argumentos del tribunal o las obligaciones de la directiva. Lenguaje accesible pero riguroso.&#10;&#10;Puedes usar saltos de línea para separar párrafos." oninput="autoCalcReadingTime()"></textarea>
         </div>
 
         <div style="height:20px"></div>
@@ -3335,10 +3335,18 @@ async function renderStats(){
 async function subscribeFromLanding(){
   const email=(document.getElementById('nlLandingEmail')?.value||'').trim();
   if(!email||!email.includes('@')){ showToast('Introduce un email válido','error'); return; }
+  const btn=document.querySelector('[onclick="subscribeFromLanding()"]');
+  const orig=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent='Enviando…';}
   const {error}=await db.from('subscribers').insert([{email}]);
-  if(error){ if(error.code==='23505') showToast('Ya estás suscrito'); else showToast('Error: '+error.message,'error'); return; }
+  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme gratis';}
+  if(error){
+    if(error.code==='23505') showToast('Ya estás suscrito 👍');
+    else showToast('Error al suscribir. Inténtalo de nuevo.','error');
+    return;
+  }
   document.getElementById('nlLandingEmail').value='';
-  showToast('¡Suscripción confirmada! 🎉');
+  showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
 }
 function scrollToNewsletter(){
   document.getElementById('view-newsletter').scrollIntoView({behavior:'smooth'});
@@ -4008,9 +4016,39 @@ function closeMobileMenu(){
 /* ── TOAST ── */
 function toast(msg,type){
   const t=document.getElementById('toast');
+  if(!t) return;
+  clearTimeout(toast._t);
   t.textContent=msg; t.className='toast'+(type?' '+type:'');
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3200);
+  toast._t=setTimeout(()=>t.classList.remove('show'),type==='red'?5500:3800);
+}
+/* showToast — alias con mapeo de tipos:
+   showToast(msg)            → éxito (azul, 3.8s)
+   showToast(msg,'error')    → error (rojo, 5.5s)
+   showToast(msg,'warn')     → aviso (dorado, 4.5s)  */
+function showToast(msg,type){
+  const cssType=type==='error'?'red':type==='warn'?'gold':'';
+  const t=document.getElementById('toast');
+  if(!t) return;
+  clearTimeout(toast._t);
+  t.textContent=msg; t.className='toast'+(cssType?' '+cssType:'');
+  t.classList.add('show');
+  const dur=type==='error'?5500:type==='warn'?4500:3800;
+  toast._t=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* Auto-calcula minutos de lectura basándose en el contenido del artículo (250 ppm) */
+function autoCalcReadingTime(){
+  const fields=['fSummary','fExec','fDetail','fImpShort'];
+  const words=fields.reduce((acc,id)=>{
+    const el=document.getElementById(id);
+    return acc+(el?el.value.trim().split(/\s+/).filter(Boolean).length:0);
+  },0);
+  const mins=Math.max(1,Math.round(words/250));
+  const minsEl=document.getElementById('fMins');
+  const autoEl=document.getElementById('fMinsAuto');
+  if(minsEl) minsEl.value=mins;
+  if(autoEl) autoEl.textContent=words>0?`(~${words} palabras · calculado auto)`:'';
 }
 
 /* ════════════════════════════════════════════════════
@@ -4423,17 +4461,25 @@ async function saveGlossTerm(){
   const simple_explanation=document.getElementById('glosSimpleIn').value.trim();
   const practical_example=document.getElementById('glosExampleIn').value.trim();
   const why_it_matters=document.getElementById('glosWhyIn').value.trim();
-  if(!term||!definition){showToast('El término y la definición son obligatorios','error');return;}
+  if(!term){showToast('El término es obligatorio','error');return;}
+  if(!definition){showToast('La definición es obligatoria','error');return;}
   const editId=document.getElementById('glosEditId').value;
   const payload={term,definition,category,source,simple_explanation,practical_example,why_it_matters};
+  const btn=document.querySelector('[onclick="saveGlossTerm()"]');
+  const orig=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent=editId?'Actualizando…':'Guardando…';}
   let error;
   if(editId){
     ({error}=await db.from('glossary').update(payload).eq('id',editId));
   } else {
     ({error}=await db.from('glossary').insert([payload]));
   }
-  if(error){showToast('Error al guardar: '+error.message,'error');return;}
-  showToast(editId?'Término actualizado':'Término añadido');
+  if(btn){btn.disabled=false;btn.textContent=orig||'Guardar término';}
+  if(error){
+    showToast(error.code==='23505'?'Ya existe un término con ese nombre':'Error al guardar: '+error.message,'error');
+    return;
+  }
+  showToast(editId?'✅ Término actualizado':'✅ Término añadido al glosario');
   resetGlosForm();
   renderAdmGlossary();
 }
@@ -5093,27 +5139,35 @@ async function renderAdmComments(){
 async function subscribeEmail(){
   const email=(document.getElementById('nlEmail')?.value||'').trim();
   if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
+  const btn=document.querySelector('[onclick="subscribeEmail()"]');
+  const orig=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent='Enviando…';}
   const {error}=await db.from('subscribers').insert([{email}]);
+  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme';}
   if(error){
-    if(error.code==='23505'){showToast('Este email ya está suscrito');}
-    else {showToast('Error: '+error.message,'error');}
+    if(error.code==='23505'){showToast('Este email ya está suscrito 👍');}
+    else{showToast('Error al suscribir. Inténtalo de nuevo.','error');}
     return;
   }
   document.getElementById('nlEmail').value='';
-  showToast('¡Suscripción confirmada! 🎉');
+  showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
 }
 
 async function subscribeEmailInline(){
   const email=(document.getElementById('comNlEmail')?.value||'').trim();
   if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
+  const btn=document.querySelector('[onclick="subscribeEmailInline()"]');
+  const orig=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent='Enviando…';}
   const {error}=await db.from('subscribers').insert([{email}]);
+  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme';}
   if(error){
-    if(error.code==='23505'){showToast('Este email ya está suscrito');}
-    else {showToast('Error: '+error.message,'error');}
+    if(error.code==='23505'){showToast('Este email ya está suscrito 👍');}
+    else{showToast('Error al suscribir. Inténtalo de nuevo.','error');}
     return;
   }
   document.getElementById('comNlEmail').value='';
-  showToast('¡Suscripción confirmada! 🎉');
+  showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
 }
 
 /* Sincroniza el bloque de debate inline en Comunidad con el estado actual */
