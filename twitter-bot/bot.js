@@ -8,7 +8,7 @@
  * ──────────────────────────────────────────────────────────────────
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import Anthropic         from '@anthropic-ai/sdk';
 import { TwitterApi }    from 'twitter-api-v2';
 import { createClient }  from '@supabase/supabase-js';
 
@@ -37,8 +37,7 @@ const twitterClient = new TwitterApi({
   accessSecret:process.env.TWITTER_ACCESS_SECRET,
 });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const gemini = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // ────────────────────────────────────────────────
 // UTILIDADES
@@ -196,8 +195,12 @@ Link que DEBE aparecer al final: ${SITE_URL}/comunidad/`;
 }
 
 async function generateTweet(type, content) {
-  const result = await gemini.generateContent(buildPrompt(type, content));
-  return result.response.text().trim();
+  const response = await claude.messages.create({
+    model:      'claude-haiku-4-5',
+    max_tokens: 320,
+    messages:   [{ role: 'user', content: buildPrompt(type, content) }],
+  });
+  return response.content[0].text.trim();
 }
 
 // ────────────────────────────────────────────────
