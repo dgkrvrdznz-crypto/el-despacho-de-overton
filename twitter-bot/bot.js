@@ -196,7 +196,7 @@ Link que DEBE aparecer al final: ${SITE_URL}/comunidad/`;
 
 async function generateTweet(type, content) {
   const response = await claude.messages.create({
-    model:      'claude-haiku-4-5',
+    model:      'claude-3-5-haiku-20241022',
     max_tokens: 320,
     messages:   [{ role: 'user', content: buildPrompt(type, content) }],
   });
