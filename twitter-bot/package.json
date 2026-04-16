@@ -9,7 +9,7 @@
     "test":  "DRY_RUN=true node bot.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk":   "^0.39.0",
+    "@google/generative-ai": "^0.21.0",
     "@supabase/supabase-js": "^2.49.0",
     "twitter-api-v2":      "^1.19.0"
   },
