@@ -1,0 +1,17 @@
+{
+  "name": "overton-twitter-bot",
+  "version": "1.0.0",
+  "description": "Bot de Twitter para El Despacho de Overton — redistribuye contenido del glosario, artículos y debates",
+  "type": "module",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test":  "DRY_RUN=true node bot.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk":   "^0.39.0",
+    "@supabase/supabase-js": "^2.49.0",
+    "twitter-api-v2":      "^1.19.0"
+  },
+  "engines": { "node": ">=18.0.0" }
+}

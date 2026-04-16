@@ -1,0 +1,48 @@
+name: 🐦 Twitter Bot — El Despacho de Overton
+
+on:
+  schedule:
+    # 3 tweets/día — horarios en UTC (España en verano = UTC+2)
+    - cron: '0 7 * * *'   # 09:00 España — café de la mañana
+    - cron: '0 13 * * *'  # 15:00 España — pausa de mediodía
+    - cron: '0 19 * * *'  # 21:00 España — prime time redes
+
+  # Lanzamiento manual desde GitHub → Actions → Run workflow
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Solo generar tweet, NO publicar (true/false)'
+        required: false
+        default: 'false'
+
+jobs:
+  tweet:
+    name: Publicar tweet
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: twitter-bot/package-lock.json
+
+      - name: Instalar dependencias
+        run: cd twitter-bot && npm install
+
+      - name: Ejecutar bot
+        env:
+          SUPABASE_URL:           ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:   ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TWITTER_API_KEY:        ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET:     ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN:   ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET:  ${{ secrets.TWITTER_ACCESS_SECRET }}
+          ANTHROPIC_API_KEY:      ${{ secrets.ANTHROPIC_API_KEY }}
+          DRY_RUN:                ${{ github.event.inputs.dry_run || 'false' }}
+        run: cd twitter-bot && node bot.js
