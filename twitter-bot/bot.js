@@ -200,7 +200,7 @@ async function generateTweet(type, content) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const response = await claude.messages.create({
-        model:      'claude-3-haiku-20240307',
+        model:      'claude-haiku-4-5-20251001',
         max_tokens: 320,
         messages:   [{ role: 'user', content: buildPrompt(type, content) }],
       });
