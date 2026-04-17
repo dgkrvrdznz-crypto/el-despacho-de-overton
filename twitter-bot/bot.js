@@ -37,7 +37,7 @@ const twitterClient = new TwitterApi({
   accessSecret:process.env.TWITTER_ACCESS_SECRET,
 });
 
-const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const claude = new Anthropic({ apiKey: (process.env.ANTHROPIC_API_KEY || '').trim() });
 
 // ────────────────────────────────────────────────
 // UTILIDADES
