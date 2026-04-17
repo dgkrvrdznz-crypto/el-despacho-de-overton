@@ -33,6 +33,23 @@ jobs:
       - name: Instalar dependencias
         run: cd twitter-bot && npm install
 
+      - name: Diagnóstico entorno
+        run: |
+          echo "=== Node / npm ==="
+          node --version && npm --version
+          echo "=== SDK Anthropic instalado ==="
+          node -e "const p=require('./twitter-bot/node_modules/@anthropic-ai/sdk/package.json');console.log('@anthropic-ai/sdk:',p.version)"
+          echo "=== Conectividad api.anthropic.com ==="
+          node -e "
+            const https=require('https');
+            const req=https.request({hostname:'api.anthropic.com',path:'/v1/models',method:'GET',timeout:10000},r=>{
+              console.log('HTTP status:',r.statusCode); r.destroy();
+            });
+            req.on('error',e=>{ console.log('ERROR:',e.message,'| code:',e.code); process.exitCode=0; });
+            req.on('timeout',()=>{ console.log('TIMEOUT (10s)'); req.destroy(); });
+            req.end();
+          "
+
       - name: Ejecutar bot
         env:
           SUPABASE_URL:           ${{ secrets.SUPABASE_URL }}

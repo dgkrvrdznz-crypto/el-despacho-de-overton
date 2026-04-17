@@ -195,12 +195,31 @@ Link que DEBE aparecer al final: ${SITE_URL}/comunidad/`;
 }
 
 async function generateTweet(type, content) {
-  const response = await claude.messages.create({
-    model:      'claude-3-5-haiku-20241022',
-    max_tokens: 320,
-    messages:   [{ role: 'user', content: buildPrompt(type, content) }],
-  });
-  return response.content[0].text.trim();
+  const maxAttempts = 3;
+  let lastErr;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await claude.messages.create({
+        model:      'claude-3-5-haiku-20241022',
+        max_tokens: 320,
+        messages:   [{ role: 'user', content: buildPrompt(type, content) }],
+      });
+      return response.content[0].text.trim();
+    } catch (err) {
+      lastErr = err;
+      const statusInfo = err.status  ? ` [HTTP ${err.status}]`       : '';
+      const codeInfo   = err.cause?.code ? ` [${err.cause.code}]`    : '';
+      const cause2     = err.cause?.cause?.code ? ` [${err.cause.cause.code}]` : '';
+      log(`⚠️ Intento ${attempt}/${maxAttempts} fallido: ${err.message}${statusInfo}${codeInfo}${cause2}`);
+      if (err.cause?.message && err.cause.message !== err.message)
+        log(`   causa: ${err.cause.message}`);
+      if (attempt < maxAttempts) {
+        log(`   Reintentando en 8s...`);
+        await new Promise(r => setTimeout(r, 8000));
+      }
+    }
+  }
+  throw lastErr;
 }
 
 // ────────────────────────────────────────────────
@@ -268,5 +287,10 @@ async function run() {
 
 run().catch(err => {
   log('❌ ERROR FATAL:', err.message);
+  if (err.status)                     log('   → HTTP Status:', err.status);
+  if (err.cause?.message)             log('   → Causa:', err.cause.message);
+  if (err.cause?.code)                log('   → Código red:', err.cause.code);
+  if (err.cause?.cause?.message)      log('   → Causa-2:', err.cause.cause.message);
+  if (err.cause?.cause?.code)         log('   → Código-2:', err.cause.cause.code);
   process.exit(1);
 });
