@@ -34,20 +34,25 @@ jobs:
         run: cd twitter-bot && npm install
 
       - name: Diagnóstico entorno
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "=== Node / npm ==="
           node --version && npm --version
           echo "=== SDK Anthropic instalado ==="
           node -e "const p=require('./twitter-bot/node_modules/@anthropic-ai/sdk/package.json');console.log('@anthropic-ai/sdk:',p.version)"
-          echo "=== Conectividad api.anthropic.com ==="
+          echo "=== Modelos disponibles en tu cuenta ==="
           node -e "
             const https=require('https');
-            const req=https.request({hostname:'api.anthropic.com',path:'/v1/models',method:'GET',timeout:10000},r=>{
-              console.log('HTTP status:',r.statusCode); r.destroy();
-            });
-            req.on('error',e=>{ console.log('ERROR:',e.message,'| code:',e.code); process.exitCode=0; });
-            req.on('timeout',()=>{ console.log('TIMEOUT (10s)'); req.destroy(); });
-            req.end();
+            const apiKey=(process.env.ANTHROPIC_API_KEY||'').trim();
+            let body='';
+            https.request({hostname:'api.anthropic.com',path:'/v1/models',method:'GET',
+              headers:{'x-api-key':apiKey,'anthropic-version':'2023-06-01'}},
+              r=>{r.on('data',d=>body+=d);r.on('end',()=>{
+                try{const j=JSON.parse(body);console.log('IDs:',(j.data||[]).map(m=>m.id).join(', '));}
+                catch(e){console.log('Raw:',body.slice(0,300));}
+              });}
+            ).on('error',e=>console.log('ERR:',e.message)).end();
           "
 
       - name: Ejecutar bot
