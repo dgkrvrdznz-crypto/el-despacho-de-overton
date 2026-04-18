@@ -13,7 +13,7 @@ on:
       dry_run:
         description: 'Solo generar tweet, NO publicar (true/false)'
         required: false
-        default: 'false'
+        default: 'true'
 
 jobs:
   tweet:
