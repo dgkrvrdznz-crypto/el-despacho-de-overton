@@ -2603,6 +2603,11 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 /* ── SUPABASE CONFIG — Rellena tus credenciales después de crear el proyecto ── */
 const SUPA_URL = 'https://dlqnrlenosemcsfyhltc.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRscW5ybGVub3NlbWNzZnlobHRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTY2NjMsImV4cCI6MjA5MDM5MjY2M30.5cUzJCjokZb6vqxuP2A_CGIFnIwNGf318ffera3Qv1g';
+// Guard: si la CDN de Supabase falla, mostrar mensaje amigable en lugar de crash total
+if(!window.supabase){
+  document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:16px;padding:24px;text-align:center;background:#050F1E;color:#fff"><div style="font-size:2.5rem">⚠️</div><div style="font-size:1.15rem;font-weight:700">Error de conexión</div><div style="font-size:.9rem;opacity:.65;max-width:320px;line-height:1.6">No se pudo cargar un recurso necesario.<br>Comprueba tu conexión a internet y recarga la página.</div><button onclick="location.reload()" style="margin-top:8px;padding:11px 28px;border-radius:8px;background:#C9A227;color:#050F1E;font-weight:700;border:none;cursor:pointer;font-size:.95rem">↺ Recargar</button></div>';
+  throw new Error('Supabase JS library failed to load from CDN');
+}
 const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
 /* ── ROUTING STATE ── */
@@ -2943,35 +2948,38 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&currentArtId!==nul
 
 /* ── VIEWS ── */
 async function trackView(artId){
-  await db.from('article_views').insert([{article_id:artId}]);
+  try{ await db.from('article_views').insert([{article_id:artId}]); }catch(e){}
 }
 
 /* ── REACTIONS ── */
 async function loadReactions(artId){
-  const {data}=await db.from('reactions').select('reaction').eq('article_id',artId);
-  if(!data) return;
-  const counts={interesting:0,important:0,debatable:0};
-  data.forEach(r=>{ if(counts[r.reaction]!==undefined) counts[r.reaction]++; });
-  ['interesting','important','debatable'].forEach(r=>{
-    document.getElementById('rc-'+r).textContent=counts[r];
-  });
-  // Mark user's own vote from sessionStorage
-  const key='overton_react_'+artId;
-  const myVote=sessionStorage.getItem(key);
-  if(myVote) document.getElementById('r-'+myVote)?.classList.add('voted');
+  try{
+    const {data}=await db.from('reactions').select('reaction').eq('article_id',artId);
+    if(!data) return;
+    const counts={interesting:0,important:0,debatable:0};
+    data.forEach(r=>{ if(counts[r.reaction]!==undefined) counts[r.reaction]++; });
+    ['interesting','important','debatable'].forEach(r=>{
+      document.getElementById('rc-'+r).textContent=counts[r];
+    });
+    const key='overton_react_'+artId;
+    const myVote=sessionStorage.getItem(key);
+    if(myVote) document.getElementById('r-'+myVote)?.classList.add('voted');
+  }catch(e){}
 }
 async function react(reaction){
   if(!currentArtId) return;
   const key='overton_react_'+currentArtId;
   const prev=sessionStorage.getItem(key);
-  if(prev===reaction) return; // already voted this
+  if(prev===reaction) return;
   const sid=getSessionId();
-  await db.from('reactions').insert([{article_id:currentArtId,reaction,session_id:sid}]);
+  // UI inmediato (optimistic) — independiente del resultado de red
   sessionStorage.setItem(key,reaction);
   ['interesting','important','debatable'].forEach(r=>document.getElementById('r-'+r).classList.remove('voted'));
   document.getElementById('r-'+reaction).classList.add('voted');
   const cur=parseInt(document.getElementById('rc-'+reaction).textContent||'0');
   document.getElementById('rc-'+reaction).textContent=cur+1;
+  // DB en background, fallo silencioso (no rompemos UI por analytics)
+  try{ await db.from('reactions').insert([{article_id:currentArtId,reaction,session_id:sid}]); }catch(e){}
 }
 function getSessionId(){
   let s=sessionStorage.getItem('overton_sid');
@@ -3018,7 +3026,8 @@ async function postArtComment(){
 }
 async function deleteArtComment(id){
   if(!confirm('¿Eliminar este comentario?')) return;
-  await db.from('article_comments').delete().eq('id',id);
+  const {error}=await db.from('article_comments').delete().eq('id',id);
+  if(error){ showToast('Error al eliminar: '+error.message,'error'); return; }
   loadArtComments(currentArtId);
 }
 
@@ -3374,7 +3383,8 @@ async function deleteSponsor(id){
 
 /* ── STATS ── */
 async function renderStats(){
-  const [arts,views,coms,subs,contribs,reactions]=await Promise.all([
+  // Promise.allSettled: si una query falla, el resto siguen funcionando
+  const [arts,views,coms,subs,contribs,reactions]=await Promise.allSettled([
     db.from('articles').select('id,title,status',{count:'exact'}),
     db.from('article_views').select('article_id',{count:'exact'}),
     db.from('article_comments').select('id',{count:'exact'}),
@@ -3382,12 +3392,13 @@ async function renderStats(){
     db.from('contributor_requests').select('id',{count:'exact'}),
     db.from('reactions').select('id',{count:'exact'})
   ]);
-  document.getElementById('stTotalArts').textContent=arts.count??'—';
-  document.getElementById('stTotalViews').textContent=views.count??'—';
-  document.getElementById('stTotalComs').textContent=coms.count??'—';
-  document.getElementById('stTotalSubs').textContent=subs.count??'—';
-  document.getElementById('stTotalContribs').textContent=contribs.count??'—';
-  document.getElementById('stTotalReactions').textContent=reactions.count??'—';
+  const cnt=r=>r.status==='fulfilled'?(r.value?.count??'—'):'—';
+  document.getElementById('stTotalArts').textContent=cnt(arts);
+  document.getElementById('stTotalViews').textContent=cnt(views);
+  document.getElementById('stTotalComs').textContent=cnt(coms);
+  document.getElementById('stTotalSubs').textContent=cnt(subs);
+  document.getElementById('stTotalContribs').textContent=cnt(contribs);
+  document.getElementById('stTotalReactions').textContent=cnt(reactions);
   // Top articles by views
   const {data:vd}=await db.from('article_views').select('article_id');
   if(vd){
@@ -5464,15 +5475,18 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 
 /* ── FOOTER LIVE STATS ── */
 async function loadFooterStats(){
-  const [arts,glos,subs]=await Promise.all([
-    db.from('articles').select('id',{count:'exact',head:true}),
-    db.from('glossary').select('id',{count:'exact',head:true}),
-    db.from('subscribers').select('id',{count:'exact',head:true})
-  ]);
-  const el=id=>document.getElementById(id);
-  if(el('fStArts')) el('fStArts').textContent=arts.count??'—';
-  if(el('fStGlos')) el('fStGlos').textContent=glos.count??'—';
-  if(el('fStSubs')) el('fStSubs').textContent=subs.count??'—';
+  try{
+    const [arts,glos,subs]=await Promise.allSettled([
+      db.from('articles').select('id',{count:'exact',head:true}),
+      db.from('glossary').select('id',{count:'exact',head:true}),
+      db.from('subscribers').select('id',{count:'exact',head:true})
+    ]);
+    const v=r=>r.status==='fulfilled'?(r.value?.count??'—'):'—';
+    const el=id=>document.getElementById(id);
+    if(el('fStArts')) el('fStArts').textContent=v(arts);
+    if(el('fStGlos')) el('fStGlos').textContent=v(glos);
+    if(el('fStSubs')) el('fStSubs').textContent=v(subs);
+  }catch(e){}
 }
 
 /* ── INIT ── */
