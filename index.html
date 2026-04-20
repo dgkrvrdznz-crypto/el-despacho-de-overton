@@ -210,7 +210,7 @@
   --sh-lg:   0 12px 50px rgba(0,0,0,.45);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden}
 body{font-family:var(--fb);background:var(--bg);color:var(--text);line-height:1.7;transition:background .35s,color .35s;min-height:100vh;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 button{font-family:var(--fb);cursor:pointer}
@@ -548,15 +548,22 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 ═══════════════════════════════════════ */
 @media(max-width:760px){
   .hamburger-btn{display:flex}
-  .srch{width:120px}
-  .srch:focus{width:150px}
+  .srch{width:110px}
+  .srch:focus{width:135px}
   .nav{padding:0 14px;height:58px}
+  /* Logo: ocultar subtítulo y reducir texto en móvil */
+  .logo-sub{display:none}
+  .logo-name{font-size:1.05rem}
+  .logo{min-width:0;overflow:hidden}
 
   .hero{padding:52px 18px 46px}
   .hero h1{font-size:clamp(1.8rem,7vw,2.6rem)}
   .hero-p{font-size:.88rem}
   .hero-btns{flex-direction:column;align-items:center}
   .hero-btns button{width:100%;max-width:280px}
+  /* Pill y estrellas: evitar desborde visual en héroe */
+  .hero-pill{font-size:.62rem;padding:5px 12px;text-align:center;white-space:normal;max-width:calc(100vw - 36px)}
+  .eu-stars{letter-spacing:.12rem;font-size:.95rem}
 
   .stats-in{gap:0}
   .stat{padding:10px 14px;flex:1 1 50%}
@@ -1061,6 +1068,9 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   .hero h1{font-size:clamp(1.6rem,8vw,2.4rem)}
   .adm-tab{padding:6px 9px;font-size:.7rem}
   .fc{padding:14px 12px}
+  /* En pantallas muy pequeñas: ocultar buscador (accesible desde menú hamburguesa) */
+  .srch-w{display:none}
+  .logo-name{font-size:.9rem}
 }
 
 /* ═══════════════════════════════════════
