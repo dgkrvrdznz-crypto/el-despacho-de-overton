@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════
+   ESTILOS COMUNES PÁGINAS LEGALES
+   El Despacho de Overton
+═══════════════════════════════════════ */
+:root{
+  --gold:#C9A227; --gold-lt:#E2BA48;
+  --blue:#1A4F8C; --blue-mid:#2D6DB5;
+  --bg:#F3F7FC; --surface:#FFFFFF; --surf2:#EBF2FB;
+  --border:#CDD9EE; --text:#0E1C2F; --muted:#546A85; --faint:#8DA5C0;
+  --r:11px; --sh:0 2px 18px rgba(26,79,140,.08);
+  --fh:'Cormorant Garamond',Georgia,serif;
+  --fb:'Outfit','Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;font-size:16px}
+a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+a:hover{color:var(--gold)}
+
+/* HEADER simple */
+header.legal-h{background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--sh);padding:18px 24px;position:sticky;top:0;z-index:5}
+header.legal-h .nav{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+header.legal-h .logo{font-family:var(--fh);font-size:1.5rem;font-weight:700;color:var(--blue)}
+header.legal-h .logo em{color:var(--gold);font-style:normal}
+header.legal-h .back{font-size:.84rem;font-weight:600;color:var(--muted);text-decoration:none;padding:7px 13px;border-radius:7px;transition:all .2s}
+header.legal-h .back:hover{background:var(--surf2);color:var(--blue)}
+
+/* MAIN */
+main.legal-main{max-width:820px;margin:0 auto;padding:48px 24px 80px}
+.legal-pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);background:rgba(201,162,39,.13);padding:5px 14px;border-radius:20px;margin-bottom:18px}
+h1.legal-title{font-family:var(--fh);font-size:2.4rem;font-weight:700;color:var(--blue);line-height:1.1;margin-bottom:8px}
+.legal-date{font-size:.84rem;color:var(--faint);margin-bottom:34px}
+h2{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--blue);margin:38px 0 12px}
+h3{font-size:1.05rem;color:var(--text);margin:22px 0 8px;font-weight:700}
+p{margin-bottom:14px;text-align:justify;color:var(--text)}
+ul,ol{margin:10px 0 16px 26px}
+li{margin-bottom:8px}
+strong{color:var(--blue)}
+.callout{background:var(--surf2);border-left:3px solid var(--gold);padding:14px 20px;border-radius:0 8px 8px 0;font-size:.92rem;margin:18px 0}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.86rem}
+th{background:var(--surf2);padding:10px 12px;text-align:left;border:1px solid var(--border);font-weight:700;color:var(--blue)}
+td{padding:10px 12px;border:1px solid var(--border);vertical-align:top;color:var(--text)}
+
+/* FOOTER */
+footer.legal-f{background:#050F1E;color:rgba(255,255,255,.62);padding:30px 24px;text-align:center;font-size:.82rem}
+footer.legal-f .links{margin-top:10px;display:flex;justify-content:center;gap:6px 18px;flex-wrap:wrap;font-size:.78rem}
+footer.legal-f a{color:rgba(255,255,255,.78);text-decoration:none}
+footer.legal-f a:hover{color:var(--gold)}
+footer.legal-f .sep{opacity:.4}
+
+@media(max-width:760px){
+  main.legal-main{padding:30px 18px 50px}
+  h1.legal-title{font-size:1.8rem}
+  h2{font-size:1.3rem}
+}

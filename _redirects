@@ -1,0 +1,12 @@
+# URLs limpias (sin extensión)
+/aviso-legal              /aviso-legal.html              200
+/politica-privacidad      /politica-privacidad.html      200
+/politica-cookies         /politica-cookies.html         200
+/terminos-condiciones     /terminos-condiciones.html     200
+
+# Forzar HTTPS (Cloudflare ya lo hace, redundante pero explícito)
+http://eldespachodeoverton.es/*    https://eldespachodeoverton.es/:splat    301!
+http://www.eldespachodeoverton.es/* https://eldespachodeoverton.es/:splat    301!
+
+# www → apex
+https://www.eldespachodeoverton.es/* https://eldespachodeoverton.es/:splat   301!
