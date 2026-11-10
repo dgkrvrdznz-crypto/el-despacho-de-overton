@@ -1,10 +1,13 @@
+# Cabeceras para Cloudflare Pages / Netlify.
+# OJO: GitHub Pages (hosting actual) ignora este archivo; solo se aplica si se migra.
+# La CSP permite supabase-js (jsdelivr) y la API/realtime de Supabase.
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://dlqnrlenosemcsfyhltc.supabase.co wss://dlqnrlenosemcsfyhltc.supabase.co; frame-ancestors 'self'; base-uri 'self'; form-action 'self'
   Cross-Origin-Opener-Policy: same-origin
 
 /politica-privacidad.html

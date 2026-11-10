@@ -18,6 +18,18 @@ import { createClient }  from '@supabase/supabase-js';
 const SITE_URL      = 'https://eldespachodeoverton.es';
 const COOLDOWN_DAYS = 30;   // días antes de reutilizar un contenido
 const DRY_RUN       = process.env.DRY_RUN === 'true'; // no publica, solo loguea
+const MODEL         = (process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5').trim();
+const MAX_TWEET_LEN = 280;  // límite de X (los links cuentan 23)
+
+// Comprobar secretos antes de nada: un secreto vacío daba errores poco claros
+const REQUIRED_ENV = ['SUPABASE_URL', 'SUPABASE_SERVICE_KEY', 'ANTHROPIC_API_KEY'];
+if (!DRY_RUN) REQUIRED_ENV.push(
+  'TWITTER_API_KEY', 'TWITTER_API_SECRET', 'TWITTER_ACCESS_TOKEN', 'TWITTER_ACCESS_SECRET');
+const missingEnv = REQUIRED_ENV.filter(k => !(process.env[k] || '').trim());
+if (missingEnv.length) {
+  console.error(`❌ Faltan secretos en GitHub (Settings → Secrets → Actions): ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
 
 // Distribución base (se recalcula si hay secciones vacías)
 const BASE_DIST = { glossary: 60, article: 30, debate: 10 };
@@ -26,15 +38,16 @@ const BASE_DIST = { glossary: 60, article: 30, debate: 10 };
 // CLIENTES
 // ────────────────────────────────────────────────
 const db = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY  // service role — bypasses RLS
+  process.env.SUPABASE_URL.trim(),
+  process.env.SUPABASE_SERVICE_KEY.trim()  // service role — bypasses RLS
 );
 
-const twitterClient = new TwitterApi({
-  appKey:      process.env.TWITTER_API_KEY,
-  appSecret:   process.env.TWITTER_API_SECRET,
-  accessToken: process.env.TWITTER_ACCESS_TOKEN,
-  accessSecret:process.env.TWITTER_ACCESS_SECRET,
+// Se crea solo al publicar (en DRY RUN no hacen falta las claves de X)
+const makeTwitterClient = () => new TwitterApi({
+  appKey:      (process.env.TWITTER_API_KEY       || '').trim(),
+  appSecret:   (process.env.TWITTER_API_SECRET    || '').trim(),
+  accessToken: (process.env.TWITTER_ACCESS_TOKEN  || '').trim(),
+  accessSecret:(process.env.TWITTER_ACCESS_SECRET || '').trim(),
 });
 
 const claude = new Anthropic({ apiKey: (process.env.ANTHROPIC_API_KEY || '').trim() });
@@ -46,6 +59,22 @@ const log = (msg, data) =>
   console.log(`[${new Date().toISOString()}] ${msg}`, data ?? '');
 
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+// Supabase no lanza excepciones: devuelve { error }. Antes se ignoraba y el bot
+// seguía con datos vacíos; ahora falla con un mensaje claro.
+function must({ data, error, count }, what) {
+  if (error) throw new Error(`Supabase (${what}): ${error.message}`);
+  return { data, count };
+}
+
+// Longitud según X: cada URL cuenta 23 y los emojis/CJK cuentan 2
+function tweetLength(text) {
+  const noUrls = text.replace(/https?:\/\/\S+/g, '');
+  const urls   = (text.match(/https?:\/\/\S+/g) || []).length;
+  let len = urls * 23;
+  for (const ch of noUrls) len += ch.codePointAt(0) > 0x10FF ? 2 : 1;
+  return len;
+}
 
 function pickByWeight(dist) {
   const total = Object.values(dist).reduce((a, b) => a + b, 0);
@@ -60,11 +89,11 @@ function pickByWeight(dist) {
 async function getRecentIds(type) {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - COOLDOWN_DAYS);
-  const { data } = await db
+  const { data } = must(await db
     .from('tweet_history')
     .select('content_id')
     .eq('content_type', type)
-    .gte('published_at', cutoff.toISOString());
+    .gte('published_at', cutoff.toISOString()), 'tweet_history — ¿ejecutaste twitter-bot/schema.sql?');
   return new Set((data ?? []).map(r => String(r.content_id)));
 }
 
@@ -87,6 +116,7 @@ async function countAvailable() {
     db.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'published'),
     db.from('debate').select('id',   { count: 'exact', head: true }),
   ]);
+  must(g, 'glossary'); must(a, 'articles'); must(d, 'debate');
   return { glossary: g.count ?? 0, article: a.count ?? 0, debate: d.count ?? 0 };
 }
 
@@ -104,26 +134,26 @@ function buildDist(available) {
 }
 
 async function fetchGlossary(excludeIds) {
-  const { data } = await db.from('glossary').select('*');
+  const { data } = must(await db.from('glossary').select('*'), 'glossary');
   const pool = (data ?? []).filter(g => !excludeIds.has(String(g.id)));
   return pick(pool.length ? pool : (data ?? [])); // cooldown reset si todos usados
 }
 
 async function fetchArticle(excludeIds) {
-  const { data } = await db
+  const { data } = must(await db
     .from('articles')
     .select('id, title, summary, exec, cat, type, date')
     .eq('status', 'published')
-    .order('date', { ascending: false });
+    .order('id', { ascending: false }), 'articles');
   const pool = (data ?? []).filter(a => !excludeIds.has(String(a.id)));
   return pick(pool.length ? pool : (data ?? []));
 }
 
 async function fetchDebate(excludeIds) {
-  const { data } = await db
+  const { data } = must(await db
     .from('debate')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false }), 'debate');
   const pool = (data ?? []).filter(d => !excludeIds.has(String(d.id)));
   return pick(pool.length ? pool : (data ?? []));
 }
@@ -200,11 +230,17 @@ async function generateTweet(type, content) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const response = await claude.messages.create({
-        model:      'claude-haiku-4-5-20251001',
+        model:      MODEL,
         max_tokens: 320,
         messages:   [{ role: 'user', content: buildPrompt(type, content) }],
       });
-      return response.content[0].text.trim();
+      const text = (response.content.find(b => b.type === 'text')?.text || '')
+        .trim().replace(/^["“«]|["”»]$/g, '').trim();
+      if (!text) throw new Error('Claude devolvió una respuesta vacía');
+      // X rechaza los tweets de más de 280: antes eso tumbaba la publicación
+      if (tweetLength(text) > MAX_TWEET_LEN)
+        throw new Error(`Tweet demasiado largo (${tweetLength(text)} > ${MAX_TWEET_LEN})`);
+      return text;
     } catch (err) {
       lastErr = err;
       const statusInfo = err.status  ? ` [HTTP ${err.status}]`       : '';
@@ -266,7 +302,7 @@ async function run() {
   log('🧠 Generando tweet con Claude...');
   const tweetText = await generateTweet(type, content);
   log('📨 Tweet generado:\n' + '─'.repeat(50) + '\n' + tweetText + '\n' + '─'.repeat(50));
-  log(`📏 Longitud: ${tweetText.length} caracteres`);
+  log(`📏 Longitud (cómputo X): ${tweetLength(tweetText)} / ${MAX_TWEET_LEN}`);
 
   if (DRY_RUN) {
     log('🧪 DRY RUN — tweet NO publicado.');
@@ -275,7 +311,7 @@ async function run() {
 
   // 7. Publicar
   log('🐦 Publicando...');
-  const { data: tweet } = await twitterClient.readWrite.v2.tweet(tweetText);
+  const { data: tweet } = await makeTwitterClient().readWrite.v2.tweet(tweetText);
   const url = `https://x.com/i/web/status/${tweet.id}`;
   log(`✅ Publicado: ${url}`);
 
@@ -288,6 +324,13 @@ async function run() {
 run().catch(err => {
   log('❌ ERROR FATAL:', err.message);
   if (err.status)                     log('   → HTTP Status:', err.status);
+  // Errores de la API de X (twitter-api-v2): código y detalle
+  if (err.code && !err.status)        log('   → Código X:', err.code);
+  if (err.data)                       log('   → Respuesta X:', JSON.stringify(err.data));
+  if (err.code === 401)               log('   💡 Claves de X inválidas o caducadas: regenera los tokens en developer.x.com');
+  if (err.code === 402)               log('   💡 Tu cuenta de X API no tiene créditos/plan para publicar');
+  if (err.code === 403)               log('   💡 La app de X no tiene permiso de escritura ("Read and write") o el plan no permite publicar');
+  if (err.code === 429)               log('   💡 Límite de publicaciones de X alcanzado');
   if (err.cause?.message)             log('   → Causa:', err.cause.message);
   if (err.cause?.code)                log('   → Código red:', err.cause.code);
   if (err.cause?.cause?.message)      log('   → Causa-2:', err.cause.cause.message);
