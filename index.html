@@ -3045,7 +3045,9 @@ function buildChips(){
 
 /* ── STATS ── */
 function updateStats(){
-  const a=getArts();
+  // Solo cuenta lo publicado (no borradores ni programados a futuro)
+  const now=Date.now();
+  const a=getArts().filter(x=>(x.status||'published')==='published'&&(!x.publish_at||new Date(x.publish_at).getTime()<=now));
   // Null-safe: #stO no existe en el HTML y el error cortaba init() entero
   const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
   set('stS', a.filter(x=>x.type==='sentencia').length);
@@ -5767,6 +5769,7 @@ async function loadFooterStats(){
     loadFooterStats().catch(e=>console.warn('loadFooterStats:',e)),
   ]);
   renderGrid();
+  updateStats(); // antes solo se calculaba antes de cargar los artículos → siempre 0
 })();
 
 /* ── POPSTATE — botón atrás/adelante del navegador ── */
