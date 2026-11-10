@@ -1285,6 +1285,31 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 [data-theme=dark] .consent-row a{color:#7AB8E8}
 .consent-err{color:#c03030;font-size:.76rem;margin-top:4px;font-weight:600;display:none}
 .consent-err.show{display:block}
+
+/* ═══════════════════════════════════════
+   DETALLES DORADOS
+═══════════════════════════════════════ */
+header{border-bottom:none}
+header::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--gold-lt) 50%,var(--gold) 80%,transparent);opacity:.9;pointer-events:none}
+.logo-img{border-radius:50%;opacity:1;box-shadow:0 0 0 2px var(--gold),0 2px 10px rgba(201,162,39,.35)}
+.hero-emblem{display:block;width:118px;height:118px;margin:0 auto 18px;border-radius:50%;box-shadow:0 0 0 3px var(--gold),0 0 0 8px rgba(201,162,39,.18),0 10px 40px rgba(201,162,39,.35);animation:emblemGlow 4s ease-in-out infinite alternate}
+@keyframes emblemGlow{from{box-shadow:0 0 0 3px var(--gold),0 0 0 8px rgba(201,162,39,.14),0 10px 30px rgba(201,162,39,.25)}to{box-shadow:0 0 0 3px var(--gold-lt),0 0 0 10px rgba(201,162,39,.24),0 10px 48px rgba(201,162,39,.45)}}
+.eu-stars{color:var(--gold-lt);opacity:.9;text-shadow:0 0 10px rgba(226,186,72,.55)}
+.hero-founder-quote{border-top:1px solid rgba(201,162,39,.35)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-lt),var(--gold) 55%,#A9861C);box-shadow:0 4px 16px rgba(201,162,39,.3)}
+.btn-ghost:hover{border-color:var(--gold-lt)!important;color:var(--gold-lt)!important}
+.stats-bar{border-bottom:1px solid rgba(201,162,39,.35)}
+.stat-n::after{content:'';display:block;width:22px;height:2px;margin:7px auto 4px;background:var(--gold);border-radius:2px}
+footer{border-top:3px solid var(--gold)}
+.foot-logo-img{opacity:1;border-radius:50%;height:44px;max-height:44px;box-shadow:0 0 0 2px var(--gold)}
+.foot-logo em{color:var(--gold-lt)}
+.foot-eu-stars{color:var(--gold)}
+@media(min-width:1100px){.stat{padding:16px 26px}}
+@media(max-width:640px){
+  .hero-emblem{width:88px;height:88px;margin-bottom:14px}
+  .hero-tagline-wrap{height:auto;min-height:1.6rem}
+  .hero-tagline{white-space:normal;letter-spacing:.1em;font-size:.72rem}
+}
 </style>
 </head>
 <body>
@@ -1439,6 +1464,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
     <div class="hero-mesh"></div>
     <!-- Content -->
     <div class="hero-content">
+      <img class="hero-emblem" src="/logo.png" alt="Emblema de El Despacho de Overton" width="118" height="118"/>
       <div class="eu-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
       <div class="hero-pill">🇪🇺 450 millones de personas. Una sola ley. ¿La entiendes?</div>
       <div class="hero-tagline-wrap"><div class="hero-tagline" id="heroTagline">Europa no es aburrida. Te la han explicado mal.</div></div>
@@ -2501,7 +2527,7 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
   <!-- Bottom bar -->
   <div class="foot-bottom-bar">
     <div class="foot-bottom-in">
-      <span class="foot-copy">© 2025 El Despacho de Overton. Contenido divulgativo, no asesoramiento jurídico.</span>
+      <span class="foot-copy">© 2026 El Despacho de Overton. Contenido divulgativo, no asesoramiento jurídico.</span>
       <div class="foot-legal">
         <button onclick="cookieConsent.openLegal('privacidad')" style="background:none;border:none;color:rgba(255,255,255,.7);font-family:var(--fb);font-size:.72rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='#C9A227'" onmouseout="this.style.color='rgba(255,255,255,.7)'">Privacidad</button>
         <span style="color:rgba(255,255,255,.25)">·</span>
