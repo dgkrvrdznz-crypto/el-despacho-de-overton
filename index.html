@@ -5688,9 +5688,9 @@ async function loadFooterStats(){
     const [arts,glos,subs]=await Promise.allSettled([
       db.from('articles').select('id',{count:'exact',head:true}),
       db.from('glossary').select('id',{count:'exact',head:true}),
-      db.from('subscribers').select('id',{count:'exact',head:true})
+      db.rpc('subscriber_count') // la tabla solo la leen admins; la función devuelve solo el número
     ]);
-    const v=r=>r.status==='fulfilled'?(r.value?.count??'—'):'—';
+    const v=r=>r.status==='fulfilled'?(r.value?.count??r.value?.data??'—'):'—';
     const el=id=>document.getElementById(id);
     if(el('fStArts')) el('fStArts').textContent=v(arts);
     if(el('fStGlos')) el('fStGlos').textContent=v(glos);
