@@ -63,7 +63,11 @@ const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 // Supabase no lanza excepciones: devuelve { error }. Antes se ignoraba y el bot
 // seguía con datos vacíos; ahora falla con un mensaje claro.
 function must({ data, error, count }, what) {
-  if (error) throw new Error(`Supabase (${what}): ${error.message}`);
+  if (error) {
+    // "fetch failed" no dice nada: añadir la causa de red (ENOTFOUND, ECONNREFUSED…)
+    const extra = [error.details, error.hint, error.code].filter(Boolean).join(' | ');
+    throw new Error(`Supabase (${what}): ${error.message}${extra ? ' — ' + extra : ''}`);
+  }
   return { data, count };
 }
 
@@ -263,6 +267,16 @@ async function generateTweet(type, content) {
 // ────────────────────────────────────────────────
 async function run() {
   log(DRY_RUN ? '🧪 Bot iniciado en modo DRY RUN (no publicará)' : '🤖 Bot iniciado');
+
+  // Diagnóstico: comprobar que la URL de Supabase responde
+  try {
+    const host = new URL(process.env.SUPABASE_URL.trim()).host;
+    const r = await fetch(`https://${host}/rest/v1/`, { headers: { apikey: process.env.SUPABASE_SERVICE_KEY.trim() } });
+    log(`🔌 Supabase (${host.split('.')[0].slice(0, 6)}…) responde HTTP ${r.status}`);
+  } catch (e) {
+    log(`🔌 Supabase no responde: ${e.message} ${e.cause?.code ?? ''} ${e.cause?.message ?? ''}`);
+    log('   💡 Si es ENOTFOUND, el proyecto de Supabase está pausado o eliminado, o el secreto SUPABASE_URL es incorrecto');
+  }
 
   // 1. Ver qué secciones tienen contenido
   const available = await countAvailable();
