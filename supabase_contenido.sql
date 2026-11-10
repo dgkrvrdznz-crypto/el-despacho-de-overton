@@ -169,3 +169,49 @@ FROM pg_tables
 WHERE schemaname = 'public'
   AND tablename IN ('articles','article_views','reactions','article_comments','sponsors','forum_posts')
 ORDER BY tablename;
+
+-- ═══════════════════════════════════════════════════════
+-- 8. TABLA: site_settings
+-- Ajustes editados desde el panel de admin ("Personalizar", "Sobre
+-- nosotros", foto, "Equipo" y "Editores"). Antes vivían solo en el
+-- navegador del admin; ahora los ven todos los visitantes.
+-- ═══════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS site_settings (
+  key         TEXT PRIMARY KEY,          -- about / site / photo / team / editors
+  value       JSONB NOT NULL,
+  is_public   BOOLEAN NOT NULL DEFAULT true,  -- editors = false (contiene emails)
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "settings_select" ON site_settings;
+CREATE POLICY "settings_select" ON site_settings
+  FOR SELECT USING (is_public OR auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "settings_insert_auth" ON site_settings;
+CREATE POLICY "settings_insert_auth" ON site_settings
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "settings_update_auth" ON site_settings;
+CREATE POLICY "settings_update_auth" ON site_settings
+  FOR UPDATE USING (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "settings_delete_auth" ON site_settings;
+CREATE POLICY "settings_delete_auth" ON site_settings
+  FOR DELETE USING (auth.role() = 'authenticated');
+
+-- ═══════════════════════════════════════════════════════
+-- 9. STORAGE: bucket público "media" para las imágenes
+-- Las fotos de artículos, "Sobre nosotros" y equipo se suben aquí
+-- en lugar de guardarse como texto en la base de datos.
+-- ═══════════════════════════════════════════════════════
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES ('media', 'media', true, 5242880, ARRAY['image/jpeg','image/png','image/webp'])
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "media_read_public" ON storage.objects;
+CREATE POLICY "media_read_public" ON storage.objects
+  FOR SELECT USING (bucket_id = 'media');
+DROP POLICY IF EXISTS "media_insert_auth" ON storage.objects;
+CREATE POLICY "media_insert_auth" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'media' AND auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "media_delete_auth" ON storage.objects;
+CREATE POLICY "media_delete_auth" ON storage.objects
+  FOR DELETE USING (bucket_id = 'media' AND auth.role() = 'authenticated');

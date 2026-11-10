@@ -2742,14 +2742,113 @@ async function loadArts() {
   }));
 }
 
-const getAbout     = () => { try{ return JSON.parse(localStorage.getItem('overton_about')||'{}') }catch(e){return{}} };
-const saveAboutData = d => localStorage.setItem('overton_about', JSON.stringify(d));
-const getSite      = () => { try{ return JSON.parse(localStorage.getItem('overton_site')||'{}') }catch(e){return{}} };
-const saveSite     = d  => localStorage.setItem('overton_site', JSON.stringify(d));
-const getEditors   = () => { try{ return JSON.parse(localStorage.getItem('overton_editors')||'[]') }catch(e){return[]} };
-const saveEditors  = e  => localStorage.setItem('overton_editors', JSON.stringify(e));
-const getPhoto     = () => localStorage.getItem('overton_photo')||'';
-const savePhoto    = p  => localStorage.setItem('overton_photo', p);
+/* ── AJUSTES DEL SITIO (Supabase: tabla site_settings) ──
+   Antes se guardaban solo en localStorage del navegador del admin, así que
+   los visitantes nunca veían "Sobre nosotros", el equipo ni la personalización.
+   Ahora la fuente de verdad es Supabase; localStorage queda como caché. */
+const SETTINGS_DEFAULTS = { about:{}, site:{}, editors:[], team:[], photo:'' };
+const SETTINGS_LS = { about:'overton_about', site:'overton_site', editors:'overton_editors', team:'overton_team', photo:'overton_photo' };
+const SETTINGS_PRIVATE = new Set(['editors']); // emails: solo visibles para admins
+const _settings = {};
+const _remoteKeys = new Set();
+function _lsGetSetting(k){
+  try{
+    const raw=localStorage.getItem(SETTINGS_LS[k]);
+    if(raw==null) return SETTINGS_DEFAULTS[k];
+    return k==='photo' ? raw : JSON.parse(raw);
+  }catch(e){ return SETTINGS_DEFAULTS[k]; }
+}
+function _lsSetSetting(k,v){
+  try{ localStorage.setItem(SETTINGS_LS[k], k==='photo' ? (v||'') : JSON.stringify(v)); }catch(e){}
+}
+function getSetting(k){
+  if(!(k in _settings)) _settings[k]=_lsGetSetting(k);
+  return _settings[k];
+}
+async function setSetting(k,v){
+  _settings[k]=v; _lsSetSetting(k,v);
+  const {error}=await db.from('site_settings').upsert({
+    key:k, value:v, is_public:!SETTINGS_PRIVATE.has(k), updated_at:new Date().toISOString()
+  });
+  if(error){
+    console.error('site_settings:',error.message);
+    toast('⚠️ Guardado solo en este navegador: '+error.message,'red');
+    return false;
+  }
+  _remoteKeys.add(k);
+  return true;
+}
+async function loadRemoteSettings(){
+  const {data,error}=await db.from('site_settings').select('key,value');
+  if(error){ console.warn('No se pudieron cargar los ajustes:',error.message); return false; }
+  (data||[]).forEach(r=>{
+    if(!(r.key in SETTINGS_LS)) return;
+    _settings[r.key]=r.value; _lsSetSetting(r.key,r.value); _remoteKeys.add(r.key);
+  });
+  return true;
+}
+// Al entrar como admin: sube a Supabase lo que solo existía en este navegador
+async function migrateLocalSettings(){
+  await loadRemoteSettings();
+  for(const k of Object.keys(SETTINGS_LS)){
+    if(_remoteKeys.has(k)) continue;
+    const v=_lsGetSetting(k);
+    const empty = v==null || v==='' || (Array.isArray(v)?!v.length:(typeof v==='object'&&!Object.keys(v).length));
+    if(!empty) await setSetting(k,v);
+  }
+}
+const getAbout      = () => getSetting('about');
+const saveAboutData = d  => setSetting('about', d);
+const getSite       = () => getSetting('site');
+const saveSite      = d  => setSetting('site', d);
+const getEditors    = () => getSetting('editors');
+const saveEditors   = e  => setSetting('editors', e);
+const getPhoto      = () => getSetting('photo')||'';
+const savePhoto     = p  => setSetting('photo', p);
+
+/* ── IMÁGENES: se suben a Supabase Storage (bucket "media") ──
+   Antes se guardaban como data URI dentro de la base de datos (cientos de KB
+   por foto). Ahora se reducen a 1600px y se sube el archivo; solo se guarda la URL.
+   Si la subida falla, se usa la imagen reducida como data URI (mucho más ligera). */
+function _resizeImage(file,maxSide=1600,quality=0.85){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      const scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+      const ctx=c.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+      ctx.drawImage(img,0,0,c.width,c.height);
+      c.toBlob(b=>b?resolve(b):reject(new Error('No se pudo procesar la imagen')),'image/jpeg',quality);
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error('Imagen no válida')); };
+    img.src=url;
+  });
+}
+function _blobToDataURL(blob){
+  return new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(blob); });
+}
+async function processImage(file,onReady){
+  let blob;
+  try{ blob=await _resizeImage(file); }
+  catch(e){ toast('⚠️ '+e.message,'red'); return; }
+  toast('⏳ Subiendo imagen…','');
+  const path=`uploads/${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`;
+  const {error}=await db.storage.from('media').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000'});
+  let src;
+  if(error){
+    console.warn('Storage:',error.message);
+    toast('⚠️ No se pudo subir a Storage; se guarda reducida','red');
+    src=await _blobToDataURL(blob);
+  } else {
+    src=db.storage.from('media').getPublicUrl(path).data.publicUrl;
+    toast('✅ Imagen subida','gold');
+  }
+  onReady({target:{result:src}});
+}
 
 /* ── PROGRESS BAR ── */
 window.addEventListener('scroll',()=>{
@@ -2921,11 +3020,13 @@ function buildChips(){
 /* ── STATS ── */
 function updateStats(){
   const a=getArts();
-  document.getElementById('stS').textContent=a.filter(x=>x.type==='sentencia').length;
-  document.getElementById('stD').textContent=a.filter(x=>x.type==='directiva').length;
-  document.getElementById('stO').textContent=a.filter(x=>x.type==='otro'||x.type==='medioambiente').length;
-  document.getElementById('stOp').textContent=a.filter(x=>x.type==='opinion').length;
-  document.getElementById('stC').textContent=new Set(a.map(x=>x.cat)).size;
+  // Null-safe: #stO no existe en el HTML y el error cortaba init() entero
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('stS', a.filter(x=>x.type==='sentencia').length);
+  set('stD', a.filter(x=>x.type==='directiva').length);
+  set('stO', a.filter(x=>x.type==='otro'||x.type==='medioambiente').length);
+  set('stOp',a.filter(x=>x.type==='opinion').length);
+  set('stC', new Set(a.map(x=>x.cat)).size);
 }
 
 /* ── GRID ── */
@@ -3527,7 +3628,7 @@ function scrollToContrib(){
 /* ── ADMIN AUTH ── */
 async function openAdminLogin(){
   const { data: { session } } = await db.auth.getSession();
-  if(session||loggedIn){ loggedIn=true; goView('admin'); return; }
+  if(session||loggedIn){ loggedIn=true; migrateLocalSettings().catch(()=>{}); goView('admin'); return; }
   document.getElementById('loginSub').textContent = 'Acceso al panel de administración';
   document.getElementById('loginLbl').textContent = 'Contraseña';
   document.getElementById('loginBtn').textContent = 'Entrar';
@@ -3551,6 +3652,7 @@ async function doLogin(){
   }
   closeLogin();
   enterAdmin(data.user.email.split('@')[0]);
+  migrateLocalSettings().catch(e=>console.warn('Migración de ajustes:',e));
 }
 function enterAdmin(name='Administrador', isEditor=false){
   loggedIn=true;
@@ -3929,14 +4031,12 @@ function removeEditor(i){
 /* ── PHOTO ── */
 function previewPhoto(input){
   const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  processImage(file, e=>{
     const data=e.target.result;
     document.getElementById('aboutPhotoPreview').src=data;
     document.getElementById('aboutPhotoPreview').classList.add('show');
     document.getElementById('removePhotoBtn').style.display='inline-block';
-  };
-  reader.readAsDataURL(file);
+  });
 }
 function removePhoto(){
   document.getElementById('aboutPhotoPreview').src='';
@@ -3946,13 +4046,11 @@ function removePhoto(){
 }
 function previewCardPhoto(input){
   const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  processImage(file, e=>{
     const prev=document.getElementById('fPhotoPreview');
     prev.src=e.target.result; prev.classList.add('show');
     document.getElementById('removeCardPhotoBtn').style.display='inline-block';
-  };
-  reader.readAsDataURL(file);
+  });
 }
 function removeCardPhoto(){
   const prev=document.getElementById('fPhotoPreview');
@@ -4031,8 +4129,8 @@ setTimeout(()=>{
 
 /* ── TEAM ── */
 const K_TEAM = 'overton_team';
-const getTeam  = () => { try{ return JSON.parse(localStorage.getItem(K_TEAM)||'[]') }catch(e){return[]} };
-const saveTeam = d => localStorage.setItem(K_TEAM, JSON.stringify(d));
+const getTeam  = () => getSetting('team');
+const saveTeam = d => setSetting('team', d);
 let teamEditingId = null;
 
 function renderTeamAdmin(){
@@ -4102,16 +4200,14 @@ function setPhotoPos(btn){
 }
 function previewTeamPhoto(input){
   const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  processImage(file, e=>{
     const prev=document.getElementById('teamPhotoPreview');
     prev.src=e.target.result; prev.classList.add('show');
     const pos=document.getElementById('tPhotoPos').value||'top center';
     prev.style.objectPosition=pos;
     document.getElementById('removeTeamPhotoBtn').style.display='inline-block';
     document.getElementById('teamPosRow').style.display='block';
-  };
-  reader.readAsDataURL(file);
+  });
 }
 function removeTeamPhoto(){
   const prev=document.getElementById('teamPhotoPreview');
@@ -5588,6 +5684,12 @@ async function loadFooterStats(){
   updateStats();
   renderGrid();
   startRotatingPhrases();
+
+  // ②b Ajustes compartidos desde Supabase (lo que ven todos los visitantes)
+  loadRemoteSettings().then(ok=>{
+    if(!ok) return;
+    try{ applyAbout(); applyPhoto(); applySiteSettings(); renderTeamPublic(); }catch(e){ console.warn(e); }
+  });
 
   // ③ Pre-rellenar perfil o nombre del foro
   const _initProfile=getLocalProfile();
