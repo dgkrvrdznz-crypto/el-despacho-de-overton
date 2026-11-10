@@ -73,18 +73,9 @@ var D = {
 "Single Market Scoreboard 2024 (Comisión Europea) · european-union.europa.eu":"Single Market Scoreboard 2024 (European Commission) · european-union.europa.eu",
 
 /* Listado de artículos */
-"Últimas":"Latest",
-"publicaciones":"posts",
-"Sentencias":"Judgments",
-"del TJUE":"of the CJEU",
-"Directivas":"Directives",
-"de la UE":"of the EU",
 "Medio Ambiente":"Environment",
-"· Normativa UE":"· EU rules",
 "Artículos":"Articles",
-"de opinión":"opinion pieces",
 "Otros":"Other",
-"documentos":"documents",
 "Aquí no hace falta que seas experto. Hace falta que tengas criterio.":"You don't need to be an expert here. You need good judgement.",
 "Todas las categorías":"All categories",
 "No se encontraron artículos.":"No articles found.",
@@ -125,7 +116,7 @@ var D = {
 "Resumen ejecutivo":"Executive summary",
 "Explicación detallada":"Detailed explanation",
 "Impacto en tu día a día":"Impact on your daily life",
-"Artículo completo":"Full article",
+"Artículo":"Article",
 "Comentarios":"Comments",
 "Tu nombre…":"Your name…",
 "Deja tu opinión sobre este artículo…":"Share your view on this article…",
@@ -632,6 +623,19 @@ var MAP = {
 };
 for (var mk in MAP) D[mk]=MAP[mk];
 
+/* ── Traducciones que dependen de dónde está el texto ──────────── */
+/* Título del listado: "Sentencias <em>del TJUE</em>" → "CJEU <em>judgments</em>" */
+var CTX = [
+  ['#secTitle', {
+    "Últimas":"Latest", "publicaciones":"posts",
+    "Sentencias":"CJEU", "del TJUE":"judgments",
+    "Directivas":"EU", "de la UE":"directives",
+    "Medio Ambiente":"Environment", "· Normativa UE":"· EU rules",
+    "Artículos":"Opinion", "de opinión":"pieces",
+    "Otros":"Other", "documentos":"documents"
+  }]
+];
+
 /* ── Textos con números u otras partes variables ───────────────── */
 var MES = {ene:'Jan',feb:'Feb',mar:'Mar',abr:'Apr',may:'May',jun:'Jun',jul:'Jul',ago:'Aug',sep:'Sep',sept:'Sep',oct:'Oct',nov:'Nov',dic:'Dec'};
 var P = [
@@ -668,9 +672,14 @@ var SKIP = 'script,style,noscript,[data-no-i18n],#view-admin,#legalAvisoContent,
 
 /* ── Motor de traducción ───────────────────────────────────────── */
 function norm(s){ return s.replace(/\s+/g,' ').trim(); }
-function tr(s){
+function tr(s,el){
   if(s==null) return null;
   var k=norm(String(s)); if(!k) return null;
+  if(el && el.closest){
+    for(var c=0;c<CTX.length;c++){
+      if(el.closest(CTX[c][0]) && Object.prototype.hasOwnProperty.call(CTX[c][1],k)) return CTX[c][1][k];
+    }
+  }
   if(Object.prototype.hasOwnProperty.call(D,k)) return D[k];
   for(var i=0;i<P.length;i++){
     var m=k.match(P[i][0]);
@@ -681,7 +690,7 @@ function tr(s){
 function skipped(el){ return !el || (el.closest && el.closest(SKIP)); }
 function trText(n){
   if(n.parentElement && n.parentElement.tagName==='TEXTAREA') return;
-  var s=n.nodeValue, t=tr(s);
+  var s=n.nodeValue, t=tr(s,n.parentElement);
   if(t==null || t===norm(s)) return;
   var lead=s.match(/^\s*/)[0], trail=s.match(/\s*$/)[0];
   n.nodeValue=lead+t+trail;

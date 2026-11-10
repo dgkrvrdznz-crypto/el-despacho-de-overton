@@ -23,8 +23,11 @@
 })();
 function setLang(l){
   try{ localStorage.setItem('overton_lang',l); }catch(e){}
-  var u=new URL(location.href); u.searchParams.delete('lang');
-  location.replace(u.toString());
+  /* Recarga en la misma sección (p. ej. /glosario/) pero sin pasar por la página estática */
+  var v=location.pathname.replace(/^\/|\/$/g,'')||(location.hash||'').replace('#','');
+  var views=['sentencias','directivas','medioambiente','opinion','otros','glosario','comunidad','about','pregunta'];
+  try{ if(views.indexOf(v)!==-1) sessionStorage.setItem('__overton_view__',v); }catch(e){}
+  location.replace('/');
 }
 function toggleLang(){ setLang(window.OVERTON_LANG==='en'?'es':'en'); }
 </script>
