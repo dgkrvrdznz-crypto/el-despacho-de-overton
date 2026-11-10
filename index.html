@@ -5,6 +5,29 @@
 <script>if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')location.replace('https:'+location.href.substring(location.protocol.length));</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Idioma: español por defecto; inglés si el visitante lo elige (botón EN) o entra con ?lang=en -->
+<script>
+(function(){
+  var L='es';
+  try{
+    var q=new URLSearchParams(location.search).get('lang');
+    if(q==='en'||q==='es'){ L=q; localStorage.setItem('overton_lang',q); }
+    else if(localStorage.getItem('overton_lang')==='en') L='en';
+  }catch(e){}
+  window.OVERTON_LANG=L;
+  window.OVERTON_LOCALE=(L==='en'?'en-GB':'es-ES');
+  if(L==='en'){
+    document.documentElement.lang='en';
+    document.write('<script src="/i18n/en.js?v=1"><\/script>');
+  }
+})();
+function setLang(l){
+  try{ localStorage.setItem('overton_lang',l); }catch(e){}
+  var u=new URL(location.href); u.searchParams.delete('lang');
+  location.replace(u.toString());
+}
+function toggleLang(){ setLang(window.OVERTON_LANG==='en'?'es':'en'); }
+</script>
 
 <!-- ══════════════════════════════════════════════
      SEO — TITLE & DESCRIPTION
@@ -257,6 +280,8 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 [data-theme=dark] .ico-btn:hover{background:var(--surf2);color:#7AB8E8}
 .admin-indicator{display:inline-block;width:8px;height:8px;background:var(--gold);border-radius:50%;position:absolute;top:6px;right:6px}
 .ico-btn-wrap{position:relative}
+.lang-btn{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.04em}
+.mnl-lang{margin-top:8px;border-top:1px solid var(--border);border-radius:0;padding-top:16px}
 
 /* ═══════════════════════════════════════
    HERO
@@ -1413,6 +1438,7 @@ footer{border-top:3px solid var(--gold)}
         <svg class="srch-ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input class="srch" id="srchInput" type="search" name="overton-buscar" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Buscar artículos…" oninput="renderGrid()"/>
       </div>
+      <button class="ico-btn lang-btn" onclick="toggleLang()" id="langBtn" title="Read in English" aria-label="Read in English" lang="en" data-no-i18n>EN</button>
       <button class="ico-btn" onclick="toggleTheme()" title="Modo oscuro/claro" id="themeBtn">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
@@ -1443,6 +1469,7 @@ footer{border-top:3px solid var(--gold)}
     <a class="mnl" data-v="pregunta"  href="/pregunta/"  onclick="goView('pregunta');closeMobileMenu();return false;">Debates</a>
     <a class="mnl" data-v="glosario"  href="/#glosario"  onclick="goView('glosario');closeMobileMenu();return false;">Glosario</a>
     <a class="mnl" data-v="comunidad" href="/#comunidad" onclick="goView('comunidad');closeMobileMenu();return false;">Comunidad</a>
+    <a class="mnl mnl-lang" id="langMnl" href="#" onclick="toggleLang();return false;" lang="en" data-no-i18n>🌐 English</a>
   </div>
 </div>
 
@@ -2282,7 +2309,7 @@ footer{border-top:3px solid var(--gold)}
       <span class="founder-live">🔴 LIVE</span>
       <span><strong id="founderCountBanner">—</strong> miembros ya activos</span>
       <span style="color:var(--border)">·</span>
-      <span>Quedan <strong id="founderLeftBanner">—</strong> plazas de <strong>Fundador ⭐</strong></span>
+      <span data-i18n="founderLeft">Quedan <strong id="founderLeftBanner">—</strong> plazas de <strong>Fundador ⭐</strong></span>
     </div>
 
     <!-- Channels -->
@@ -3405,7 +3432,7 @@ async function loadDebateAdmin(){
   el.innerHTML=data.map(d=>{
     const total=(d.yes_count||0)+(d.no_count||0);
     const yesPct=total?Math.round((d.yes_count||0)/total*100):0;
-    const fecha=new Date(d.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
+    const fecha=new Date(d.created_at).toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'2-digit',month:'short',year:'numeric'});
     return `<div style="background:var(--surf2);border:1px solid ${d.active?'#4ade80':' var(--border)'};border-radius:9px;padding:14px 16px;margin-bottom:10px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
         <div style="font-weight:700;font-size:.87rem;flex:1">${esc(d.question)}</div>
@@ -3510,7 +3537,7 @@ async function loadContribs(){
   const pending=data.filter(c=>c.status==='pendiente').length;
   el.innerHTML=`<div style="font-size:.78rem;color:var(--muted);margin-bottom:12px">${data.length} solicitudes · <span style="color:#C9A227;font-weight:700">${pending} pendientes</span></div>`
   +data.map(c=>{
-    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'2-digit',month:'short',year:'numeric'}):'—';
     const estado=c.status||'pendiente';
     const estadoColor={'aprobado':'#22c55e','rechazado':'#d64040','contactado':'#3b82f6'}[estado]||'#C9A227';
     return `<div class="adm-comment-row" style="gap:12px;align-items:flex-start">
@@ -3878,7 +3905,7 @@ async function publishPost(){
   const mins      = parseInt(document.getElementById('fMins').value)||5;
   const photoPreview = document.getElementById('fPhotoPreview');
   const photo = (photoPreview.classList.contains('show') && photoPreview.src && !photoPreview.src.endsWith(window.location.href)) ? photoPreview.src : (editingId ? (getArts().find(a=>a.id===editingId)||{}).photo||'' : '');
-  const dateStr   = new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+  const dateStr   = new Date().toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'numeric',month:'short',year:'numeric'});
 
   const status     = document.getElementById('fStatus')?.value || 'published';
   const publishAt  = document.getElementById('fPublishAt')?.value || null;
@@ -5104,7 +5131,7 @@ function timeAgo(dateStr){
   if(diff<3600) return Math.floor(diff/60)+'m';
   if(diff<86400) return Math.floor(diff/3600)+'h';
   if(diff<604800) return Math.floor(diff/86400)+'d';
-  return new Date(dateStr).toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+  return new Date(dateStr).toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'2-digit',month:'short'});
 }
 function updateComposerAv(){
   const name=document.getElementById('comName').value.trim();
@@ -5548,7 +5575,7 @@ async function renderAdmComments(){
   if(!list) return;
   if(!data||!data.length){list.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay mensajes todavía.</p>';return;}
   list.innerHTML=data.map(c=>{
-    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
+    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
     const ch=c.channel||'general';
     const tipo=c.reply_to?'↳ Respuesta':'Publicación';
     return `<div class="adm-comment-row">
@@ -6395,6 +6422,14 @@ if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(()=>{});
   });
+}
+</script>
+<script>
+/* Botón de idioma: en la versión inglesa ofrece volver al español */
+if(window.OVERTON_LANG==='en'){
+  var _lb=document.getElementById('langBtn'), _lm=document.getElementById('langMnl');
+  if(_lb){ _lb.textContent='ES'; _lb.title=_lb.ariaLabel='Ver en español'; _lb.lang='es'; }
+  if(_lm){ _lm.textContent='🌐 Español'; _lm.lang='es'; }
 }
 </script>
 <script>
