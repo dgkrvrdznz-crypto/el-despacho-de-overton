@@ -1,5 +1,5 @@
 /* El Despacho de Overton — Service Worker v1 */
-const CACHE = 'overton-v2';
+const CACHE = 'overton-v3';
 const PRECACHE = [
   '/',
   '/sentencias/',
