@@ -1411,7 +1411,7 @@ footer{border-top:3px solid var(--gold)}
     <div class="nav-r">
       <div class="srch-w">
         <svg class="srch-ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input class="srch" id="srchInput" type="text" placeholder="Buscar artículos…" oninput="renderGrid()"/>
+        <input class="srch" id="srchInput" type="search" name="overton-buscar" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Buscar artículos…" oninput="renderGrid()"/>
       </div>
       <button class="ico-btn" onclick="toggleTheme()" title="Modo oscuro/claro" id="themeBtn">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -6393,6 +6393,16 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js').catch(()=>{});
   });
 }
+</script>
+<script>
+/* Algunos navegadores autorrellenan el buscador con el usuario guardado y
+   esconden todos los artículos. Si no lo ha escrito el visitante, se limpia. */
+(function(){
+  const inp=document.getElementById('srchInput'); if(!inp) return;
+  let typed=false; inp.addEventListener('keydown',()=>{typed=true;});
+  const clean=()=>{ if(!typed && inp.value && document.activeElement!==inp){ inp.value=''; if(typeof renderGrid==='function') renderGrid(); } };
+  [300,1000,2500].forEach(t=>setTimeout(clean,t));
+})();
 </script>
 </body>
 </html>
