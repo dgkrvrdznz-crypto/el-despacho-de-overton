@@ -163,13 +163,6 @@ BEGIN
   END IF;
 END $$;
 
--- ── 7. Verificación ─────────────────────────────────────
-SELECT tablename, rowsecurity AS rls_enabled
-FROM pg_tables
-WHERE schemaname = 'public'
-  AND tablename IN ('articles','article_views','reactions','article_comments','sponsors','forum_posts')
-ORDER BY tablename;
-
 -- ═══════════════════════════════════════════════════════
 -- 8. TABLA: site_settings
 -- Ajustes editados desde el panel de admin ("Personalizar", "Sobre
@@ -215,3 +208,10 @@ CREATE POLICY "media_insert_auth" ON storage.objects
 DROP POLICY IF EXISTS "media_delete_auth" ON storage.objects;
 CREATE POLICY "media_delete_auth" ON storage.objects
   FOR DELETE USING (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+-- ── 10. Verificación (al final para que el editor muestre este resultado) ─────────────────────────────────────
+SELECT tablename, rowsecurity AS rls_enabled
+FROM pg_tables
+WHERE schemaname = 'public'
+  AND tablename IN ('articles','article_views','reactions','article_comments','sponsors','forum_posts','site_settings')
+ORDER BY tablename;
