@@ -18,7 +18,7 @@
   window.OVERTON_LOCALE=(L==='en'?'en-GB':'es-ES');
   if(L==='en'){
     document.documentElement.lang='en';
-    document.write('<script src="/i18n/en.js?v=1"><\/script>');
+    document.write('<script src="/i18n/en.js?v=2"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
   }
 })();
 function setLang(l){
@@ -29,7 +29,18 @@ function setLang(l){
   try{ if(views.indexOf(v)!==-1) sessionStorage.setItem('__overton_view__',v); }catch(e){}
   location.replace('/');
 }
-function toggleLang(){ setLang(window.OVERTON_LANG==='en'?'es':'en'); }
+function toggleLang(){
+  var to=window.OVERTON_LANG==='en'?'es':'en';
+  /* Mueve el switch antes de recargar para que se vea el cambio */
+  [].forEach.call(document.querySelectorAll('.lang-sw'),function(b){ b.setAttribute('aria-checked',to==='en'?'true':'false'); });
+  setTimeout(function(){ setLang(to); },180);
+}
+/* Versión en inglés del contenido de Supabase (i18n/content-en.js), si existe */
+function enContent(kind,row){
+  if(window.OVERTON_LANG!=='en'||!row) return row;
+  var t=window.OVERTON_EN_CONTENT&&window.OVERTON_EN_CONTENT[kind]&&window.OVERTON_EN_CONTENT[kind][row.id];
+  return t?Object.assign({},row,t,{_en:true}):row;
+}
 </script>
 
 <!-- ══════════════════════════════════════════════
@@ -283,8 +294,19 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 [data-theme=dark] .ico-btn:hover{background:var(--surf2);color:#7AB8E8}
 .admin-indicator{display:inline-block;width:8px;height:8px;background:var(--gold);border-radius:50%;position:absolute;top:6px;right:6px}
 .ico-btn-wrap{position:relative}
-.lang-btn{font-family:var(--fb);font-size:.72rem;font-weight:700;letter-spacing:.04em}
-.mnl-lang{margin-top:8px;border-top:1px solid var(--border);border-radius:0;padding-top:16px}
+/* Switch de idioma ES/EN */
+.lang-sw{position:relative;display:inline-flex;align-items:center;height:32px;padding:3px;border-radius:999px;background:var(--surf2);border:1px solid var(--border);cursor:pointer;flex-shrink:0;font-family:var(--fb);font-size:.7rem;font-weight:700;letter-spacing:.05em;user-select:none;-webkit-tap-highlight-color:transparent}
+.lang-sw:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.lang-sw-knob{position:absolute;top:3px;left:3px;width:34px;height:24px;border-radius:999px;background:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.4,.2,.2,1)}
+[data-theme=dark] .lang-sw-knob{background:var(--gold)}
+.lang-sw[aria-checked=true] .lang-sw-knob{transform:translateX(34px)}
+.lang-sw-opt{position:relative;z-index:1;width:34px;text-align:center;line-height:24px;color:var(--muted);transition:color .25s}
+.lang-sw[aria-checked=false] .lang-sw-opt-es,.lang-sw[aria-checked=true] .lang-sw-opt-en{color:#fff}
+[data-theme=dark] .lang-sw[aria-checked=false] .lang-sw-opt-es,[data-theme=dark] .lang-sw[aria-checked=true] .lang-sw-opt-en{color:#0A1828}
+.lang-sw:hover .lang-sw-opt{color:var(--text)}
+.lang-sw[aria-checked=false]:hover .lang-sw-opt-es,.lang-sw[aria-checked=true]:hover .lang-sw-opt-en{color:#fff}
+[data-theme=dark] .lang-sw[aria-checked=false]:hover .lang-sw-opt-es,[data-theme=dark] .lang-sw[aria-checked=true]:hover .lang-sw-opt-en{color:#0A1828}
+.mnl-lang{margin-top:8px;border-top:1px solid var(--border);border-radius:0;padding-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 
 /* ═══════════════════════════════════════
    HERO
@@ -1441,7 +1463,7 @@ footer{border-top:3px solid var(--gold)}
         <svg class="srch-ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input class="srch" id="srchInput" type="search" name="overton-buscar" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Buscar artículos…" oninput="renderGrid()"/>
       </div>
-      <button class="ico-btn lang-btn" onclick="toggleLang()" id="langBtn" title="Read in English" aria-label="Read in English" lang="en" data-no-i18n>EN</button>
+      <button type="button" class="lang-sw" role="switch" aria-checked="false" onclick="toggleLang()" id="langBtn" title="Idioma / Language" aria-label="English" data-no-i18n><span class="lang-sw-knob" aria-hidden="true"></span><span class="lang-sw-opt lang-sw-opt-es" lang="es">ES</span><span class="lang-sw-opt lang-sw-opt-en" lang="en">EN</span></button>
       <button class="ico-btn" onclick="toggleTheme()" title="Modo oscuro/claro" id="themeBtn">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
@@ -1472,7 +1494,7 @@ footer{border-top:3px solid var(--gold)}
     <a class="mnl" data-v="pregunta"  href="/pregunta/"  onclick="goView('pregunta');closeMobileMenu();return false;">Debates</a>
     <a class="mnl" data-v="glosario"  href="/#glosario"  onclick="goView('glosario');closeMobileMenu();return false;">Glosario</a>
     <a class="mnl" data-v="comunidad" href="/#comunidad" onclick="goView('comunidad');closeMobileMenu();return false;">Comunidad</a>
-    <a class="mnl mnl-lang" id="langMnl" href="#" onclick="toggleLang();return false;" lang="en" data-no-i18n>🌐 English</a>
+    <div class="mnl mnl-lang" data-no-i18n><span>🌐 Idioma · Language</span><button type="button" class="lang-sw" role="switch" aria-checked="false" onclick="toggleLang()" id="langMnl" title="Idioma / Language" aria-label="English" data-no-i18n><span class="lang-sw-knob" aria-hidden="true"></span><span class="lang-sw-opt lang-sw-opt-es" lang="es">ES</span><span class="lang-sw-opt lang-sw-opt-en" lang="en">EN</span></button></div>
   </div>
 </div>
 
@@ -3092,7 +3114,7 @@ function renderGrid(){
   buildChips();
   const q=document.getElementById('srchInput').value.toLowerCase().trim();
   const now = new Date();
-  const filtered=getArts().filter(a=>{
+  const filtered=getArts().map(a=>enContent('articles',a)).filter(a=>{
     if(!loggedIn){
       if(a.status==='draft') return false;
       if(a.publish_at && new Date(a.publish_at) > now) return false;
@@ -3141,7 +3163,7 @@ function renderGrid(){
 /* ── ARTICLE MODAL ── */
 let currentArtId = null;
 function openArt(id){
-  const a=getArts().find(x=>x.id===id); if(!a) return;
+  const a=enContent('articles',getArts().find(x=>x.id===id)); if(!a) return;
   currentArtId = id;
   const typeLabel={sentencia:'Sentencia TJUE',directiva:'Directiva UE',medioambiente:'Medio Ambiente UE',opinion:'Artículo de Opinión',otro:'Documento'};
   document.getElementById('mType').textContent=typeLabel[a.type]||a.type;
@@ -4792,7 +4814,10 @@ function setGlosCat(cat){
 function renderGlossary(){
   buildGlossCats();
   const q=(document.getElementById('glosSearch')?.value||'').toLowerCase().trim();
-  const filtered=GLOSSARY.filter(g=>{
+  const list=window.OVERTON_LANG==='en'
+    ? GLOSSARY.map(g=>enContent('glossary',g)).sort((a,b)=>a.term.localeCompare(b.term,'en'))
+    : GLOSSARY;
+  const filtered=list.filter(g=>{
     if(glosActiveCat!=='all'&&g.category!==glosActiveCat) return false;
     if(q&&!(
       g.term.toLowerCase().includes(q)||
@@ -6428,11 +6453,9 @@ if('serviceWorker' in navigator){
 }
 </script>
 <script>
-/* Botón de idioma: en la versión inglesa ofrece volver al español */
+/* Switch de idioma: marcado (a la derecha) = inglés */
 if(window.OVERTON_LANG==='en'){
-  var _lb=document.getElementById('langBtn'), _lm=document.getElementById('langMnl');
-  if(_lb){ _lb.textContent='ES'; _lb.title=_lb.ariaLabel='Ver en español'; _lb.lang='es'; }
-  if(_lm){ _lm.textContent='🌐 Español'; _lm.lang='es'; }
+  ['langBtn','langMnl'].forEach(function(id){ var b=document.getElementById(id); if(b) b.setAttribute('aria-checked','true'); });
 }
 </script>
 <script>

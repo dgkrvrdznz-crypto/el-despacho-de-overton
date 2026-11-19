@@ -4,8 +4,9 @@
    Este archivo solo se carga cuando el visitante elige "EN".
    Cómo funciona: la web se sigue escribiendo en español; este archivo
    busca cada texto de la interfaz y lo cambia por su traducción.
-   Los textos que no están en el diccionario (artículos, glosario,
-   mensajes del foro…) se quedan en español.
+   El glosario y los artículos se traducen aparte, en
+   i18n/content-en.js. Los mensajes del foro y los comentarios se
+   quedan en el idioma en que se escribieron.
 
    Para añadir o corregir una traducción: edita el diccionario D de
    abajo ("texto en español": "texto en inglés") y sube el número
@@ -151,6 +152,17 @@ var D = {
 "Accede al panel de administración para añadir miembros.":"Go to the admin panel to add members.",
 
 /* Glosario */
+/* Categorías del glosario */
+"Conceptos Clave":"Key Concepts",
+"Derecho Corporativo":"Company Law",
+"Derecho Digital":"Digital Law",
+"Fuentes del Derecho":"Sources of Law",
+"Historia":"History",
+"Instituciones":"Institutions",
+"Libertades":"Freedoms",
+"Principios":"Principles",
+"Procedimientos":"Procedures",
+"RGPD":"GDPR",
 "📚 Glosario":"📚 Glossary",
 "de Derecho UE":"of EU law",
 "Las palabras que los políticos usan para que no les entiendas. Aquí las explicamos para que sí lo hagas.":"The words politicians use so you won't understand them. Here we explain them so you will.",
