@@ -4,6 +4,11 @@
 /politica-privacidad      /politica-privacidad.html      200
 /politica-cookies         /politica-cookies.html         200
 /terminos-condiciones     /terminos-condiciones.html     200
+/legal-notice              /legal-notice.html             200
+/privacy-policy            /privacy-policy.html           200
+/cookie-policy             /cookie-policy.html            200
+/terms-of-use              /terms-of-use.html             200
+/baja                      /baja.html                     200
 
 # Forzar HTTPS (Cloudflare ya lo hace, redundante pero explícito)
 http://eldespachodeoverton.es/*    https://eldespachodeoverton.es/:splat    301!

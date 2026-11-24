@@ -53,3 +53,18 @@ footer.legal-f .sep{opacity:.4}
   h1.legal-title{font-size:1.8rem}
   h2{font-size:1.3rem}
 }
+
+/* Tablas con scroll horizontal en móvil y selector de idioma */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0}
+.table-wrap table{margin:0;min-width:560px}
+header.legal-h .right{display:flex;gap:6px;align-items:center}
+.legal-note{font-size:.84rem;color:var(--muted);margin-top:30px}
+/* Formulario de baja */
+.unsub-form{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.unsub-form input{flex:1;min-width:220px;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:.95rem;font-family:inherit}
+.unsub-form button{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-weight:600;font-size:.92rem;cursor:pointer;font-family:inherit}
+.unsub-form button:disabled{opacity:.6;cursor:default}
+.unsub-msg{font-weight:600;margin-top:8px}
+.unsub-msg.ok{color:#1d7a3a}
+.unsub-msg.err{color:#c03030}
+header.legal-h .logo{text-decoration:none}

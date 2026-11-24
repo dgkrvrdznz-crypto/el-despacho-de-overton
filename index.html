@@ -7,6 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <!-- Idioma: español por defecto; inglés si el visitante lo elige (botón EN) o entra con ?lang=en -->
 <script>
+/* HTTPS siempre (por si el hosting no redirige): */
+if(location.protocol==='http:' && /(^|\.)eldespachodeoverton\.es$/.test(location.hostname)){ location.replace('https://'+location.host+location.pathname+location.search+location.hash); }
 (function(){
   var L='es';
   try{
@@ -18,7 +20,7 @@
   window.OVERTON_LOCALE=(L==='en'?'en-GB':'es-ES');
   if(L==='en'){
     document.documentElement.lang='en';
-    document.write('<script src="/i18n/en.js?v=2"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
+    document.write('<script src="/i18n/en.js?v=3"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
   }
 })();
 function setLang(l){
@@ -1327,6 +1329,11 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .legal-content a{color:var(--gold);text-decoration:underline}
 .legal-content .legal-callout{background:var(--surf2);border-left:3px solid var(--gold);padding:14px 18px;border-radius:0 6px 6px 0;font-size:.86rem;margin:14px 0}
 @media(max-width:760px){.legal-content{padding:30px 22px}}
+.legal-content .table-wrap{overflow-x:auto;margin:14px 0}
+.legal-content .table-wrap table{margin:0;min-width:540px}
+.legal-content .callout{background:var(--surf2);border-left:3px solid var(--gold);padding:14px 18px;border-radius:0 6px 6px 0;font-size:.86rem;margin:14px 0}
+.legal-content .legal-pill{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.legal-content .legal-note{font-size:.8rem;color:var(--muted)}
 /* CONSENT CHECKBOX (forms) */
 .consent-row{display:flex;gap:9px;align-items:flex-start;margin:14px 0 8px;font-size:.8rem;line-height:1.55;color:var(--muted);text-align:left}
 .consent-row input[type=checkbox]{margin-top:3px;flex-shrink:0;width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
@@ -1335,6 +1342,17 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 [data-theme=dark] .consent-row a{color:#7AB8E8}
 .consent-err{color:#c03030;font-size:.76rem;margin-top:4px;font-weight:600;display:none}
 .consent-err.show{display:block}
+.consent-box{width:100%;flex-basis:100%;text-align:left}
+.consent-info{font-size:.7rem;line-height:1.5;color:var(--faint);margin:4px 0 0}
+.consent-info a{color:inherit;text-decoration:underline}
+.consent-dark .consent-row{color:rgba(255,255,255,.78)}
+.consent-dark .consent-row a{color:var(--gold-lt)}
+.consent-dark .consent-info{color:rgba(255,255,255,.5)}
+.consent-dark .consent-info a{color:rgba(255,255,255,.7)}
+.consent-center{max-width:560px;margin:10px auto 0}
+.foot-legal a{color:rgba(255,255,255,.7);font-family:var(--fb);font-size:.72rem;text-decoration:none;transition:color .2s}
+.foot-legal a:hover{color:#C9A227}
+.foot-legal{flex-wrap:wrap;gap:6px 12px}
 
 /* ═══════════════════════════════════════
    DETALLES DORADOS
@@ -2392,6 +2410,10 @@ footer{border-top:3px solid var(--gold)}
         <input class="com-nl-in" id="comNlEmail" type="email" placeholder="tu@email.com"/>
         <button class="btn-gold" onclick="subscribeEmailInline()" style="font-size:.8rem;padding:9px 18px;white-space:nowrap">Suscribirme</button>
       </div>
+      <div class="consent-box">
+        <div class="consent-row"><input type="checkbox" id="comNlConsent"/><label for="comNlConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y quiero recibir la newsletter.</label></div>
+        <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
+      </div>
     </div>
 
     <!-- ── ¿QUIERES PUBLICAR CON NOSOTROS? ── -->
@@ -2435,6 +2457,10 @@ footer{border-top:3px solid var(--gold)}
       <input class="contrib-in-email" id="contribEmail" type="email" placeholder="tu@email.com"/>
       <button class="btn-gold" onclick="submitContrib()" style="font-size:.84rem;padding:10px 22px">Quiero publicar →</button>
     </div>
+    <div class="consent-box consent-center">
+      <div class="consent-row"><input type="checkbox" id="contribConsent"/><label for="contribConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y acepto que me escribáis sobre mi propuesta.</label></div>
+      <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: contactarte sobre tu propuesta · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
+    </div>
   </div>
 </div>
 
@@ -2453,6 +2479,10 @@ footer{border-top:3px solid var(--gold)}
       <input class="nl-form-in" id="nlLandingEmail" type="email" placeholder="tu@email.com"/>
       <button class="btn-gold" onclick="subscribeFromLanding()" style="font-size:.84rem;padding:11px 24px">Suscribirme gratis</button>
     </div>
+    <div class="consent-box consent-dark consent-center">
+        <div class="consent-row"><input type="checkbox" id="nlLandingConsent"/><label for="nlLandingConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y quiero recibir la newsletter.</label></div>
+        <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
+      </div>
     <p class="nl-privacy">Sin spam · Baja en un clic · Gratis para siempre</p>
   </div>
 </div>
@@ -2514,6 +2544,10 @@ footer{border-top:3px solid var(--gold)}
       <div class="foot-nl-row" style="max-width:380px;flex:1">
         <input class="foot-nl-in" id="nlEmail" type="email" placeholder="tu@email.com"/>
         <button class="btn-gold" onclick="subscribeEmail()" style="white-space:nowrap;font-size:.8rem;padding:9px 18px">Suscribirme</button>
+      </div>
+      <div class="consent-box consent-dark">
+        <div class="consent-row"><input type="checkbox" id="nlConsent"/><label for="nlConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y quiero recibir la newsletter.</label></div>
+        <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
       </div>
     </div>
   </div>
@@ -2580,15 +2614,19 @@ footer{border-top:3px solid var(--gold)}
   <div class="foot-bottom-bar">
     <div class="foot-bottom-in">
       <span class="foot-copy">© 2026 El Despacho de Overton. Contenido divulgativo, no asesoramiento jurídico.</span>
-      <div class="foot-legal">
-        <button onclick="cookieConsent.openLegal('privacidad')" style="background:none;border:none;color:rgba(255,255,255,.7);font-family:var(--fb);font-size:.72rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='#C9A227'" onmouseout="this.style.color='rgba(255,255,255,.7)'">Privacidad</button>
+      <nav class="foot-legal" aria-label="Información legal">
+        <a href="/aviso-legal.html" onclick="cookieConsent.openLegal('aviso');return false">Aviso legal</a>
         <span style="color:rgba(255,255,255,.25)">·</span>
-        <button onclick="cookieConsent.openLegal('aviso')" style="background:none;border:none;color:rgba(255,255,255,.7);font-family:var(--fb);font-size:.72rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='#C9A227'" onmouseout="this.style.color='rgba(255,255,255,.7)'">Aviso legal</button>
+        <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">Privacidad</a>
         <span style="color:rgba(255,255,255,.25)">·</span>
-        <button onclick="cookieConsent.openLegal('cookies')" style="background:none;border:none;color:rgba(255,255,255,.7);font-family:var(--fb);font-size:.72rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='#C9A227'" onmouseout="this.style.color='rgba(255,255,255,.7)'">Cookies</button>
+        <a href="/politica-cookies.html" onclick="cookieConsent.openLegal('cookies');return false">Cookies</a>
         <span style="color:rgba(255,255,255,.25)">·</span>
-        <button onclick="cookieConsent.openConfig()" style="background:none;border:none;color:rgba(255,255,255,.7);font-family:var(--fb);font-size:.72rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='#C9A227'" onmouseout="this.style.color='rgba(255,255,255,.7)'">Configurar cookies</button>
-      </div>
+        <a href="/terminos-condiciones.html" onclick="cookieConsent.openLegal('terminos');return false">Términos</a>
+        <span style="color:rgba(255,255,255,.25)">·</span>
+        <a href="/baja.html">Baja de la newsletter</a>
+        <span style="color:rgba(255,255,255,.25)">·</span>
+        <a href="#" onclick="cookieConsent.openConfig();return false">Configurar cookies</a>
+      </nav>
     </div>
   </div>
 
@@ -2677,7 +2715,7 @@ footer{border-top:3px solid var(--gold)}
     <div class="identity-title">Elige tu alias de comunidad</div>
     <div class="identity-sub">Una vez guardado, queda en este dispositivo. Solo necesitas hacerlo una vez.</div>
     <input class="identity-field" id="idAlias" type="text" placeholder="Tu alias (ej: JuristaNovato)" maxlength="40" onkeydown="if(event.key==='Enter')document.getElementById('idEmail').focus()"/>
-    <input class="identity-field" id="idEmail" type="email" placeholder="Email para notificaciones" onkeydown="if(event.key==='Enter')saveIdentityAndContinue()"/>
+    <input class="identity-field" id="idEmail" type="email" placeholder="Email (solo si quieres la newsletter)" onkeydown="if(event.key==='Enter')saveIdentityAndContinue()"/>
     <select class="identity-field" id="idRole" style="cursor:pointer">
       <option value="">¿Cuál es tu perfil? (opcional)</option>
       <option>Estudiante de Derecho</option>
@@ -2689,6 +2727,11 @@ footer{border-top:3px solid var(--gold)}
     <div class="identity-founder-hint" id="identityFounderHint">
       🎁 Los primeros <strong>500</strong> miembros reciben la insignia <strong>Fundador ⭐</strong> — visible en todos tus mensajes.<br>
       Quedan <strong id="founderLeftModal">—</strong> plazas disponibles.
+    </div>
+    <div class="consent-box" style="margin-bottom:12px">
+      <div class="consent-row"><input type="checkbox" id="idTermsConsent"/><label for="idTermsConsent">Tengo 14 años o más y acepto los <a href="/terminos-condiciones.html" onclick="cookieConsent.openLegal('terminos');return false">términos y condiciones</a> y la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a>.</label></div>
+      <div class="consent-row" style="margin-top:4px"><input type="checkbox" id="idNlConsent"/><label for="idNlConsent">Quiero recibir también la newsletter en mi correo (opcional).</label></div>
+      <p class="consent-info">Tu alias y tu perfil se guardan solo en este dispositivo. Tu correo solo se añade a nuestra lista si marcas la casilla de la newsletter, y puedes darte de baja cuando quieras.</p>
     </div>
     <div class="identity-btns">
       <button class="btn-cancel" onclick="closeIdentityOv()">Ahora no</button>
@@ -3521,6 +3564,7 @@ async function submitContrib(){
   // Validación robusta
   if(!name){ showToast('Escribe tu nombre','error'); return; }
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Email no válido','error'); return; }
+  if(!document.getElementById('contribConsent')?.checked){ showToast('Marca la casilla de consentimiento para enviar tu solicitud','error'); document.getElementById('contribConsent')?.focus(); return; }
   // Loading state
   const btn=document.querySelector('[onclick="submitContrib()"]');
   const origTxt=btn?.textContent||'Quiero publicar →';
@@ -3535,6 +3579,7 @@ async function submitContrib(){
     }
     document.getElementById('contribName').value='';
     document.getElementById('contribEmail').value='';
+    document.getElementById('contribConsent').checked=false;
     console.log('[Contrib] Solicitud guardada correctamente');
     showToast('¡Recibido! Te contactaremos pronto 🎉');
   } catch(e){
@@ -3684,6 +3729,7 @@ async function renderStats(){
 async function subscribeFromLanding(){
   const email=(document.getElementById('nlLandingEmail')?.value||'').trim();
   if(!email||!email.includes('@')){ showToast('Introduce un email válido','error'); return; }
+  if(!document.getElementById('nlLandingConsent')?.checked){ showToast('Marca la casilla de consentimiento para suscribirte','error'); document.getElementById('nlLandingConsent')?.focus(); return; }
   const btn=document.querySelector('[onclick="subscribeFromLanding()"]');
   const orig=btn?.textContent;
   if(btn){btn.disabled=true;btn.textContent='Enviando…';}
@@ -3694,7 +3740,7 @@ async function subscribeFromLanding(){
     else showToast('Error al suscribir. Inténtalo de nuevo.','error');
     return;
   }
-  document.getElementById('nlLandingEmail').value='';
+  document.getElementById('nlLandingEmail').value=''; document.getElementById('nlLandingConsent').checked=false;
   showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
 }
 function scrollToNewsletter(){
@@ -4406,7 +4452,7 @@ function getLocalProfile(){
 }
 function saveLocalProfile(p){ localStorage.setItem('overton_profile',JSON.stringify(p)); }
 function clearLocalProfile(){ localStorage.removeItem('overton_profile'); }
-function hasFullProfile(){ const p=getLocalProfile(); return !!(p&&p.alias&&p.email); }
+function hasFullProfile(){ const p=getLocalProfile(); return !!(p&&p.alias&&(p.email||p.terms_at)); }
 
 /* Llámalo antes de cualquier posteo.
    Devuelve true si ya tiene perfil, false si abre el modal. */
@@ -4428,15 +4474,18 @@ async function saveIdentityAndContinue(){
   const email=(document.getElementById('idEmail')?.value||'').trim();
   const role=document.getElementById('idRole')?.value||'';
   if(!alias){ showToast('Elige un alias para la comunidad','error'); document.getElementById('idAlias').focus(); return; }
-  if(!email||!email.includes('@')){ showToast('Introduce un email válido','error'); document.getElementById('idEmail').focus(); return; }
+  const termsOk=!!document.getElementById('idTermsConsent')?.checked;
+  const wantsNl=!!document.getElementById('idNlConsent')?.checked;
+  if(!termsOk){ showToast('Acepta los términos y la política de privacidad para participar','error'); document.getElementById('idTermsConsent')?.focus(); return; }
+  if(wantsNl && (!email||!email.includes('@'))){ showToast('Introduce un email válido para recibir la newsletter','error'); document.getElementById('idEmail').focus(); return; }
   const btn=document.getElementById('identitySaveBtn');
   if(btn){ btn.disabled=true; btn.textContent='Guardando…'; }
-  // Insertar en subscribers (ignorar duplicado 23505)
-  await db.from('subscribers').insert([{email}]);
+  // Solo se añade a la newsletter con consentimiento expreso (casilla aparte, sin marcar por defecto)
+  if(wantsNl) await db.from('subscribers').insert([{email}]);
   // Comprobar si quedan plazas de fundador
   const {count}=await db.from('subscribers').select('*',{count:'exact',head:true});
   const is_founder=(count||0)<=500;
-  const profile={alias,email,role,is_founder,joined_at:new Date().toISOString()};
+  const profile={alias,email:wantsNl?email:'',role,is_founder,joined_at:new Date().toISOString(),terms_at:new Date().toISOString()};
   saveLocalProfile(profile);
   localStorage.setItem('overton_forum_name',alias);
   if(btn){ btn.disabled=false; btn.textContent='Unirme y publicar →'; }
@@ -5623,6 +5672,7 @@ async function renderAdmComments(){
 async function subscribeEmail(){
   const email=(document.getElementById('nlEmail')?.value||'').trim();
   if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
+  if(!document.getElementById('nlConsent')?.checked){ showToast('Marca la casilla de consentimiento para suscribirte','error'); document.getElementById('nlConsent')?.focus(); return; }
   const btn=document.querySelector('[onclick="subscribeEmail()"]');
   const orig=btn?.textContent;
   if(btn){btn.disabled=true;btn.textContent='Enviando…';}
@@ -5633,13 +5683,14 @@ async function subscribeEmail(){
     else{showToast('Error al suscribir. Inténtalo de nuevo.','error');}
     return;
   }
-  document.getElementById('nlEmail').value='';
+  document.getElementById('nlEmail').value=''; document.getElementById('nlConsent').checked=false;
   showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
 }
 
 async function subscribeEmailInline(){
   const email=(document.getElementById('comNlEmail')?.value||'').trim();
   if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
+  if(!document.getElementById('comNlConsent')?.checked){ showToast('Marca la casilla de consentimiento para suscribirte','error'); document.getElementById('comNlConsent')?.focus(); return; }
   const btn=document.querySelector('[onclick="subscribeEmailInline()"]');
   const orig=btn?.textContent;
   if(btn){btn.disabled=true;btn.textContent='Enviando…';}
@@ -5650,7 +5701,7 @@ async function subscribeEmailInline(){
     else{showToast('Error al suscribir. Inténtalo de nuevo.','error');}
     return;
   }
-  document.getElementById('comNlEmail').value='';
+  document.getElementById('comNlEmail').value=''; document.getElementById('comNlConsent').checked=false;
   showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
 }
 
@@ -6410,11 +6461,16 @@ window.cookieConsent = (function(){
     else { applyState(DEFAULTS); setTimeout(showBanner, 600); }
   }
 
-  const LEGAL_SLUGS = {
-    privacidad: 'politica-privacidad.html',
-    cookies:    'politica-cookies.html',
-    aviso:      'aviso-legal.html',
-    terminos:   'terminos-condiciones.html'
+  const LEGAL_SLUGS = (window.OVERTON_LANG==='en') ? {
+    privacidad: '/privacy-policy.html',
+    cookies:    '/cookie-policy.html',
+    aviso:      '/legal-notice.html',
+    terminos:   '/terms-of-use.html'
+  } : {
+    privacidad: '/politica-privacidad.html',
+    cookies:    '/politica-cookies.html',
+    aviso:      '/aviso-legal.html',
+    terminos:   '/terminos-condiciones.html'
   };
   const _legalCache = {};
 
@@ -6429,7 +6485,7 @@ window.cookieConsent = (function(){
       .then(r=>r.ok?r.text():Promise.reject(r.status))
       .then(html=>{
         const doc=new DOMParser().parseFromString(html,'text/html');
-        const body=doc.querySelector('.legal-content')||doc.querySelector('main')||doc.querySelector('article')||doc.body;
+        const body=doc.querySelector('main.legal-main')||doc.querySelector('.legal-content')||doc.querySelector('main')||doc.querySelector('article')||doc.body;
         _legalCache[slug]=body.innerHTML;
         content.innerHTML=_legalCache[slug];
         el.classList.add('open');

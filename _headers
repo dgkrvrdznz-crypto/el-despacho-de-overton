@@ -21,3 +21,18 @@
 
 /aviso-legal.html
   Cache-Control: public, max-age=3600
+
+/legal-notice.html
+  Cache-Control: public, max-age=3600
+
+/privacy-policy.html
+  Cache-Control: public, max-age=3600
+
+/cookie-policy.html
+  Cache-Control: public, max-age=3600
+
+/terms-of-use.html
+  Cache-Control: public, max-age=3600
+
+/baja.html
+  Cache-Control: public, max-age=3600

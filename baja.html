@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Darse de baja de la newsletter de El Despacho de Overton."/>
+<meta name="robots" content="noindex,follow"/>
+<title>Baja de la newsletter · El Despacho de Overton</title>
+<link rel="stylesheet" href="/_legal-styles.css?v=2"/>
+</head>
+<body>
+<header class="legal-h">
+  <div class="nav">
+    <a href="/" class="logo">El Despacho <em>de Overton</em></a>
+    <div class="right">
+      <a href="/baja.html?lang=en" class="back" hreflang="en" lang="en">English</a>
+      <a href="/" class="back">← Volver al sitio</a>
+    </div>
+  </div>
+</header>
+<main class="legal-main">
+  <span class="legal-pill">Newsletter</span>
+  <h1 class="legal-title">Baja de la newsletter</h1>
+  <p class="legal-date">Última actualización: 24 de noviembre de 2026</p>
+  <p>Escribe el correo con el que te suscribiste y lo borraremos de la lista de la newsletter. No volverás a recibir envíos.</p>
+  <form class="unsub-form" id="unsubForm" novalidate>
+    <label for="unsubEmail" class="sr" style="position:absolute;left:-9999px">Correo electrónico</label>
+    <input id="unsubEmail" type="email" placeholder="tu@email.com" autocomplete="email" required/>
+    <button id="unsubBtn" type="submit">Darme de baja</button>
+  </form>
+  <p class="unsub-msg" id="unsubMsg" role="status" aria-live="polite"></p>
+  <p>Si tienes cualquier problema, escribe a <strong><a href="mailto:sanchezgarciaesteban05@gmail.com">sanchezgarciaesteban05@gmail.com</a></strong> y te daremos de baja a mano. Más información en la <a href="/politica-privacidad.html">Política de privacidad</a>.</p>
+</main>
+<footer class="legal-f">
+  <div>El Despacho <em>de Overton</em> · Derecho europeo accesible</div>
+  <nav class="links" aria-label="Información legal">
+    <a href="/aviso-legal.html">Aviso legal</a>
+    <span class="sep">·</span>
+    <a href="/politica-privacidad.html">Política de privacidad</a>
+    <span class="sep">·</span>
+    <a href="/politica-cookies.html">Política de cookies</a>
+    <span class="sep">·</span>
+    <a href="/terminos-condiciones.html">Términos y condiciones</a>
+    <span class="sep">·</span>
+    <a href="/baja.html">Baja de la newsletter</a>
+  </nav>
+</footer>
+<script>
+(function(){
+  var URL_='https://dlqnrlenosemcsfyhltc.supabase.co/rest/v1/rpc/newsletter_unsubscribe';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRscW5ybGVub3NlbWNzZnlobHRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTY2NjMsImV4cCI6MjA5MDM5MjY2M30.5cUzJCjokZb6vqxuP2A_CGIFnIwNGf318ffera3Qv1g';
+  var q=new URLSearchParams(location.search), L='es';
+  try{
+    if(q.get('lang')==='en'||q.get('lang')==='es'){ L=q.get('lang'); localStorage.setItem('overton_lang',L); }
+    else if(localStorage.getItem('overton_lang')==='en') L='en';
+  }catch(e){}
+  var T={
+    es:{ok:'Listo: tu correo se ha borrado de la newsletter.',okTok:'Listo: te has dado de baja de la newsletter.',bad:'Escribe un correo válido.',err:'No se ha podido completar la baja. Inténtalo de nuevo o escríbenos.',busy:'Procesando…'},
+    en:{ok:'Done: your email has been removed from the newsletter.',okTok:'Done: you have unsubscribed from the newsletter.',bad:'Please enter a valid email.',err:'We could not complete the request. Please try again or email us.',busy:'Processing…'}
+  }[L];
+  if(L==='en'){
+    document.documentElement.lang='en';
+    document.title='Unsubscribe · El Despacho de Overton';
+    var set=function(sel,txt,attr){ var el=document.querySelector(sel); if(el){ if(attr) el.setAttribute(attr,txt); else el.textContent=txt; } };
+    set('.legal-title','Unsubscribe from the newsletter');
+    set('.legal-pill','Newsletter');
+    set('.legal-date','');
+    var ps=document.querySelectorAll('main.legal-main > p:not(.legal-date):not(.unsub-msg)');
+    if(ps[0]) ps[0].textContent='Enter the email you subscribed with and we will remove it from the newsletter list. You will not receive any more emails.';
+    if(ps[1]) ps[1].innerHTML='If you have any problem, write to <strong><a href="mailto:sanchezgarciaesteban05@gmail.com">sanchezgarciaesteban05@gmail.com</a></strong> and we will unsubscribe you manually. More information in the <a href="/privacy-policy.html">Privacy policy</a>.';
+    set('#unsubBtn','Unsubscribe');
+    set('label[for=unsubEmail]','Email');
+    set('header .logo','/?lang=en','href');
+    var bk=document.querySelectorAll('header .back');
+    if(bk[0]){ bk[0].textContent='Español'; bk[0].href='/baja.html?lang=es'; bk[0].lang='es'; }
+    if(bk[1]){ bk[1].textContent='← Back to the site'; bk[1].href='/?lang=en'; }
+    var fl=document.querySelectorAll('footer.legal-f .links a'), en=[['/legal-notice.html','Legal notice'],['/privacy-policy.html','Privacy policy'],['/cookie-policy.html','Cookie policy'],['/terms-of-use.html','Terms of use'],['/baja.html?lang=en','Unsubscribe']];
+    for(var i=0;i<fl.length&&i<en.length;i++){ fl[i].href=en[i][0]; fl[i].textContent=en[i][1]; }
+    var tg=document.querySelector('footer.legal-f > div'); if(tg) tg.innerHTML='El Despacho <em>de Overton</em> · EU law made accessible';
+  } else {
+    var d=document.querySelector('.legal-date'); if(d) d.textContent='';
+  }
+  var msg=document.getElementById('unsubMsg'), btn=document.getElementById('unsubBtn');
+  function show(t,ok){ msg.textContent=t; msg.className='unsub-msg '+(ok?'ok':'err'); }
+  function call(payload,okText){
+    btn.disabled=true; var orig=btn.textContent; btn.textContent=T.busy;
+    return fetch(URL_,{method:'POST',headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); show(okText,true); })
+      .catch(function(){ show(T.err,false); })
+      .then(function(){ btn.disabled=false; btn.textContent=orig; });
+  }
+  var tok=q.get('token');
+  if(tok && /^[0-9a-f-]{36}$/i.test(tok)) call({p_token:tok},T.okTok);
+  document.getElementById('unsubForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=(document.getElementById('unsubEmail').value||'').trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ show(T.bad,false); return; }
+    call({p_email:v},T.ok);
+  });
+})();
+</script>
+</body>
+</html>
