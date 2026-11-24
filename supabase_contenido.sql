@@ -133,7 +133,19 @@ ALTER TABLE forum_posts ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "forum_select_public" ON forum_posts;
 CREATE POLICY "forum_select_public" ON forum_posts FOR SELECT USING (true);
 DROP POLICY IF EXISTS "forum_insert_public" ON forum_posts;
-CREATE POLICY "forum_insert_public" ON forum_posts FOR INSERT WITH CHECK (true);
+CREATE POLICY "forum_insert_public" ON forum_posts FOR INSERT WITH CHECK (
+  COALESCE(votes,0) = 0
+  AND char_length(body) BETWEEN 2 AND 800
+  AND char_length(COALESCE(name,'')) <= 60
+  AND COALESCE(channel,'general') IN ('general','debate')
+);
+-- Políticas antiguas creadas a mano que dejaban a cualquiera editar/borrar
+DROP POLICY IF EXISTS "fp_update" ON forum_posts;
+DROP POLICY IF EXISTS "fp_delete" ON forum_posts;
+DROP POLICY IF EXISTS "fp_insert" ON forum_posts;
+DROP POLICY IF EXISTS "fp_select" ON forum_posts;
+-- Tabla antigua "comments": la web ya no la usa; sin borrado anónimo
+DROP POLICY IF EXISTS "anon_delete_own" ON comments;
 DROP POLICY IF EXISTS "forum_delete_auth" ON forum_posts;
 CREATE POLICY "forum_delete_auth" ON forum_posts FOR DELETE USING (auth.role() = 'authenticated');
 
