@@ -4,6 +4,21 @@
 <!-- HTTPS redirect -->
 <script>if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')location.replace('https:'+location.href.substring(location.protocol.length));</script>
 <meta charset="UTF-8"/>
+<!-- Reinicio: entrar con ?reset borra lo que el navegador tiene guardado de la web
+     (service worker, copias en caché, ajustes y sesión) y vuelve a cargarla limpia -->
+<script>
+(function(){
+  if(!/[?&]reset\b/.test(location.search)) return;
+  var jobs=[];
+  try{ localStorage.clear(); }catch(e){}
+  try{ sessionStorage.clear(); }catch(e){}
+  try{ if(navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){ return r.unregister(); })); })); }catch(e){}
+  try{ if(window.caches) jobs.push(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })); }catch(e){}
+  document.documentElement.style.visibility='hidden';
+  Promise.all(jobs).catch(function(){}).then(function(){ location.replace('/'); });
+  setTimeout(function(){ location.replace('/'); }, 3000);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <!-- Idioma: español por defecto; inglés si el visitante lo elige (botón EN) o entra con ?lang=en -->
 <script>
@@ -6448,7 +6463,7 @@ cookieConsent.init();
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
   });
 }
 </script>
