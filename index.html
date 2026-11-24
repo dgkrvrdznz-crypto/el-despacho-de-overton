@@ -20,7 +20,7 @@ if(location.protocol==='http:' && /(^|\.)eldespachodeoverton\.es$/.test(location
   window.OVERTON_LOCALE=(L==='en'?'en-GB':'es-ES');
   if(L==='en'){
     document.documentElement.lang='en';
-    document.write('<script src="/i18n/en.js?v=3"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
+    document.write('<script src="/i18n/en.js?v=4"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
   }
 })();
 function setLang(l){
@@ -156,7 +156,7 @@ function enContent(kind,row){
       "@type": "DiscussionForumPosting",
       "url": "https://eldespachodeoverton.es/#comunidad",
       "name": "Foro de Derecho Europeo — El Despacho de Overton",
-      "description": "Foro de debate sobre derecho europeo: sentencias del TJUE, directivas, derechos fundamentales y normativa comunitaria. Sin registro requerido.",
+      "description": "Foro de debate sobre derecho europeo: sentencias del TJUE, directivas, derechos fundamentales y normativa comunitaria. Lectura libre; para participar basta con entrar con tu email.",
       "inLanguage": "es",
       "isPartOf": { "@id": "https://eldespachodeoverton.es/#website" }
     },
@@ -1807,7 +1807,7 @@ footer{border-top:3px solid var(--gold)}
       <button class="adm-tab"    onclick="showAdmTab('team',this)">Equipo</button>
       <button class="adm-tab"    onclick="showAdmTab('editors',this)">Editores</button>
       <button class="adm-tab"    onclick="showAdmTab('glossary',this)">§ Glosario</button>
-      <button class="adm-tab"    onclick="showAdmTab('comments',this)">› Comentarios</button>
+      <button class="adm-tab"    onclick="showAdmTab('comments',this)">› Foro</button>
       <button class="adm-tab"    onclick="showAdmTab('stats',this)">Estadísticas</button>
       <button class="adm-tab"    onclick="showAdmTab('debate',this)">Debate</button>
       <button class="adm-tab"    onclick="showAdmTab('contribs',this)">Colaboradores</button>
@@ -2270,10 +2270,10 @@ footer{border-top:3px solid var(--gold)}
     <!-- ── COMENTARIOS ADMIN ── -->
     <div id="adm-comments" class="hide">
       <div class="fc">
-        <div class="fc-title">Gestión de comentarios</div>
-        <p style="font-size:.83rem;color:var(--muted);margin-bottom:18px">Revisa y elimina comentarios. Los comentarios son públicos y se muestran en la sección Comunidad.</p>
+        <div class="fc-title">Moderación del foro</div>
+        <p style="font-size:.83rem;color:var(--muted);margin-bottom:18px">Primero los reportes pendientes y después lo último publicado. "Ocultar" lo retira de la vista pública sin borrarlo.</p>
         <div class="adm-comments-list" id="admCommentsList">
-          <p style="color:var(--muted);font-size:.84rem">Cargando comentarios…</p>
+          <p style="color:var(--muted);font-size:.84rem">Cargando…</p>
         </div>
       </div>
     </div>
@@ -2338,66 +2338,9 @@ footer{border-top:3px solid var(--gold)}
       </div>
     </div>
 
-    <!-- ── LEADERBOARD + TOP POST ── -->
-    <div class="forum-widgets" id="forumWidgets" style="display:none">
-      <div class="fw-top-post" id="fwTopPost"></div>
-      <div class="fw-leaderboard" id="fwLeaderboard"></div>
-    </div>
-
-    <!-- ── FORO ── -->
-    <div class="com-section-title">💬 Foro de la comunidad</div>
-
-    <!-- Founder banner -->
-    <div class="founder-banner" id="founderBanner">
-      <span class="founder-live">🔴 LIVE</span>
-      <span><strong id="founderCountBanner">—</strong> miembros ya activos</span>
-      <span style="color:var(--border)">·</span>
-      <span data-i18n="founderLeft">Quedan <strong id="founderLeftBanner">—</strong> plazas de <strong>Fundador ⭐</strong></span>
-    </div>
-
-    <!-- Channels -->
-    <div class="forum-channels">
-      <button class="forum-ch on" id="ftab-general" onclick="switchChannel('general')"># general <span class="forum-ch-badge" id="fbadge-general">—</span></button>
-      <button class="forum-ch"    id="ftab-debate"  onclick="switchChannel('debate')">⚡ debate <span class="forum-ch-badge" id="fbadge-debate">—</span></button>
-    </div>
-
-    <!-- Composer -->
-    <div class="forum-composer">
-      <div class="forum-composer-row">
-        <div class="forum-composer-av" id="composerAv">?</div>
-        <div class="forum-composer-fields">
-          <input class="forum-composer-name" id="comName" type="text" placeholder="Tu nombre o apodo…" maxlength="60" oninput="updateComposerAv()"/>
-          <textarea class="forum-composer-body" id="comBody" placeholder="¿Qué piensas? Aquí no hay respuestas incorrectas, solo argumentos. Escribe el tuyo." maxlength="600" rows="3" oninput="updateCharCount()"></textarea>
-        </div>
-      </div>
-      <div class="forum-composer-footer">
-        <span class="forum-anon-tag" id="composerAnon">🔒 Sin registro · <span onclick="checkIdentityBeforePost()" style="cursor:pointer;color:var(--blue);text-decoration:underline">únete como miembro ⭐</span> &nbsp;<span id="comCharCount" style="font-size:.72rem;color:var(--faint)"></span></span>
-        <div class="composer-profile hide" id="composerProfileStrip">
-          <span id="composerProfileAlias" class="composer-profile-alias"></span>
-          <span id="composerProfileBadge" style="margin-left:4px"></span>
-          <span class="composer-profile-change" onclick="clearProfileAndReset()">cambiar alias</span>
-        </div>
-        <button class="btn-gold" onclick="postComment()" id="comBtn" style="font-size:.82rem;padding:9px 24px">Publicar →</button>
-      </div>
-    </div>
-
-    <!-- Toolbar -->
-    <div class="forum-toolbar">
-      <span class="forum-count-txt" id="comCount"></span>
-      <div class="forum-sort">
-        <button class="forum-sort-btn on" id="fsort-recent" onclick="setForumSort('recent')">🕐 Reciente</button>
-        <button class="forum-sort-btn"    id="fsort-top"    onclick="setForumSort('top')">🔥 Top</button>
-        <button class="forum-sort-btn" id="btnClearForum" onclick="clearForumMessages()" style="display:none;color:#d64040;border-color:rgba(214,64,64,.3)">🗑 Limpiar foro</button>
-      </div>
-    </div>
-
-    <!-- Lista -->
-    <div class="forum-list" id="commentsList">
-      <div class="forum-empty"><div class="forum-empty-icon">💬</div><div class="forum-empty-title">Cargando…</div></div>
-    </div>
-    <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
-      <button class="btn-load-more" onclick="loadMoreComments()">Ver más mensajes</button>
-    </div>
+    <!-- ── FORO (foro.js) ── -->
+    <div class="com-section-title">💬 Foro de debate</div>
+    <div id="foroRoot" class="foro"><div class="foro-empty">Cargando…</div></div>
 
     <!-- ── NEWSLETTER (inline) ── -->
     <div class="com-nl-inline" style="margin-top:32px">
@@ -2674,19 +2617,8 @@ footer{border-top:3px solid var(--gold)}
       <div class="mb"><div class="mb-lbl">Explicación detallada</div><div class="det-txt" id="mDetail"></div></div>
       <div class="mb"><div class="mb-lbl">Impacto en tu día a día</div><div class="imp-list" id="mImps"></div></div>
 
-      <!-- ARTICLE COMMENTS -->
-      <div class="art-comments-section">
-        <div class="art-comments-title">Comentarios</div>
-        <div class="art-com-form">
-          <div class="art-com-row">
-            <input class="art-com-in" id="artComName" type="text" placeholder="Tu nombre…" maxlength="60" style="max-width:200px"/>
-          </div>
-          <textarea class="art-com-in art-com-ta" id="artComBody" placeholder="Deja tu opinión sobre este artículo…" maxlength="1000" rows="3"></textarea>
-          <div style="display:flex;justify-content:flex-end">
-            <button class="btn-gold" onclick="postArtComment()" style="font-size:.78rem;padding:8px 18px" id="artComBtn">Comentar</button>
-          </div>
-        </div>
-        <div class="art-com-list" id="artComList"><p style="font-size:.8rem;color:var(--faint)">Cargando comentarios…</p></div>
+      <!-- DEBATE DEL ARTÍCULO (foro.js) -->
+      <div class="foro-art" id="artForo"></div>
       </div>
     </div>
   </div>
@@ -2710,36 +2642,6 @@ footer{border-top:3px solid var(--gold)}
 </div>
 
 <!-- IDENTITY MODAL -->
-<div class="identity-ov" id="identityOv" onclick="if(event.target===this)closeIdentityOv()">
-  <div class="identity-box">
-    <div class="identity-title">Elige tu alias de comunidad</div>
-    <div class="identity-sub">Una vez guardado, queda en este dispositivo. Solo necesitas hacerlo una vez.</div>
-    <input class="identity-field" id="idAlias" type="text" placeholder="Tu alias (ej: JuristaNovato)" maxlength="40" onkeydown="if(event.key==='Enter')document.getElementById('idEmail').focus()"/>
-    <input class="identity-field" id="idEmail" type="email" placeholder="Email (solo si quieres la newsletter)" onkeydown="if(event.key==='Enter')saveIdentityAndContinue()"/>
-    <select class="identity-field" id="idRole" style="cursor:pointer">
-      <option value="">¿Cuál es tu perfil? (opcional)</option>
-      <option>Estudiante de Derecho</option>
-      <option>Abogado/a</option>
-      <option>Académico / Investigador</option>
-      <option>Ciudadano interesado</option>
-      <option>Otro</option>
-    </select>
-    <div class="identity-founder-hint" id="identityFounderHint">
-      🎁 Los primeros <strong>500</strong> miembros reciben la insignia <strong>Fundador ⭐</strong> — visible en todos tus mensajes.<br>
-      Quedan <strong id="founderLeftModal">—</strong> plazas disponibles.
-    </div>
-    <div class="consent-box" style="margin-bottom:12px">
-      <div class="consent-row"><input type="checkbox" id="idTermsConsent"/><label for="idTermsConsent">Tengo 14 años o más y acepto los <a href="/terminos-condiciones.html" onclick="cookieConsent.openLegal('terminos');return false">términos y condiciones</a> y la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a>.</label></div>
-      <div class="consent-row" style="margin-top:4px"><input type="checkbox" id="idNlConsent"/><label for="idNlConsent">Quiero recibir también la newsletter en mi correo (opcional).</label></div>
-      <p class="consent-info">Tu alias y tu perfil se guardan solo en este dispositivo. Tu correo solo se añade a nuestra lista si marcas la casilla de la newsletter, y puedes darte de baja cuando quieras.</p>
-    </div>
-    <div class="identity-btns">
-      <button class="btn-cancel" onclick="closeIdentityOv()">Ahora no</button>
-      <button class="btn-blue" id="identitySaveBtn" onclick="saveIdentityAndContinue()">Unirme y publicar →</button>
-    </div>
-  </div>
-</div>
-
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -2805,6 +2707,8 @@ footer{border-top:3px solid var(--gold)}
 
 <!-- ════════════════════ JS ════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="/foro.css?v=1"/>
+<script src="/foro.js?v=1"></script>
 <script>
 /* ── SUPABASE CONFIG — Rellena tus credenciales después de crear el proyecto ── */
 const SUPA_URL = 'https://dlqnrlenosemcsfyhltc.supabase.co';
@@ -3038,8 +2942,7 @@ function goView(name){
   } else if(name==='comunidad'){
     document.getElementById('view-comunidad').classList.remove('hide');
     syncDebateInline();
-    loadComments(true);
-    subscribeRealtime();
+    if(window.foroShow) foroShow();
   } else if(name==='pregunta'){
     document.getElementById('view-pregunta').classList.remove('hide');
     dqInit();
@@ -3239,17 +3142,12 @@ function openArt(id){
     document.getElementById('r-'+r).classList.remove('voted');
     document.getElementById('rc-'+r).textContent='0';
   });
-  // Pre-fill comment name from localStorage
-  const savedComName=localStorage.getItem('overton_com_name')||localStorage.getItem('overton_forum_name')||'';
-  document.getElementById('artComName').value=savedComName;
-  document.getElementById('artComBody').value='';
-  document.getElementById('artComList').innerHTML='<p style="font-size:.8rem;color:var(--faint)">Cargando comentarios…</p>';
   document.getElementById('artOverlay').classList.add('open');
   document.body.style.overflow='hidden';
   // Async: track view, load reactions, load comments
   trackView(id);
   loadReactions(id);
-  loadArtComments(id);
+  if(window.foroArticleBlock) foroArticleBlock(id);
 }
 function closeArt(){ document.getElementById('artOverlay').classList.remove('open'); document.body.style.overflow=''; currentArtId=null; }
 function overlayClick(e){ if(e.target===document.getElementById('artOverlay')) closeArt(); }
@@ -3294,50 +3192,6 @@ function getSessionId(){
   let s=sessionStorage.getItem('overton_sid');
   if(!s){ s=Math.random().toString(36).slice(2)+Date.now().toString(36); sessionStorage.setItem('overton_sid',s); }
   return s;
-}
-
-/* ── ARTICLE COMMENTS ── */
-async function loadArtComments(artId){
-  const {data,error}=await db.from('article_comments').select('*').eq('article_id',artId).order('created_at',{ascending:false});
-  const list=document.getElementById('artComList');
-  if(error||!data||!data.length){ list.innerHTML='<p style="font-size:.8rem;color:var(--faint)">Sé el primero en comentar.</p>'; return; }
-  list.innerHTML=data.map(c=>{
-    const name=c.name||'Anónimo';
-    const ini=name[0].toUpperCase();
-    const color=getAvatarColor(name);
-    const t=timeAgo(c.created_at);
-    const del=loggedIn?`<button class="art-com-del" onclick="deleteArtComment(${c.id})">✕</button>`:'';
-    return `<div class="art-com-item">${del}
-      <div class="art-com-hd">
-        <div class="art-com-av" style="background:${color}">${ini}</div>
-        <span class="art-com-name">${esc(name)}</span>
-        <span class="art-com-date">${t}</span>
-      </div>
-      <div class="art-com-body">${esc(c.body)}</div>
-    </div>`;
-  }).join('');
-}
-async function postArtComment(){
-  if(!currentArtId){ showToast('Error: no hay artículo activo','error'); return; }
-  const name=document.getElementById('artComName').value.trim();
-  const body=document.getElementById('artComBody').value.trim();
-  if(!name){ showToast('Escribe tu nombre','error'); return; }
-  if(!body||body.length<3){ showToast('El comentario es demasiado corto','error'); return; }
-  const btn=document.getElementById('artComBtn');
-  btn.disabled=true; btn.textContent='Publicando…';
-  const {error}=await db.from('article_comments').insert([{article_id:currentArtId,name,body}]);
-  btn.disabled=false; btn.textContent='Comentar';
-  if(error){ showToast('Error: '+error.message,'error'); return; }
-  localStorage.setItem('overton_com_name',name);
-  document.getElementById('artComBody').value='';
-  showToast('Comentario publicado ✓');
-  loadArtComments(currentArtId);
-}
-async function deleteArtComment(id){
-  if(!confirm('¿Eliminar este comentario?')) return;
-  const {error}=await db.from('article_comments').delete().eq('id',id);
-  if(error){ showToast('Error al eliminar: '+error.message,'error'); return; }
-  loadArtComments(currentArtId);
 }
 
 /* ── DEBATE DIARIO (sin API, selección por fecha) ── */
@@ -3754,7 +3608,8 @@ function scrollToContrib(){
 /* ── ADMIN AUTH ── */
 async function openAdminLogin(){
   const { data: { session } } = await db.auth.getSession();
-  if(session||loggedIn){ loggedIn=true; migrateLocalSettings().catch(()=>{}); goView('admin'); return; }
+  // Una sesión de miembro del foro NO da acceso al panel: solo las cuentas de la tabla admins
+  if(loggedIn || (session && await checkIsAdmin())){ loggedIn=true; migrateLocalSettings().catch(()=>{}); goView('admin'); return; }
   document.getElementById('loginSub').textContent = 'Acceso al panel de administración';
   document.getElementById('loginLbl').textContent = 'Contraseña';
   document.getElementById('loginBtn').textContent = 'Entrar';
@@ -3763,6 +3618,10 @@ async function openAdminLogin(){
   document.getElementById('pwIn').value='';
   document.getElementById('loginOv').classList.add('open');
   setTimeout(()=>document.getElementById('emailIn').focus(),180);
+}
+async function checkIsAdmin(){
+  try{ const {data,error}=await db.rpc('is_admin'); return !error && data===true; }
+  catch(e){ return false; }
 }
 function closeLogin(){ document.getElementById('loginOv').classList.remove('open'); }
 async function doLogin(){
@@ -3773,6 +3632,12 @@ async function doLogin(){
   const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
   if(error){
     errEl.textContent='Email o contraseña incorrectos.';
+    errEl.style.display='block';
+    return;
+  }
+  if(!(await checkIsAdmin())){
+    await db.auth.signOut();
+    errEl.textContent='Esta cuenta no tiene acceso de administrador.';
     errEl.style.display='block';
     return;
   }
@@ -4131,6 +3996,9 @@ async function addEditor(){
   if(pw!==pw2)           { showToast('Las contraseñas no coinciden','error'); return; }
   const btn=document.getElementById('addEditorBtn');
   btn.disabled=true; btn.textContent='Creando cuenta…';
+  // Autorizar el email como admin/editor ANTES de crear la cuenta
+  const {error:allowErr} = await db.rpc('allow_admin_email',{p_email:email});
+  if(allowErr){ btn.disabled=false; btn.textContent='+ Crear cuenta de editor'; showToast('Error: '+allowErr.message,'error'); return; }
   const {error} = await db.auth.signUp({ email, password: pw });
   btn.disabled=false; btn.textContent='+ Crear cuenta de editor';
   if(error){ showToast('Error: '+error.message,'error'); return; }
@@ -4439,113 +4307,6 @@ function autoCalcReadingTime(){
   const autoEl=document.getElementById('fMinsAuto');
   if(minsEl) minsEl.value=mins;
   if(autoEl) autoEl.textContent=words>0?`(~${words} palabras · calculado auto)`:'';
-}
-
-/* ════════════════════════════════════════════════════
-   IDENTIDAD DE COMUNIDAD — perfil persistente ligero
-   Flujo: primer post → modal alias+email → localStorage
-   'overton_profile'. Solo se pide una vez por dispositivo.
-════════════════════════════════════════════════════ */
-function getLocalProfile(){
-  try{ return JSON.parse(localStorage.getItem('overton_profile')||'null')||null; }
-  catch(e){ return null; }
-}
-function saveLocalProfile(p){ localStorage.setItem('overton_profile',JSON.stringify(p)); }
-function clearLocalProfile(){ localStorage.removeItem('overton_profile'); }
-function hasFullProfile(){ const p=getLocalProfile(); return !!(p&&p.alias&&(p.email||p.terms_at)); }
-
-/* Llámalo antes de cualquier posteo.
-   Devuelve true si ya tiene perfil, false si abre el modal. */
-function checkIdentityBeforePost(){
-  if(hasFullProfile()) return true;
-  // Pre-rellenar alias con nombre guardado si existe
-  const saved=localStorage.getItem('overton_forum_name')||'';
-  const idAlias=document.getElementById('idAlias');
-  if(idAlias&&!idAlias.value&&saved) idAlias.value=saved;
-  loadFounderCount();
-  document.getElementById('identityOv').classList.add('open');
-  setTimeout(()=>{ const a=document.getElementById('idAlias'); if(a) a.focus(); },150);
-  return false;
-}
-function closeIdentityOv(){ document.getElementById('identityOv').classList.remove('open'); }
-
-async function saveIdentityAndContinue(){
-  const alias=(document.getElementById('idAlias')?.value||'').trim();
-  const email=(document.getElementById('idEmail')?.value||'').trim();
-  const role=document.getElementById('idRole')?.value||'';
-  if(!alias){ showToast('Elige un alias para la comunidad','error'); document.getElementById('idAlias').focus(); return; }
-  const termsOk=!!document.getElementById('idTermsConsent')?.checked;
-  const wantsNl=!!document.getElementById('idNlConsent')?.checked;
-  if(!termsOk){ showToast('Acepta los términos y la política de privacidad para participar','error'); document.getElementById('idTermsConsent')?.focus(); return; }
-  if(wantsNl && (!email||!email.includes('@'))){ showToast('Introduce un email válido para recibir la newsletter','error'); document.getElementById('idEmail').focus(); return; }
-  const btn=document.getElementById('identitySaveBtn');
-  if(btn){ btn.disabled=true; btn.textContent='Guardando…'; }
-  // Solo se añade a la newsletter con consentimiento expreso (casilla aparte, sin marcar por defecto)
-  if(wantsNl) await db.from('subscribers').insert([{email}]);
-  // Comprobar si quedan plazas de fundador
-  const {count}=await db.from('subscribers').select('*',{count:'exact',head:true});
-  const is_founder=(count||0)<=500;
-  const profile={alias,email:wantsNl?email:'',role,is_founder,joined_at:new Date().toISOString(),terms_at:new Date().toISOString()};
-  saveLocalProfile(profile);
-  localStorage.setItem('overton_forum_name',alias);
-  if(btn){ btn.disabled=false; btn.textContent='Unirme y publicar →'; }
-  closeIdentityOv();
-  updateComposerWithProfile(profile);
-  // Continuar con el post solo si hay contenido en el textarea
-  const body=(document.getElementById('comBody')?.value||'').trim();
-  if(body.length>=3){
-    setTimeout(()=>postComment(),80);
-  } else {
-    showToast(is_founder?'¡Bienvenido/a, Miembro Fundador! ⭐ Ya puedes publicar.':'¡Alias guardado! Escribe tu primer mensaje 🎉');
-  }
-}
-
-function updateComposerWithProfile(profile){
-  if(!profile) return;
-  // Rellenar y bloquear campo nombre
-  const ni=document.getElementById('comName');
-  if(ni){ ni.value=profile.alias; ni.readOnly=true; ni.style.opacity='.65'; ni.style.cursor='default'; }
-  // Actualizar avatar
-  const av=document.getElementById('composerAv');
-  if(av){ av.textContent=profile.alias[0].toUpperCase(); av.style.background=getAvatarColor(profile.alias); }
-  // Mostrar strip de perfil, ocultar tag anónimo
-  const strip=document.getElementById('composerProfileStrip');
-  const anonTag=document.getElementById('composerAnon');
-  const aliasEl=document.getElementById('composerProfileAlias');
-  const badgeEl=document.getElementById('composerProfileBadge');
-  if(aliasEl) aliasEl.textContent=profile.alias;
-  if(badgeEl) badgeEl.innerHTML=profile.is_founder?'<span class="badge-founder">⭐ Fundador</span>':'';
-  if(strip) strip.classList.remove('hide');
-  if(anonTag) anonTag.style.display='none';
-}
-
-function clearProfileAndReset(){
-  clearLocalProfile();
-  const ni=document.getElementById('comName');
-  if(ni){ ni.value=''; ni.readOnly=false; ni.style.opacity=''; ni.style.cursor=''; }
-  const av=document.getElementById('composerAv');
-  if(av){ av.textContent='?'; av.style.background='var(--blue)'; }
-  const strip=document.getElementById('composerProfileStrip');
-  const anonTag=document.getElementById('composerAnon');
-  if(strip) strip.classList.add('hide');
-  if(anonTag) anonTag.style.display='';
-  showToast('Alias borrado. Elige uno nuevo al publicar.');
-}
-
-async function loadFounderCount(){
-  const {count}=await db.from('subscribers').select('*',{count:'exact',head:true});
-  const LIMIT=500;
-  const left=Math.max(0,LIMIT-(count||0));
-  const setEl=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
-  setEl('founderCountBanner',count||0);
-  setEl('founderLeftBanner',left);
-  setEl('founderLeftModal',left);
-  if(left===0){
-    const hint=document.getElementById('identityFounderHint');
-    if(hint) hint.style.display='none';
-    const banner=document.getElementById('founderBanner');
-    if(banner) banner.style.display='none';
-  }
 }
 
 /* ════════════════════════════════════════════════════
@@ -5019,183 +4780,8 @@ async function deleteGlossTerm(id){
 }
 
 /* ══════════════════════════════════════
-   FORO / COMUNIDAD
+   FORO / COMUNIDAD — la lógica vive en /foro.js
 ══════════════════════════════════════ */
-let activeChannel = 'general';
-const FORUM_PAGE  = 20;
-let forumOffset   = 0;
-let forumTotal    = 0;
-
-function getForumSession(){
-  let s=localStorage.getItem('overton_forum_sid');
-  if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('overton_forum_sid',s);}
-  return s;
-}
-function getVotedKey(id){ return 'overton_vote_'+id; }
-
-let forumSort='recent';
-const FORUM_CACHE_KEY='overton_forum_cache';
-const FORUM_LOCAL_KEY='overton_forum_local'; // fuente de verdad local
-const FORUM_MAX_LEN=600;
-const FORUM_SPAM_COOLDOWN=30; // segundos entre mensajes
-let lastForumPost=0;
-let realtimeChannel=null;
-
-/* ─── FUENTE DE VERDAD LOCAL (localStorage) ─────────────────────────────
-   getLocalPosts()   → lee todos los posts del localStorage
-   saveLocalPosts()  → guarda el array completo (máx 200)
-   addLocalPost()    → prepende un post sin duplicados
-   confirmLocalPost()→ reemplaza ID temporal por el ID real de Supabase
-   mergeSupabase()   → fusiona posts de Supabase SIN borrar posts locales
-   renderFromLocal() → renderiza SIEMPRE desde localStorage (nunca desaparece)
- ──────────────────────────────────────────────────────────────────────── */
-function getLocalPosts(){
-  try{ return JSON.parse(localStorage.getItem(FORUM_LOCAL_KEY)||'[]'); }
-  catch(e){ return []; }
-}
-function saveLocalPosts(posts){
-  try{ localStorage.setItem(FORUM_LOCAL_KEY,JSON.stringify((posts||[]).slice(0,200))); }
-  catch(e){ console.warn('localStorage lleno:',e); }
-}
-function addLocalPost(post){
-  const all=getLocalPosts().filter(m=>m.id!==post.id);
-  saveLocalPosts([post,...all]);
-}
-function confirmLocalPost(tempId,realPost){
-  const posts=getLocalPosts().map(m=>m.id===tempId?{...realPost,_local:false,_pending:false}:m);
-  saveLocalPosts(posts);
-}
-function mergeSupabase(supabasePosts){
-  const local=getLocalPosts();
-  const sbIds=new Set(supabasePosts.map(p=>String(p.id)));
-  // Conservar posts locales que aún no están en Supabase (pendientes o con error)
-  const pendingLocal=local.filter(m=>{
-    if(!m._local) return false;
-    if(sbIds.has(String(m.id))) return false;
-    // Si el contenido coincide con un post de Supabase reciente, es que ya se guardó
-    return !supabasePosts.some(sp=>
-      sp.name===m.name && sp.body===m.body &&
-      Math.abs(new Date(sp.created_at)-new Date(m.created_at))<60000
-    );
-  });
-  const merged=[...pendingLocal,...supabasePosts];
-  saveLocalPosts(merged);
-  return merged;
-}
-function renderFromLocal(reset=true){
-  const all=getLocalPosts();
-  const parents=all
-    .filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to)
-    .sort((a,b)=>forumSort==='top'
-      ?(b.votes||0)-(a.votes||0)
-      :new Date(b.created_at||0)-new Date(a.created_at||0)
-    )
-    .slice(forumOffset, forumOffset+FORUM_PAGE);
-  const parentIds=new Set(parents.map(p=>p.id));
-  const replies=all.filter(m=>m.reply_to&&parentIds.has(m.reply_to));
-  renderComments(parents,replies,reset);
-}
-
-/* ── SUPABASE REALTIME ───────────────────────────────────────────────────── */
-function subscribeRealtime(){
-  if(realtimeChannel){ db.removeChannel(realtimeChannel); realtimeChannel=null; }
-  realtimeChannel=db.channel('forum_realtime')
-    .on('postgres_changes',{event:'*',schema:'public',table:'forum_posts'},handleRealtimeEvent)
-    .subscribe((status)=>{
-      if(status==='SUBSCRIBED') console.log('🔴 Realtime conectado');
-    });
-}
-
-function handleRealtimeEvent(payload){
-  const {eventType,new:newRow,old:oldRow}=payload;
-  if(eventType==='INSERT'){
-    if(newRow.reply_to) return; // las respuestas se cargan al abrir thread
-    // Ignorar si ya lo tenemos (es nuestro propio post)
-    const local=getLocalPosts();
-    const alreadyHave=local.some(m=>String(m.id)===String(newRow.id));
-    if(alreadyHave) return;
-    // Post de otro usuario → añadir con animación
-    addLocalPost({...newRow,_new:true});
-    renderFromLocal(true);
-    showToast('💬 Nuevo mensaje en el foro');
-  } else if(eventType==='UPDATE'){
-    // Actualizar votos en localStorage y en el DOM sin re-render completo
-    const posts=getLocalPosts().map(m=>String(m.id)===String(newRow.id)?{...m,votes:newRow.votes}:m);
-    saveLocalPosts(posts);
-    const vEl=document.querySelector(`#tv-${newRow.id} .fp-vote-n`);
-    if(vEl) vEl.textContent=newRow.votes||0;
-    const rvEl=document.querySelector(`#rv-${newRow.id} .vc`);
-    if(rvEl) rvEl.textContent=newRow.votes||0;
-  } else if(eventType==='DELETE'){
-    saveLocalPosts(getLocalPosts().filter(m=>String(m.id)!==String(oldRow.id)));
-    const el=document.getElementById('thread-'+oldRow.id);
-    if(el){
-      el.classList.add('forum-post-removing');
-      setTimeout(()=>el.remove(),300);
-    }
-  }
-}
-
-/* ── ENGAGEMENT WIDGETS ─────────────────────────────────────────────────── */
-function renderForumWidgets(){
-  const all=getLocalPosts().filter(m=>!m.reply_to&&!m._pending&&!m._error);
-  if(!all.length) return;
-
-  // 🔥 TOP POST
-  const sorted=[...all].sort((a,b)=>(b.votes||0)-(a.votes||0));
-  const top=sorted[0];
-  const topWrap=document.getElementById('fwTopPost');
-  if(topWrap&&top&&(top.votes||0)>0){
-    topWrap.innerHTML=`
-      <div class="fw-top-post-label">🔥 Mensaje más votado</div>
-      <div class="fw-top-post-body">${esc(top.body||'')}</div>
-      <div class="fw-top-post-meta">
-        <span style="width:22px;height:22px;border-radius:50%;background:${getAvatarColor(top.name||'?')};display:inline-flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff">${(top.name||'?')[0].toUpperCase()}</span>
-        <span>${esc(top.name||'Anónimo')}</span>
-        <span>▲ ${top.votes||0} votos</span>
-      </div>`;
-  } else if(topWrap){
-    topWrap.innerHTML='<div class="fw-top-post-label">🔥 Sé el primero en destacar</div><div style="font-size:.82rem;color:var(--muted)">Publica y recibe upvotes para aparecer aquí</div>';
-  }
-
-  // 🏆 LEADERBOARD
-  const scoreMap={};
-  all.forEach(p=>{
-    const n=p.name||'Anónimo';
-    scoreMap[n]=(scoreMap[n]||0)+(p.votes||0)+1; // +1 por participar
-  });
-  const leaders=Object.entries(scoreMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const lbWrap=document.getElementById('fwLeaderboard');
-  if(lbWrap&&leaders.length){
-    const rankClass=['gold','silver','bronze','',''];
-    const medals=['🥇','🥈','🥉','4','5'];
-    lbWrap.innerHTML=`<div class="fw-lb-label">🏆 Top participantes</div>`+
-      leaders.map(([name,pts],i)=>`
-        <div class="fw-lb-row">
-          <div class="fw-lb-rank ${rankClass[i]}">${medals[i]}</div>
-          <div class="fw-lb-av" style="background:${getAvatarColor(name)}">${name[0].toUpperCase()}</div>
-          <div class="fw-lb-name">${esc(name)}</div>
-          <div class="fw-lb-pts">▲${pts}</div>
-        </div>`).join('');
-  }
-
-  const wrap=document.getElementById('forumWidgets');
-  if(wrap) wrap.style.display='grid';
-}
-
-function setForumSort(s){
-  forumSort=s;
-  document.getElementById('fsort-recent').classList.toggle('on',s==='recent');
-  document.getElementById('fsort-top').classList.toggle('on',s==='top');
-  loadComments(true);
-}
-function switchChannel(ch){
-  activeChannel=ch;
-  forumOffset=0;
-  document.getElementById('ftab-general').classList.toggle('on',ch==='general');
-  document.getElementById('ftab-debate').classList.toggle('on',ch==='debate');
-  loadComments(true);
-}
 function getAvatarColor(name){
   const palette=['#1A4F8C','#2E7D32','#6A1B9A','#C62828','#E65100','#00695C','#1565C0','#283593','#4527A0','#558B2F','#AD1457','#00838F'];
   let h=0; for(let i=0;i<name.length;i++) h=name.charCodeAt(i)+((h<<5)-h);
@@ -5210,461 +4796,8 @@ function timeAgo(dateStr){
   if(diff<604800) return Math.floor(diff/86400)+'d';
   return new Date(dateStr).toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'2-digit',month:'short'});
 }
-function updateComposerAv(){
-  const name=document.getElementById('comName').value.trim();
-  const av=document.getElementById('composerAv');
-  if(!av) return;
-  if(name){ av.textContent=name[0].toUpperCase(); av.style.background=getAvatarColor(name); }
-  else { av.textContent='?'; av.style.background='var(--blue)'; }
-  localStorage.setItem('overton_forum_name',name);
-}
 
-async function loadComments(reset=false){
-  if(reset) forumOffset=0;
-  const list=document.getElementById('commentsList');
-
-  // 1. Render INMEDIATO desde localStorage — los posts ya guardados nunca desaparecen
-  const localPosts=getLocalPosts().filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to);
-  if(localPosts.length){
-    renderFromLocal(reset);
-  } else if(reset && list){
-    list.innerHTML='<div class="forum-empty"><div class="forum-empty-icon">⏳</div><div class="forum-empty-title">Cargando…</div></div>';
-  }
-
-  // 2. Fetch desde Supabase en background
-  const sortCol=forumSort==='top'?'votes':'created_at';
-  let result=await db.from('forum_posts')
-    .select('*',{count:'exact'})
-    .or(`channel.eq.${activeChannel},channel.is.null`)
-    .is('reply_to',null)
-    .order(sortCol,{ascending:false})
-    .range(forumOffset,forumOffset+FORUM_PAGE-1);
-
-  if(result.error){
-    console.warn('Forum query failed:',result.error.message,'. Usando query básica…');
-    result=await db.from('forum_posts')
-      .select('*',{count:'exact'})
-      .order('created_at',{ascending:false})
-      .range(forumOffset,forumOffset+FORUM_PAGE-1);
-  }
-
-  if(result.error){
-    // Supabase falló: mostrar lo de localStorage (nunca "cargando infinito")
-    console.error('Forum load error:',result.error.message);
-    const current=getLocalPosts().filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to);
-    if(!current.length && list){
-      list.innerHTML=`<div class="forum-empty">
-        <div class="forum-empty-icon">⚠️</div>
-        <div class="forum-empty-title">No se pudo conectar con el servidor</div>
-        <div class="forum-empty-sub" style="margin-top:6px;font-size:.8rem">Comprueba tu conexión y <a href="#" onclick="loadComments(true);return false" style="color:var(--blue)">vuelve a intentarlo</a></div>
-      </div>`;
-    }
-    return;
-  }
-
-  forumTotal=result.count||0;
-  const sbParents=result.data||[];
-
-  // 3. Cargar replies de Supabase
-  let sbReplies=[];
-  if(sbParents.length){
-    const ids=sbParents.map(p=>p.id);
-    const {data:rd}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
-    sbReplies=rd||[];
-  }
-
-  // 4. Fusionar Supabase con localStorage — NUNCA borra posts locales pendientes
-  mergeSupabase([...sbParents,...sbReplies]);
-  COMMENTS=sbParents;
-
-  // 5. Re-render con datos fusionados (incluye posts locales + Supabase)
-  renderFromLocal(reset);
-
-  // Actualizar contadores
-  const channelTotal=getLocalPosts().filter(m=>(!m.channel||m.channel===activeChannel)&&!m.reply_to).length;
-  const total=Math.max(forumTotal,channelTotal);
-  const cnt=document.getElementById('comCount');
-  if(cnt) cnt.textContent=`${total} mensaje${total!==1?'s':''}`;
-  const badge=document.getElementById('fbadge-'+activeChannel);
-  if(badge) badge.textContent=total;
-  const moreWrap=document.getElementById('loadMoreWrap');
-  if(moreWrap) moreWrap.style.display=(forumOffset+sbParents.length<forumTotal)?'block':'none';
-}
-
-function renderComments(parents,replies,reset=true){
-  const list=document.getElementById('commentsList');
-  const cnt=document.getElementById('comCount');
-  const moreWrap=document.getElementById('loadMoreWrap');
-  if(!list) return;
-  if(!parents.length && forumOffset===0){
-    list.innerHTML=`<div class="forum-empty">
-      <div class="forum-empty-icon">💬</div>
-      <div class="forum-empty-title">Este canal está esperando tu primera opinión</div>
-      <div class="forum-empty-sub">Escribe algo arriba — sin registro, solo tu nombre</div>
-    </div>`;
-    if(cnt) cnt.textContent='';
-    if(moreWrap) moreWrap.style.display='none';
-    // update badge
-    const badge=document.getElementById('fbadge-'+activeChannel);
-    if(badge) badge.textContent='0';
-    return;
-  }
-  const sid=getForumSession();
-  const total=forumTotal;
-  if(cnt) cnt.textContent=`${total} mensaje${total!==1?'s':''}`;
-  const badge=document.getElementById('fbadge-'+activeChannel);
-  if(badge) badge.textContent=total;
-
-  const html=parents.map(p=>{
-    const name=p.name||'Anónimo';
-    const ini=name[0].toUpperCase();
-    const color=getAvatarColor(name);
-    const t=timeAgo(p.created_at);
-    const votes=p.votes||0;
-    const voted=localStorage.getItem(getVotedKey(p.id));
-    const isOwn=(p.session_id&&p.session_id===sid)||loggedIn||p._local;
-    const ch=p.channel||'general';
-    const pendingBadge=p._pending?'<span style="font-size:.65rem;color:var(--faint);margin-left:6px">Enviando…</span>':'';
-    const errorBadge=p._error?`<span style="font-size:.65rem;color:#d64040;margin-left:6px">⚠️ ${esc(p._errorMsg||'Error al guardar')}</span>`:'';
-    const pendingStyle=p._pending?'opacity:.7;border-style:dashed':'';
-    const pendingId=p._pending?`temp_${p.id}`:`${p.id}`;
-    const newClass=p._new?' forum-post-new':'';
-    const pReplies=replies.filter(r=>r.reply_to===p.id);
-
-    const repliesHtml=pReplies.length?`<div class="fp-replies">${pReplies.map(r=>{
-      const rn=r.name||'Anónimo';
-      const rc=getAvatarColor(rn);
-      const ri=rn[0].toUpperCase();
-      const rt=timeAgo(r.created_at);
-      const rv=r.votes||0;
-      const rvoted=localStorage.getItem(getVotedKey(r.id));
-      const rOwn=(r.session_id&&r.session_id===sid)||loggedIn;
-      return `<div class="fp-reply" id="reply-${r.id}">
-        <div class="fp-reply-av" style="background:${rc}">${ri}</div>
-        <div class="fp-reply-content">
-          <div class="fp-reply-header">
-            <span class="fp-reply-name">${esc(rn)}</span>
-            <span class="fp-reply-time">${rt}</span>
-          </div>
-          <div class="fp-reply-body">${esc(r.body||'')}</div>
-          <div class="fp-reply-actions">
-            <button class="fp-rvote${rvoted?' voted':''}" id="rv-${r.id}" onclick="voteComment(${r.id},this)">▲ <span class="vc">${rv}</span></button>
-            ${rOwn?`<button class="fp-rdel" onclick="deleteComment(${r.id})">Eliminar</button>`:''}
-          </div>
-        </div>
-      </div>`;
-    }).join('')}</div>`:'';
-
-    return `<div class="forum-post${newClass}" id="thread-${p.id}" style="${pendingStyle}">
-      <div class="fp-inner">
-        <div class="fp-header">
-          <div class="fp-av" style="background:${color}">${ini}</div>
-          <div class="fp-meta">
-            <div class="fp-name">${esc(name)}${pendingBadge}${errorBadge}</div>
-            <div class="fp-info">
-              <span class="fp-time">${t}</span>
-              <span class="fp-ch-tag">${ch}</span>
-            </div>
-          </div>
-        </div>
-        <div class="fp-body">${esc(p.body||'')}</div>
-        ${p._pending?'':`<div class="fp-actions">
-          <button class="fp-vote${voted?' voted':''}" id="tv-${p.id}" onclick="voteComment(${p.id},this)">▲ <span class="fp-vote-n">${votes}</span></button>
-          <button class="fp-reply-btn" data-name="${esc(name)}" onclick="showReplyForm(${p.id},this.dataset.name)">💬 Responder${pReplies.length?` (${pReplies.length})`:''}</button>
-          ${isOwn?`<button class="fp-del-btn" onclick="deleteComment(${p.id})">Eliminar</button>`:''}
-        </div>`}
-      </div>
-      ${repliesHtml}
-      <div id="reply-form-${p.id}"></div>
-    </div>`;
-  }).join('');
-
-  if(reset){ list.innerHTML=html; } else { list.insertAdjacentHTML('beforeend',html); }
-  const loaded=forumOffset+parents.length;
-  if(moreWrap) moreWrap.style.display=(loaded<total)?'block':'none';
-  // Limpiar flag _new para que la animación no se repita en re-renders
-  const cleaned=getLocalPosts().map(m=>m._new?{...m,_new:false}:m);
-  saveLocalPosts(cleaned);
-  // Actualizar widgets de engagement
-  renderForumWidgets();
-}
-
-async function loadMoreComments(){
-  forumOffset+=FORUM_PAGE;
-  const sortCol=forumSort==='top'?'votes':'created_at';
-  let result=await db.from('forum_posts')
-    .select('*',{count:'exact'})
-    .or(`channel.eq.${activeChannel},channel.is.null`)
-    .is('reply_to',null)
-    .order(sortCol,{ascending:false})
-    .range(forumOffset,forumOffset+FORUM_PAGE-1);
-  if(result.error){
-    result=await db.from('forum_posts')
-      .select('*',{count:'exact'})
-      .order('created_at',{ascending:false})
-      .range(forumOffset,forumOffset+FORUM_PAGE-1);
-  }
-  if(result.error){showToast('Error cargando más mensajes','error');return;}
-  forumTotal=result.count||0;
-  const sbParents=result.data||[];
-  let sbReplies=[];
-  if(sbParents.length){
-    const ids=sbParents.map(p=>p.id);
-    const {data:rd}=await db.from('forum_posts').select('*').in('reply_to',ids).order('created_at',{ascending:true});
-    sbReplies=rd||[];
-  }
-  mergeSupabase([...sbParents,...sbReplies]);
-  renderFromLocal(false);
-}
-
-async function postComment(){
-  // ── IDENTIDAD: requiere alias+email antes de publicar ──
-  if(!checkIdentityBeforePost()) return;
-  const _profile=getLocalProfile();
-  const name=_profile?.alias||document.getElementById('comName').value.trim();
-  const body=document.getElementById('comBody').value.trim();
-
-  // Validaciones
-  if(!name){showToast('Escribe tu nombre o apodo','error');document.getElementById('comName').focus();return;}
-  if(!body||body.length<3){showToast('El mensaje es demasiado corto (mín. 3 caracteres)','error');return;}
-  if(body.length>FORUM_MAX_LEN){showToast(`Máx. ${FORUM_MAX_LEN} caracteres`,'error');return;}
-  // Anti-spam: mínimo 30s entre publicaciones
-  const now=Date.now();
-  if(now-lastForumPost<FORUM_SPAM_COOLDOWN*1000){
-    const wait=Math.ceil((FORUM_SPAM_COOLDOWN*1000-(now-lastForumPost))/1000);
-    showToast(`Espera ${wait}s antes de publicar de nuevo 🕐`,'error');
-    return;
-  }
-
-  // Guardar nombre
-  localStorage.setItem('overton_forum_name',name);
-
-  const btn=document.getElementById('comBtn');
-  btn.disabled=true; btn.textContent='Publicando…';
-
-  // ── PASO 1: GUARDAR EN localStorage ANTES DE CUALQUIER OTRA COSA ──
-  // Esto garantiza que el mensaje NUNCA desaparece, incluso si Supabase tarda o falla.
-  const tempId='local_'+Date.now();
-  const newPost={
-    id:tempId,
-    name,
-    body,
-    channel:activeChannel,
-    created_at:new Date().toISOString(),
-    votes:0,
-    reply_to:null,
-    session_id:getForumSession(),
-    _local:true,
-    _pending:true
-  };
-  addLocalPost(newPost);
-
-  // ── PASO 2: RENDERIZAR DESDE localStorage (fuente de verdad) ──
-  // Como el post ya está en localStorage, renderFromLocal lo incluirá SIEMPRE.
-  // Ninguna llamada posterior a loadComments puede borrarlo.
-  renderFromLocal(true);
-
-  // Limpiar formulario
-  document.getElementById('comBody').value='';
-  updateCharCount();
-  btn.disabled=false; btn.textContent='Publicar';
-  const list=document.getElementById('commentsList');
-  if(list) list.scrollTop=0;
-
-  // ── PASO 3: GUARDAR EN SUPABASE (background, no bloquea el render) ──
-  const sid=getForumSession();
-  let result=await db.from('forum_posts')
-    .insert([{name,body,channel:activeChannel,session_id:sid,reply_to:null,votes:0}])
-    .select();
-  if(result.error){
-    console.warn('Insert completo falló:',result.error.message,'. Intentando básico…');
-    result=await db.from('forum_posts').insert([{name,body}]).select();
-  }
-
-  if(result.error){
-    // Supabase falló: marcar el post como error pero NO borrarlo
-    console.error('Supabase error:',result.error.message);
-    const posts=getLocalPosts().map(m=>
-      m.id===tempId?{...m,_pending:false,_error:true,_errorMsg:result.error.message}:m
-    );
-    saveLocalPosts(posts);
-    renderFromLocal(true); // Re-render para mostrar badge de error
-    showToast('Error al guardar en servidor','error');
-    return;
-  }
-
-  // ── PASO 4: CONFIRMAR — reemplazar ID temporal con el ID real de Supabase ──
-  const realPost=result.data&&result.data[0];
-  if(realPost){
-    confirmLocalPost(tempId,{...realPost,_local:false,_pending:false});
-  } else {
-    // Supabase no devolvió datos (RLS en SELECT) — marcar como sincronizado
-    const posts=getLocalPosts().map(m=>
-      m.id===tempId?{...m,_pending:false,_local:false}:m
-    );
-    saveLocalPosts(posts);
-  }
-
-  // Re-render final: el post queda sólido con botones de acción
-  renderFromLocal(true);
-
-  // Actualizar contadores
-  forumTotal=(forumTotal||0)+1;
-  const cnt=document.getElementById('comCount');
-  if(cnt) cnt.textContent=`${forumTotal} mensaje${forumTotal!==1?'s':''}`;
-  const badge=document.getElementById('fbadge-'+activeChannel);
-  if(badge) badge.textContent=forumTotal;
-
-  lastForumPost=Date.now();
-  showToast('¡Publicado! ✓');
-}
-
-function updateCharCount(){
-  const ta=document.getElementById('comBody');
-  const counter=document.getElementById('comCharCount');
-  if(!ta||!counter) return;
-  const len=ta.value.length;
-  const remaining=FORUM_MAX_LEN-len;
-  if(remaining<=60){
-    counter.textContent=remaining+' restantes';
-    counter.style.color=remaining<=20?'#d64040':'#f59e0b';
-  } else {
-    counter.textContent='';
-  }
-}
-
-async function clearForumMessages(){
-  if(!confirm('¿Borrar TODOS los mensajes del foro?\n\nEsta acción no se puede deshacer.')) return;
-  const {error}=await db.from('forum_posts').delete().neq('id',0);
-  if(error){showToast('Error al limpiar: '+error.message,'error');return;}
-  localStorage.removeItem(FORUM_CACHE_KEY);
-  showToast('Foro limpiado correctamente');
-  loadComments(true);
-}
-
-function showReplyForm(parentId, parentName){
-  document.querySelectorAll('[id^="reply-form-"]').forEach(el=>el.innerHTML='');
-  const container=document.getElementById('reply-form-'+parentId);
-  if(!container) return;
-  const _rp=getLocalProfile();
-  const savedName=_rp?.alias||document.getElementById('comName').value.trim()||localStorage.getItem('overton_forum_name')||'';
-  const locked=_rp&&_rp.alias;
-  container.innerHTML=`<div class="fp-reply-form">
-    <textarea id="replyBody-${parentId}" placeholder="Responde a ${esc(parentName)}…" maxlength="800" rows="3"></textarea>
-    <div class="fp-reply-form-row">
-      <input id="replyName-${parentId}" type="text" placeholder="Tu nombre…" maxlength="60" value="${esc(savedName)}"${locked?' readonly style="opacity:.65;cursor:default"':''}/>${locked&&_rp.is_founder?'<span class="badge-founder" style="flex-shrink:0">⭐ Fundador</span>':''}
-      <button class="fp-reply-cancel" onclick="document.getElementById('reply-form-${parentId}').innerHTML=''">Cancelar</button>
-      <button class="btn-gold" style="font-size:.78rem;padding:7px 16px" onclick="postReply(${parentId})">Responder →</button>
-    </div>
-  </div>`;
-  document.getElementById('replyBody-'+parentId).focus();
-}
-
-async function postReply(parentId){
-  if(!checkIdentityBeforePost()) return;
-  const _rpr=getLocalProfile();
-  const name=_rpr?.alias||(document.getElementById('replyName-'+parentId)?.value||'').trim();
-  const body=(document.getElementById('replyBody-'+parentId)?.value||'').trim();
-  if(!name){showToast('Escribe tu nombre','error');return;}
-  if(!body||body.length<2){showToast('La respuesta es demasiado corta','error');return;}
-  const sid=getForumSession();
-  localStorage.setItem('overton_forum_name',name);
-  const {error}=await db.from('forum_posts').insert([{name,body,channel:activeChannel,reply_to:parentId,session_id:sid,votes:0}]);
-  if(error){showToast('Error: '+error.message,'error');return;}
-  document.getElementById('reply-form-'+parentId).innerHTML='';
-  showToast('Respuesta publicada');
-  loadComments(true);
-}
-
-async function voteComment(id, btn){
-  const key=getVotedKey(id);
-  const alreadyVoted=!!localStorage.getItem(key);
-  const vc=btn.querySelector('.vc,.fp-vote-n');
-  const oldVal=parseInt(vc?.textContent||0);
-  // Optimistic UI inmediato
-  btn.disabled=true;
-  if(alreadyVoted){
-    // TOGGLE OFF: quitar voto
-    localStorage.removeItem(key);
-    btn.classList.remove('voted');
-    if(vc) vc.textContent=Math.max(0,oldVal-1);
-    const posts=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:Math.max(0,(m.votes||0)-1)}:m);
-    saveLocalPosts(posts);
-    console.log('[Vote] Toggle OFF post id='+id);
-    const {error}=await db.rpc('decrement_forum_votes',{p_id:id});
-    btn.disabled=false;
-    if(error){
-      // Rollback
-      localStorage.setItem(key,'1');
-      btn.classList.add('voted');
-      if(vc) vc.textContent=oldVal;
-      const posts2=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:(m.votes||0)+1}:m);
-      saveLocalPosts(posts2);
-      console.error('[Vote] Error decrement:', error);
-      showToast('Error al quitar voto','error');
-    }
-  } else {
-    // TOGGLE ON: añadir voto
-    localStorage.setItem(key,'1');
-    btn.classList.add('voted');
-    if(vc) vc.textContent=oldVal+1;
-    const posts=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:(m.votes||0)+1}:m);
-    saveLocalPosts(posts);
-    console.log('[Vote] Toggle ON post id='+id);
-    const {error}=await db.rpc('increment_forum_votes',{p_id:id});
-    btn.disabled=false;
-    if(error){
-      // Rollback
-      localStorage.removeItem(key);
-      btn.classList.remove('voted');
-      if(vc) vc.textContent=oldVal;
-      const posts2=getLocalPosts().map(m=>String(m.id)===String(id)?{...m,votes:Math.max(0,(m.votes||0)-1)}:m);
-      saveLocalPosts(posts2);
-      console.error('[Vote] Error increment:', error);
-      showToast('Error al votar','error');
-    }
-  }
-}
-
-async function deleteComment(id){
-  if(!confirm('¿Eliminar este mensaje?')) return;
-  // Local-first: eliminar del DOM y localStorage al instante
-  saveLocalPosts(getLocalPosts().filter(m=>String(m.id)!==String(id)));
-  const el=document.getElementById('thread-'+id);
-  if(el){
-    el.classList.add('forum-post-removing');
-    setTimeout(()=>el.remove(),300);
-  }
-  // Supabase en background
-  const {error}=await db.from('forum_posts').delete().eq('id',id);
-  if(error){
-    showToast('Error al eliminar en servidor','error');
-    loadComments(true); // Resync si falla
-    return;
-  }
-  showToast('Mensaje eliminado');
-  renderAdmComments();
-}
-
-async function renderAdmComments(){
-  const {data}=await db.from('forum_posts').select('*').order('created_at',{ascending:false}).limit(100);
-  const list=document.getElementById('admCommentsList');
-  if(!list) return;
-  if(!data||!data.length){list.innerHTML='<p style="color:var(--muted);font-size:.84rem">No hay mensajes todavía.</p>';return;}
-  list.innerHTML=data.map(c=>{
-    const fecha=c.created_at?new Date(c.created_at).toLocaleDateString(window.OVERTON_LOCALE||'es-ES',{day:'2-digit',month:'short',year:'numeric'}):'';
-    const ch=c.channel||'general';
-    const tipo=c.reply_to?'↳ Respuesta':'Publicación';
-    return `<div class="adm-comment-row">
-      <div class="adm-comment-info">
-        <div class="adm-comment-name">${esc(c.name||'Anónimo')} <span style="font-size:.68rem;color:var(--faint);font-weight:400">${tipo} · ${ch}</span></div>
-        <div class="adm-comment-body">${esc(c.body||'')}</div>
-        <div class="adm-comment-date">${fecha}</div>
-      </div>
-      <button class="btn-sm" style="color:#d64040;border-color:rgba(214,64,64,.3);flex-shrink:0" onclick="deleteComment(${c.id})">🗑️</button>
-    </div>`;
-  }).join('');
-}
+async function renderAdmComments(){ if(window.foroRenderAdmin) return foroRenderAdmin(); }
 
 /* ══════════════════════════════════════
    NEWSLETTER
@@ -5824,20 +4957,6 @@ async function loadFooterStats(){
     if(!ok) return;
     try{ applyAbout(); applyPhoto(); applySiteSettings(); renderTeamPublic(); }catch(e){ console.warn(e); }
   });
-
-  // ③ Pre-rellenar perfil o nombre del foro
-  const _initProfile=getLocalProfile();
-  if(_initProfile){
-    updateComposerWithProfile(_initProfile);
-  } else {
-    const savedName=localStorage.getItem('overton_forum_name');
-    if(savedName){
-      const el=document.getElementById('comName');
-      if(el){ el.value=savedName; updateComposerAv(); }
-    }
-  }
-  // Cargar contador fundadores en background
-  loadFounderCount();
 
   // ③b Routing por URL real — prioridad: sessionStorage > pathname > hash legado
   (function initRouting(){
