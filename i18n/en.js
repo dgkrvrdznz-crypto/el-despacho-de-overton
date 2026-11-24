@@ -333,6 +333,25 @@ var D = {
 "Aviso legal":"Legal notice",
 "Cookies":"Cookies",
 "Configurar cookies":"Cookie settings",
+"Baja de la newsletter":"Unsubscribe",
+"Información legal":"Legal information",
+
+/* Formularios: información y consentimiento (RGPD/LSSI) */
+"Tengo 14 años o más, he leído la":"I am 14 or older, I have read the",
+"y quiero recibir la newsletter.":"and I want to receive the newsletter.",
+"Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la":"Controller: Esteban Sánchez García · Purpose: sending you the newsletter · Basis: your consent · Recipient: Supabase (data processor) · Unsubscribe any time · Your rights and more information in the",
+"y acepto que me escribáis sobre mi propuesta.":"and I agree to be contacted by email about my proposal.",
+"Responsable: Esteban Sánchez García · Finalidad: contactarte sobre tu propuesta · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Derechos y más información en la":"Controller: Esteban Sánchez García · Purpose: contacting you about your proposal · Basis: your consent · Recipient: Supabase (data processor) · Your rights and more information in the",
+"Email (solo si quieres la newsletter)":"Email (only if you want the newsletter)",
+"Tengo 14 años o más y acepto los":"I am 14 or older and I accept the",
+"términos y condiciones":"terms of use",
+"y la":"and the",
+"Quiero recibir también la newsletter en mi correo (opcional).":"I also want to receive the newsletter by email (optional).",
+"Tu alias y tu perfil se guardan solo en este dispositivo. Tu correo solo se añade a nuestra lista si marcas la casilla de la newsletter, y puedes darte de baja cuando quieras.":"Your alias and profile are stored only on this device. Your email is only added to our list if you tick the newsletter box, and you can unsubscribe at any time.",
+"Marca la casilla de consentimiento para suscribirte":"Tick the consent box to subscribe",
+"Marca la casilla de consentimiento para enviar tu solicitud":"Tick the consent box to send your request",
+"Acepta los términos y la política de privacidad para participar":"Accept the terms and the privacy policy to take part",
+"Introduce un email válido para recibir la newsletter":"Enter a valid email to receive the newsletter",
 
 /* Cookies */
 "Antes de entrar, una decisión que es tuya":"Before you come in, a decision that's yours",
