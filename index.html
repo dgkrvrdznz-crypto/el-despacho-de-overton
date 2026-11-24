@@ -5321,7 +5321,7 @@ function renderComments(parents,replies,reset=true){
         <div class="fp-body">${esc(p.body||'')}</div>
         ${p._pending?'':`<div class="fp-actions">
           <button class="fp-vote${voted?' voted':''}" id="tv-${p.id}" onclick="voteComment(${p.id},this)">▲ <span class="fp-vote-n">${votes}</span></button>
-          <button class="fp-reply-btn" onclick="showReplyForm(${p.id},'${esc(name)}')">💬 Responder${pReplies.length?` (${pReplies.length})`:''}</button>
+          <button class="fp-reply-btn" data-name="${esc(name)}" onclick="showReplyForm(${p.id},this.dataset.name)">💬 Responder${pReplies.length?` (${pReplies.length})`:''}</button>
           ${isOwn?`<button class="fp-del-btn" onclick="deleteComment(${p.id})">Eliminar</button>`:''}
         </div>`}
       </div>
