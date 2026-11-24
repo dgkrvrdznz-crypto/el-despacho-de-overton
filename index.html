@@ -4,6 +4,21 @@
 <!-- HTTPS redirect -->
 <script>if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')location.replace('https:'+location.href.substring(location.protocol.length));</script>
 <meta charset="UTF-8"/>
+<!-- Reinicio: entrar con ?reset borra lo que el navegador tiene guardado de la web
+     (service worker, copias en caché, ajustes y sesión) y vuelve a cargarla limpia -->
+<script>
+(function(){
+  if(!/[?&]reset\b/.test(location.search)) return;
+  var jobs=[];
+  try{ localStorage.clear(); }catch(e){}
+  try{ sessionStorage.clear(); }catch(e){}
+  try{ if(navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){ return r.unregister(); })); })); }catch(e){}
+  try{ if(window.caches) jobs.push(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })); }catch(e){}
+  document.documentElement.style.visibility='hidden';
+  Promise.all(jobs).catch(function(){}).then(function(){ location.replace('/'); });
+  setTimeout(function(){ location.replace('/'); }, 3000);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <!-- Idioma: español por defecto; inglés si el visitante lo elige (botón EN) o entra con ?lang=en -->
 <script>
@@ -20,9 +35,11 @@ if(location.protocol==='http:' && /(^|\.)eldespachodeoverton\.es$/.test(location
   window.OVERTON_LOCALE=(L==='en'?'en-GB':'es-ES');
   if(L==='en'){
     document.documentElement.lang='en';
-    document.write('<script src="/i18n/en.js?v=4"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
+    document.write('<script src="/i18n/en.js?v=5"><\/script><script src="/i18n/content-en.js?v=1"><\/script>');
   }
 })();
+/* Tema claro/oscuro elegido por el visitante (técnica: preferencia pedida expresamente) */
+try{ if(localStorage.getItem('overton_theme')==='dark') document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
 function setLang(l){
   try{ localStorage.setItem('overton_lang',l); }catch(e){}
   /* Recarga en la misma sección (p. ej. /glosario/) pero sin pasar por la página estática */
@@ -131,7 +148,7 @@ function enContent(kind,row){
       "description": "Publicación digital especializada en análisis de derecho de la Unión Europea.",
       "email": "hola@eldespachodeoverton.es",
       "foundingDate": "2024",
-      "knowsAbout": ["Derecho europeo", "Sentencias TJUE", "Directivas UE", "Derecho comunitario", "Normativa europea"]
+      "knowsAbout": ["Derecho europeo", "Sentencias TJUE", "Directivas y reglamentos de la UE", "Derecho comunitario", "Normativa europea"]
     },
     {
       "@type": "WebPage",
@@ -147,7 +164,7 @@ function enContent(kind,row){
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://eldespachodeoverton.es/" },
           { "@type": "ListItem", "position": 2, "name": "Sentencias TJUE", "item": "https://eldespachodeoverton.es/#sentencias" },
-          { "@type": "ListItem", "position": 3, "name": "Directivas UE", "item": "https://eldespachodeoverton.es/#directivas" },
+          { "@type": "ListItem", "position": 3, "name": "Directivas y reglamentos", "item": "https://eldespachodeoverton.es/#directivas" },
           { "@type": "ListItem", "position": 4, "name": "Comunidad", "item": "https://eldespachodeoverton.es/#comunidad" }
         ]
       }
@@ -344,6 +361,13 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 .stat-n{font-family:var(--fh);font-size:1.85rem;font-weight:700;color:var(--blue);line-height:1}
 [data-theme=dark] .stat-n{color:#7AB8E8}
 .stat-l{font-size:.67rem;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-top:3px}
+.props-in{gap:0}
+.prop{display:flex;align-items:center;gap:10px;padding:16px 28px;font-size:.84rem;font-weight:500;color:var(--muted);border-right:1px solid var(--border);transition:color .2s}
+.prop:last-child{border-right:none}
+.prop:hover{color:var(--blue)}
+[data-theme=dark] .prop:hover{color:#7AB8E8}
+.prop-ico{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:700;font-size:.95rem;color:var(--gold);border:1px solid rgba(201,162,39,.45)}
+@media(max-width:760px){.props-in{flex-direction:column;padding:6px 16px}.prop{border-right:none;border-bottom:1px solid var(--border);padding:11px 4px;font-size:.8rem}.prop:last-child{border-bottom:none}}
 
 
 /* ═══════════════════════════════════════
@@ -407,6 +431,14 @@ header{position:sticky;top:0;z-index:90;background:var(--surface);border-bottom:
 .c-mins{font-size:.69rem;color:var(--faint)}
 .empty{grid-column:1/-1;text-align:center;padding:68px 20px;color:var(--faint)}
 .empty-ico{font-size:3rem;margin-bottom:12px;opacity:.55}
+.empty-btn{margin-top:18px;font-size:.84rem;padding:10px 22px}
+/* Aviso de página inexistente */
+.nf-notice{background:var(--surf2);border-bottom:1px solid var(--border)}
+.nf-in{max-width:1180px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.nf-in p{font-size:.86rem;color:var(--text);line-height:1.55}
+.nf-in a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+[data-theme=dark] .nf-in a{color:#7AB8E8}
+.nf-close{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--muted)}
 
 /* ═══════════════════════════════════════
    ARTICLE MODAL
@@ -585,9 +617,9 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
    MOBILE NAV
 ═══════════════════════════════════════ */
 .hamburger-btn{display:none}
-.mobile-nav-overlay{position:fixed;inset:0;z-index:85;background:rgba(5,15,30,.6);backdrop-filter:blur(4px);display:none}
+.mobile-nav-overlay{position:fixed;inset:0;z-index:9040;background:rgba(5,15,30,.6);backdrop-filter:blur(4px);display:none}
 .mobile-nav-overlay.open{display:block}
-.mobile-nav{position:fixed;top:0;right:-100%;width:min(300px,80vw);height:100%;z-index:86;background:var(--surface);box-shadow:-8px 0 40px rgba(0,0,0,.3);transition:right .32s cubic-bezier(.22,.68,0,1);overflow-y:auto;padding-bottom:30px}
+.mobile-nav{position:fixed;top:0;right:-100%;width:min(300px,80vw);height:100%;z-index:9050;background:var(--surface);box-shadow:-8px 0 40px rgba(0,0,0,.3);transition:right .32s cubic-bezier(.22,.68,0,1);overflow-y:auto;padding-bottom:30px}
 .mobile-nav.open{right:0}
 .mobile-nav-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);background:var(--surf2)}
 .mobile-nav-links{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
@@ -681,29 +713,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .editor-role{font-size:.72rem;color:var(--faint);margin-top:1px}
 .badge-admin{display:inline-block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:10px;background:rgba(201,162,39,.18);color:var(--gold);margin-left:6px}
 .editors-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-
-/* ─── FROG MASCOT ─── */
-#frog-mascot{
-  position:fixed;bottom:22px;left:22px;z-index:200;
-  width:72px;height:72px;cursor:pointer;
-  filter:drop-shadow(0 4px 14px rgba(26,79,140,.35));
-  transition:transform .2s;
-  user-select:none;
-}
-#frog-mascot:hover{transform:scale(1.12) rotate(-4deg)}
-#frog-mascot:active{transform:scale(.95)}
-.frog-tooltip{
-  position:fixed;bottom:102px;left:16px;z-index:201;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px 12px 12px 4px;
-  padding:9px 14px;font-size:.78rem;color:var(--text);
-  box-shadow:var(--sh-lg);max-width:200px;line-height:1.5;
-  opacity:0;transform:translateY(8px);
-  transition:opacity .3s,transform .3s;
-  pointer-events:none;
-}
-.frog-tooltip.show{opacity:1;transform:translateY(0)}
-@keyframes frog-tongue{0%,79%,100%{opacity:0;transform:translateY(-4px) scaleY(0)}80%,95%{opacity:1;transform:translateY(0) scaleY(1)}}
 
 /* ═══════════════════════════════════════
    EU INTERACTIVE MAP
@@ -940,14 +949,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .com-debate-res .debate-stats{display:flex;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.6);max-width:400px;margin:0 auto}
 .com-debate-res .debate-voted-msg{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:8px}
 /* Comunidad inline newsletter */
-.com-nl-inline{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-bottom:28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.com-nl-icon{font-size:2rem;flex-shrink:0}
-.com-nl-text{flex:1;min-width:160px}
-.com-nl-title{font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:2px}
-.com-nl-sub{font-size:.75rem;color:var(--faint)}
-.com-nl-form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.com-nl-in{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:.84rem;color:var(--text);outline:none;transition:border-color .2s;min-width:180px}
-.com-nl-in:focus{border-color:var(--blue-mid)}
 /* Comunidad section title */
 .com-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
 [data-theme=dark] .com-section-title{color:#7AB8E8}
@@ -1130,15 +1131,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 ═══════════════════════════════════════ */
 .foot-new{background:var(--blue-navy);color:#fff}
 
-/* Newsletter band */
-.foot-nl-band{background:var(--blue-deep);border-top:1px solid rgba(255,255,255,.07);padding:32px 24px}
-.foot-nl-band-in{max-width:1000px;margin:0 auto;display:flex;gap:32px;align-items:center;flex-wrap:wrap}
-.foot-nl-band-title{font-family:var(--fh);font-size:1.2rem;font-weight:600;color:#fff;margin-bottom:3px}
-.foot-nl-band-sub{font-size:.78rem;color:rgba(255,255,255,.45)}
-.foot-nl-row{display:flex;gap:8px;flex:1}
-.foot-nl-in{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:9px 14px;font-size:.83rem;color:#fff;outline:none;transition:border-color .2s}
-.foot-nl-in::placeholder{color:rgba(255,255,255,.35)}
-.foot-nl-in:focus{border-color:rgba(255,255,255,.4)}
 
 /* Main grid */
 .foot-grid-wrap{max-width:1100px;margin:0 auto;padding:56px 24px 48px}
@@ -1146,12 +1138,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 .foot-logo-new{font-family:var(--fh);font-size:1.55rem;font-weight:700;color:#fff;margin-bottom:12px}
 .foot-logo-new em{color:var(--eu-gold);font-style:normal}
 .foot-brand-txt{font-size:.8rem;color:rgba(255,255,255,.42);line-height:1.8;margin-bottom:20px;max-width:320px}
-.foot-socials{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;align-items:center}
-.foot-soc-new{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;text-decoration:none}
-.foot-soc-new:hover{background:var(--blue);border-color:var(--blue-mid);color:#fff;transform:translateY(-2px)}
-.foot-stats-row{display:flex;gap:28px}
-.foot-stat-n{font-family:var(--fh);font-size:1.8rem;font-weight:700;color:var(--eu-gold);line-height:1}
-.foot-stat-l{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-top:3px}
 .foot-col-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,255,255,.3);margin-bottom:16px}
 .foot-lnk{display:block;font-size:.82rem;color:rgba(255,255,255,.52);margin-bottom:11px;cursor:pointer;transition:color .18s}
 .foot-lnk:hover{color:#fff}
@@ -1172,8 +1158,6 @@ footer{background:#050F1E;color:rgba(255,255,255,.42);padding:34px 24px;text-ali
 @media(max-width:760px){
   .foot-grid{grid-template-columns:1fr 1fr;gap:36px}
   .foot-col-brand{grid-column:1/-1}
-  .foot-nl-band-in{flex-direction:column;gap:16px}
-  .foot-nl-row{width:100%}
 }
 @media(max-width:480px){
   .foot-grid{grid-template-columns:1fr;gap:28px}
@@ -1373,6 +1357,26 @@ footer{border-top:3px solid var(--gold)}
 .foot-logo em{color:var(--gold-lt)}
 .foot-eu-stars{color:var(--gold)}
 @media(min-width:1100px){.stat{padding:16px 26px}}
+/* ── Cabecera adaptable (BUG-009, BUG-044): nada se sale de la pantalla en ningún ancho ── */
+@media(max-width:1180px){
+  .nl{padding:7px 9px}
+  .srch{width:120px}
+  .srch:focus{width:160px}
+}
+@media(max-width:1100px){
+  .nav-links{display:none}
+  .hamburger-btn{display:flex}
+}
+@media(max-width:480px){
+  .nav-r .lang-sw,.nav-r .ico-btn:not(.hamburger-btn),.nav-r .ico-btn-wrap{display:none}
+  .logo-name{font-size:1rem}
+}
+.mnl-search{padding:4px 4px 8px}
+.mnl-search .srch,.mnl-search .srch:focus{width:100%;padding-left:14px;font-size:.88rem}
+.mnl-theme{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;text-align:left;font-family:var(--fb)}
+.mnl-theme-ico{font-size:1rem;color:var(--gold)}
+.mnl-admin{font-size:.76rem;color:var(--faint);margin-top:10px;border-top:1px solid var(--border);border-radius:0;padding-top:14px}
+.chip-q{background:var(--surf2);border:1px solid var(--blue-mid);color:var(--text);font-family:var(--fb);cursor:pointer}
 @media(max-width:640px){
   .hero-emblem{width:88px;height:88px;margin-bottom:14px}
   .hero-tagline-wrap{height:auto;min-height:1.6rem}
@@ -1410,7 +1414,7 @@ footer{border-top:3px solid var(--gold)}
   <nav aria-label="Navegación principal">
     <a href="/">Inicio</a>
     <a href="/#sentencias">Sentencias TJUE</a>
-    <a href="/#directivas">Directivas UE</a>
+    <a href="/#directivas">Directivas y reglamentos</a>
     <a href="/#medioambiente">Medio Ambiente</a>
     <a href="/#opinion">Opinión</a>
     <a href="/#glosario">Glosario jurídico</a>
@@ -1425,17 +1429,17 @@ footer{border-top:3px solid var(--gold)}
     <p itemprop="description">Comentarios y análisis de sentencias clave del Tribunal de Justicia de la Unión Europea en materia de derechos fundamentales, libertades comunitarias y aplicación del derecho comunitario.</p>
   </div>
 
-  <h2>Directivas de la Unión Europea</h2>
-  <p>Explicamos las <strong>directivas europeas</strong> más importantes: qué significan, cómo se transponen y qué impacto tienen en los ciudadanos y empresas de los 27 estados miembros.</p>
+  <h2>Directivas y reglamentos de la Unión Europea</h2>
+  <p>Explicamos las <strong>normas europeas</strong> más importantes, directivas y reglamentos: qué significan, cómo se aplican o se transponen y qué impacto tienen en los ciudadanos y empresas de los 27 Estados miembros.</p>
   <ul>
-    <li><strong>Directiva de Servicios Digitales (DSA)</strong> — regulación de plataformas online en la UE</li>
-    <li><strong>Directiva de Mercados Digitales (DMA)</strong> — límites a los gigantes tecnológicos</li>
-    <li><strong>AI Act</strong> — el primer reglamento mundial sobre inteligencia artificial</li>
-    <li><strong>RGPD</strong> — protección de datos personales en Europa</li>
+    <li><strong>Reglamento de Servicios Digitales (DSA)</strong>, Reglamento (UE) 2022/2065 — obligaciones de las plataformas en línea</li>
+    <li><strong>Reglamento de Mercados Digitales (DMA)</strong>, Reglamento (UE) 2022/1925 — obligaciones de los guardianes de acceso</li>
+    <li><strong>Reglamento de Inteligencia Artificial (AI Act)</strong>, Reglamento (UE) 2024/1689</li>
+    <li><strong>Reglamento General de Protección de Datos (RGPD)</strong>, Reglamento (UE) 2016/679</li>
   </ul>
 
   <h2>Foro de Debate sobre Derecho Europeo</h2>
-  <p>Nuestra <strong>comunidad de debate sobre derecho europeo</strong> es un espacio abierto para discutir las grandes preguntas jurídicas de la Unión Europea. Sin registro, sin contraseña.</p>
+  <p>Nuestra <strong>comunidad de debate sobre derecho europeo</strong> es un espacio abierto para discutir las grandes preguntas jurídicas de la Unión Europea. Leer es libre; para escribir basta con entrar con tu email, sin contraseña.</p>
   <p><strong>Debates recientes:</strong></p>
   <div class="debate-q">¿Debe la Unión Europea tener su propio ejército permanente?</div>
   <div class="debate-q">¿Debería la UE sancionar a países que no respetan el Estado de Derecho?</div>
@@ -1504,20 +1508,33 @@ footer{border-top:3px solid var(--gold)}
 <div class="mobile-nav" id="mobileNav">
   <div class="mobile-nav-hdr">
     <div class="logo-name" style="font-size:1.1rem">El Despacho <em style="color:var(--gold);font-style:normal">de Overton</em></div>
-    <button class="ico-btn" onclick="closeMobileMenu()">✕</button>
+    <button class="ico-btn" onclick="closeMobileMenu()" aria-label="Cerrar menú">✕</button>
   </div>
   <div class="mobile-nav-links">
+    <form class="mnl-search" role="search" onsubmit="mobileSearch(event)">
+      <input class="srch" id="srchMnl" type="search" name="overton-buscar-movil" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Buscar artículos…" aria-label="Buscar artículos"/>
+    </form>
     <a class="mnl" data-v="home"      href="/"           onclick="goView('home');closeMobileMenu();return false;">Inicio</a>
     <a class="mnl" data-v="home"      href="/"           onclick="goView('home');setTimeout(scrollToGrid,260);closeMobileMenu();return false;">Contenido</a>
     <a class="mnl" data-v="pregunta"  href="/pregunta/"  onclick="goView('pregunta');closeMobileMenu();return false;">Debates</a>
     <a class="mnl" data-v="glosario"  href="/#glosario"  onclick="goView('glosario');closeMobileMenu();return false;">Glosario</a>
     <a class="mnl" data-v="comunidad" href="/#comunidad" onclick="goView('comunidad');closeMobileMenu();return false;">Comunidad</a>
     <div class="mnl mnl-lang" data-no-i18n><span>🌐 Idioma · Language</span><button type="button" class="lang-sw" role="switch" aria-checked="false" onclick="toggleLang()" id="langMnl" title="Idioma / Language" aria-label="English" data-no-i18n><span class="lang-sw-knob" aria-hidden="true"></span><span class="lang-sw-opt lang-sw-opt-es" lang="es">ES</span><span class="lang-sw-opt lang-sw-opt-en" lang="en">EN</span></button></div>
+    <button type="button" class="mnl mnl-theme" id="themeMnl" onclick="toggleTheme()"><span id="themeMnlLbl">Modo oscuro</span><span class="mnl-theme-ico" aria-hidden="true">☾</span></button>
+    <a class="mnl mnl-admin" href="/" onclick="closeMobileMenu();openAdminLogin();return false;">Acceso editorial</a>
   </div>
 </div>
 
 <!-- ════════════════════ CONTENIDO PRINCIPAL ════════════════════ -->
 <main id="main-content" aria-label="Contenido principal">
+
+<!-- Aviso de página inexistente (BUG-040): 404.html redirige a /?_404=1 -->
+<div class="nf-notice hide" id="notFoundNotice" role="status">
+  <div class="nf-in">
+    <p><strong>Esa página no existe o ha cambiado de dirección.</strong> Puedes empezar por los <a href="/" onclick="closeNotFound();scrollToGrid();return false;">últimos análisis</a> o por el <a href="/glosario/" onclick="closeNotFound();goView('glosario');return false;">glosario</a>.</p>
+    <button type="button" class="nf-close" onclick="closeNotFound()" aria-label="Cerrar aviso">✕</button>
+  </div>
+</div>
 
 <!-- ════════════════════ HERO ════════════════════ -->
 <div id="view-home">
@@ -1549,14 +1566,12 @@ footer{border-top:3px solid var(--gold)}
     <div class="hero-caption" id="heroCaption">Parlamento Europeo · Estrasburgo</div>
   </section>
 
-  <!-- STAT BAR -->
+  <!-- QUÉ HAY AQUÍ (BUG-002: sin cifras hasta que haya volumen) -->
   <div class="stats-bar">
-    <div class="stats-in">
-      <div class="stat"><div class="stat-n" id="stS">0</div><div class="stat-l">Sentencias analizadas</div></div>
-      <div class="stat"><div class="stat-n" id="stD">0</div><div class="stat-l">Directivas explicadas</div></div>
-      <div class="stat"><div class="stat-n" id="stOp">0</div><div class="stat-l">Artículos de opinión</div></div>
-      <div class="stat"><div class="stat-n" id="stC">0</div><div class="stat-l">Áreas del derecho UE</div></div>
-      <div class="stat"><div class="stat-n">90</div><div class="stat-l">Preguntas del debate</div></div>
+    <div class="stats-in props-in">
+      <a class="prop" href="/" onclick="scrollToGrid();return false;"><span class="prop-ico" aria-hidden="true">⚖</span><span>Sentencias y normas de la UE explicadas con sus fuentes</span></a>
+      <a class="prop" href="/glosario/" onclick="goView('glosario');return false;"><span class="prop-ico" aria-hidden="true">§</span><span>Glosario de Derecho de la UE para consultar</span></a>
+      <a class="prop" href="#debateSection" onclick="document.getElementById('debateSection').scrollIntoView({behavior:'smooth'});return false;"><span class="prop-ico" aria-hidden="true">?</span><span>Debate de la semana abierto a todos</span></a>
     </div>
   </div>
 
@@ -1827,7 +1842,7 @@ footer{border-top:3px solid var(--gold)}
             <label class="flbl">Tipo *</label>
             <select class="fsel" id="fType" onchange="toggleOpinionForm()">
               <option value="sentencia">⚖️ Sentencia</option>
-              <option value="directiva">📜 Directiva</option>
+              <option value="directiva">📜 Directiva o reglamento</option>
               <option value="medioambiente">🌿 Medio Ambiente</option>
               <option value="opinion">✍️ Artículo de Opinión</option>
               <option value="otro">📁 Otro</option>
@@ -2342,29 +2357,12 @@ footer{border-top:3px solid var(--gold)}
     <div class="com-section-title">💬 Foro de debate</div>
     <div id="foroRoot" class="foro"><div class="foro-empty">Cargando…</div></div>
 
-    <!-- ── NEWSLETTER (inline) ── -->
-    <div class="com-nl-inline" style="margin-top:32px">
-      <div class="com-nl-icon">📬</div>
-      <div class="com-nl-text">
-        <div class="com-nl-title">Recibe los análisis en tu correo</div>
-        <div class="com-nl-sub">Sin spam · Solo derecho europeo</div>
-      </div>
-      <div class="com-nl-form">
-        <input class="com-nl-in" id="comNlEmail" type="email" placeholder="tu@email.com"/>
-        <button class="btn-gold" onclick="subscribeEmailInline()" style="font-size:.8rem;padding:9px 18px;white-space:nowrap">Suscribirme</button>
-      </div>
-      <div class="consent-box">
-        <div class="consent-row"><input type="checkbox" id="comNlConsent"/><label for="comNlConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y quiero recibir la newsletter.</label></div>
-        <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
-      </div>
-    </div>
-
     <!-- ── ¿QUIERES PUBLICAR CON NOSOTROS? ── -->
     <div style="background:linear-gradient(135deg,#0C2D5C,#1A4F8C);border-radius:var(--r);padding:28px 30px;margin-top:20px;text-align:center">
       <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(201,162,39,.2);border:1px solid rgba(201,162,39,.4);color:var(--gold-lt);font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:14px">✍️ Colabora con nosotros</div>
       <div style="font-family:var(--fh);font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:#fff;line-height:1.35;margin-bottom:10px">¿Quieres publicar con nosotros?</div>
       <p style="color:rgba(255,255,255,.7);font-size:.87rem;max-width:480px;margin:0 auto 20px">Si eres jurista, académico o simplemente apasionado del derecho europeo, escríbenos. Publicamos análisis rigurosos y accesibles.</p>
-      <a href="mailto:contacto@eldespacho.eu" style="display:inline-block;background:var(--gold);color:#0c1929;font-weight:700;font-size:.84rem;padding:11px 26px;border-radius:8px;text-decoration:none">Enviar propuesta</a>
+      <a href="mailto:hola@eldespachodeoverton.es?subject=Propuesta%20de%20colaboraci%C3%B3n" style="display:inline-block;background:var(--gold);color:#0c1929;font-weight:700;font-size:.84rem;padding:11px 26px;border-radius:8px;text-decoration:none">Enviar propuesta</a>
     </div>
   </div>
 </div>
@@ -2411,22 +2409,22 @@ footer{border-top:3px solid var(--gold)}
 <div class="nl-landing" id="view-newsletter">
   <div class="nl-landing-in">
     <div class="hero-pill" style="margin-bottom:16px">📬 Newsletter gratuita</div>
-    <h2>El análisis que <em>importa</em>,<br/>en tu bandeja de entrada</h2>
-    <p class="nl-landing-sub">Cada semana, las sentencias y directivas más relevantes de la UE explicadas en menos de 5 minutos. Sin ruido, sin tecnicismos innecesarios.</p>
+    <h2>Recibe cada nuevo <em>análisis</em></h2>
+    <p class="nl-landing-sub">Un correo cuando publique un análisis nuevo, como máximo dos al mes. Te das de baja cuando quieras.</p>
     <div class="nl-perks">
-      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Análisis de las últimas sentencias del TJUE</span></div>
-      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Directivas que afectan a tu vida cotidiana</span></div>
-      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Sin spam. Baja cuando quieras.</span></div>
+      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Un aviso por cada análisis, con su resumen</span></div>
+      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Como máximo dos correos al mes</span></div>
+      <div class="nl-perk"><div class="nl-perk-dot">✓</div><span>Sin publicidad. Baja cuando quieras.</span></div>
     </div>
     <div class="nl-form">
       <input class="nl-form-in" id="nlLandingEmail" type="email" placeholder="tu@email.com"/>
-      <button class="btn-gold" onclick="subscribeFromLanding()" style="font-size:.84rem;padding:11px 24px">Suscribirme gratis</button>
+      <button class="btn-gold" onclick="subscribeFromLanding()" style="font-size:.84rem;padding:11px 24px">Suscribirme</button>
     </div>
     <div class="consent-box consent-dark consent-center">
         <div class="consent-row"><input type="checkbox" id="nlLandingConsent"/><label for="nlLandingConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y quiero recibir la newsletter.</label></div>
         <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
       </div>
-    <p class="nl-privacy">Sin spam · Baja en un clic · Gratis para siempre</p>
+    <p class="nl-privacy">Gratis · Sin publicidad · Baja cuando quieras</p>
   </div>
 </div>
 
@@ -2477,24 +2475,6 @@ footer{border-top:3px solid var(--gold)}
 </main><!-- /main-content -->
 
 <footer class="foot-new">
-  <!-- Newsletter band -->
-  <div class="foot-nl-band">
-    <div class="foot-nl-band-in">
-      <div>
-        <div class="foot-nl-band-title">📬 Una vez a la semana. Sin rollo.</div>
-        <div class="foot-nl-band-sub">Esto no es otro newsletter. Es el resumen que nadie más hace.</div>
-      </div>
-      <div class="foot-nl-row" style="max-width:380px;flex:1">
-        <input class="foot-nl-in" id="nlEmail" type="email" placeholder="tu@email.com"/>
-        <button class="btn-gold" onclick="subscribeEmail()" style="white-space:nowrap;font-size:.8rem;padding:9px 18px">Suscribirme</button>
-      </div>
-      <div class="consent-box consent-dark">
-        <div class="consent-row"><input type="checkbox" id="nlConsent"/><label for="nlConsent">Tengo 14 años o más, he leído la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a> y quiero recibir la newsletter.</label></div>
-        <p class="consent-info">Responsable: Esteban Sánchez García · Finalidad: enviarte la newsletter · Base: tu consentimiento · Destinatario: Supabase (encargado del tratamiento) · Baja cuando quieras · Derechos y más información en la <a href="/politica-privacidad.html" onclick="cookieConsent.openLegal('privacidad');return false">política de privacidad</a></p>
-      </div>
-    </div>
-  </div>
-
   <!-- Main grid -->
   <div class="foot-grid-wrap">
     <div class="foot-grid">
@@ -2503,47 +2483,29 @@ footer{border-top:3px solid var(--gold)}
         <div><img class="foot-logo-img" src="/logo.png" alt="El Despacho de Overton" loading="lazy"/></div>
         <div class="foot-logo-new">El Despacho <em>de Overton</em></div>
         <p class="foot-brand-txt">Esto no es otro blog jurídico. Aquí vienes a entender lo que te afecta de verdad.<br/><br/>Europa no es aburrida. Te la han explicado mal.</p>
-        <div class="foot-socials">
-          <a class="foot-soc-new" href="#" title="X / Twitter" aria-label="Twitter">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a class="foot-soc-new" href="#" title="Instagram" aria-label="Instagram">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-          </a>
-          <a class="foot-soc-new" href="#" title="LinkedIn" aria-label="LinkedIn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <a class="foot-soc-new" href="https://ko-fi.com" target="_blank" rel="noopener" title="Ko-fi" style="font-size:.72rem;width:auto;padding:0 12px;border-radius:20px;gap:5px">☕ Apóyanos</a>
-        </div>
-        <!-- Live stats -->
-        <div class="foot-stats-row">
-          <div><div class="foot-stat-n" id="fStArts">—</div><div class="foot-stat-l">Artículos</div></div>
-          <div><div class="foot-stat-n" id="fStGlos">—</div><div class="foot-stat-l">Términos</div></div>
-          <div><div class="foot-stat-n" id="fStSubs">—</div><div class="foot-stat-l">Lectores</div></div>
-        </div>
       </div>
 
       <!-- Col 2: Secciones -->
       <div class="foot-col">
         <div class="foot-col-title">Secciones</div>
-        <span class="foot-lnk" onclick="goView('sentencias')">Sentencias TJUE</span>
-        <span class="foot-lnk" onclick="goView('directivas')">Directivas UE</span>
-        <span class="foot-lnk" onclick="goView('medioambiente')">Medio Ambiente</span>
-        <span class="foot-lnk" onclick="goView('opinion')">Opinión</span>
-        <span class="foot-lnk" onclick="goView('otros')">Otros</span>
-        <span class="foot-lnk" onclick="goView('glosario')">§ Glosario jurídico</span>
-        <span class="foot-lnk" onclick="goView('comunidad')">› Comunidad</span>
+        <a class="foot-lnk" data-sec-type="sentencia" href="/sentencias/" onclick="goView('sentencias');return false;">Sentencias TJUE</a>
+        <a class="foot-lnk" data-sec-type="directiva" href="/directivas/" onclick="goView('directivas');return false;">Directivas y reglamentos</a>
+        <a class="foot-lnk" data-sec-type="medioambiente" href="/medioambiente/" onclick="goView('medioambiente');return false;">Medio Ambiente</a>
+        <a class="foot-lnk" data-sec-type="opinion" href="/opinion/" onclick="goView('opinion');return false;">Opinión</a>
+        <a class="foot-lnk" data-sec-type="otro" href="/otros/" onclick="goView('otros');return false;">Otros</a>
+        <a class="foot-lnk" href="/glosario/" onclick="goView('glosario');return false;">§ Glosario jurídico</a>
+        <a class="foot-lnk" href="/comunidad/" onclick="goView('comunidad');return false;">› Comunidad</a>
       </div>
 
       <!-- Col 3: Proyecto -->
       <div class="foot-col">
         <div class="foot-col-title">Proyecto</div>
-        <span class="foot-lnk" onclick="goView('about')">Sobre nosotros</span>
-        <span class="foot-lnk" onclick="goView('newsletter')">Newsletter</span>
-        <span class="foot-lnk" onclick="scrollToContrib()">¿Quieres publicar?</span>
+        <a class="foot-lnk" href="/about/" onclick="goView('about');return false;">Sobre nosotros</a>
+        <a class="foot-lnk" href="/#newsletter" onclick="goView('home');setTimeout(scrollToNewsletter,260);return false;">Newsletter</a>
+        <a class="foot-lnk" href="/comunidad/" onclick="scrollToContrib();return false;">¿Quieres publicar?</a>
         <div class="foot-col-title" style="margin-top:28px">Colaboradores</div>
         <div class="sponsors-row" id="sponsorsRow" style="margin-top:8px"><span style="font-size:.73rem;color:rgba(255,255,255,.2)">Sé el primero</span></div>
-        <span class="foot-lnk" style="margin-top:6px;font-size:.72rem;opacity:.6" onclick="window.location='mailto:hola@eldespachodeoverton.es'">hola@eldespachodeoverton.es</span>
+        <a class="foot-lnk" style="margin-top:6px;font-size:.72rem;opacity:.6" href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a>
       </div>
     </div>
   </div>
@@ -2645,70 +2607,10 @@ footer{border-top:3px solid var(--gold)}
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ════════════════════ FROG MASCOT ════════════════════ -->
-<div class="frog-tooltip" id="frogTip"></div>
-<svg id="frog-mascot" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" onclick="frogClick()" title="¡Hola! Soy Lex 🐸">
-  <!-- Body -->
-  <ellipse cx="50" cy="62" rx="32" ry="26" fill="#2D6DB5"/>
-  <!-- Belly -->
-  <ellipse cx="50" cy="66" rx="20" ry="17" fill="#C9A227" opacity=".85"/>
-  <!-- Back legs -->
-  <ellipse cx="22" cy="80" rx="13" ry="7" fill="#1A4F8C" transform="rotate(-20,22,80)"/>
-  <ellipse cx="78" cy="80" rx="13" ry="7" fill="#1A4F8C" transform="rotate(20,78,80)"/>
-  <!-- Feet left -->
-  <ellipse cx="14" cy="88" rx="7" ry="4" fill="#2D6DB5"/>
-  <ellipse cx="8"  cy="91" rx="5" ry="3" fill="#2D6DB5"/>
-  <!-- Feet right -->
-  <ellipse cx="86" cy="88" rx="7" ry="4" fill="#2D6DB5"/>
-  <ellipse cx="92" cy="91" rx="5" ry="3" fill="#2D6DB5"/>
-  <!-- Head -->
-  <ellipse cx="50" cy="42" rx="26" ry="22" fill="#2D6DB5"/>
-  <!-- Head shine -->
-  <ellipse cx="42" cy="34" rx="8" ry="5" fill="#5B9FD8" opacity=".4" transform="rotate(-20,42,34)"/>
-  <!-- Eye bulges -->
-  <circle cx="36" cy="30" r="9" fill="#1A4F8C"/>
-  <circle cx="64" cy="30" r="9" fill="#1A4F8C"/>
-  <!-- Eyes whites -->
-  <circle cx="36" cy="30" r="6.5" fill="white"/>
-  <circle cx="64" cy="30" r="6.5" fill="white"/>
-  <!-- Pupils — static, no animation -->
-  <circle cx="37" cy="31" r="4" fill="#0a1a2e"/>
-  <circle cx="65" cy="31" r="4" fill="#0a1a2e"/>
-  <!-- Eye shine -->
-  <circle cx="38.5" cy="29.5" r="1.4" fill="white"/>
-  <circle cx="66.5" cy="29.5" r="1.4" fill="white"/>
-  <!-- Glasses frames -->
-  <rect x="27" y="24" width="18" height="12" rx="5" ry="5" fill="none" stroke="#C9A227" stroke-width="2.2"/>
-  <rect x="55" y="24" width="18" height="12" rx="5" ry="5" fill="none" stroke="#C9A227" stroke-width="2.2"/>
-  <!-- Glasses bridge -->
-  <line x1="45" y1="30" x2="55" y2="30" stroke="#C9A227" stroke-width="2"/>
-  <!-- Glasses arms -->
-  <line x1="27" y1="30" x2="20" y2="27" stroke="#C9A227" stroke-width="2" stroke-linecap="round"/>
-  <line x1="73" y1="30" x2="80" y2="27" stroke="#C9A227" stroke-width="2" stroke-linecap="round"/>
-  <!-- Smile -->
-  <path d="M40 52 Q50 60 60 52" stroke="#0a2244" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <!-- Cheek blush -->
-  <circle cx="30" cy="48" r="5" fill="#E2BA48" opacity=".35"/>
-  <circle cx="70" cy="48" r="5" fill="#E2BA48" opacity=".35"/>
-  <!-- Nostrils -->
-  <circle cx="46" cy="47" r="2" fill="#1A4F8C"/>
-  <circle cx="54" cy="47" r="2" fill="#1A4F8C"/>
-  <!-- Gold crown dots -->
-  <circle cx="50" cy="22" r="3" fill="#C9A227"/>
-  <circle cx="43" cy="24" r="2" fill="#C9A227"/>
-  <circle cx="57" cy="24" r="2" fill="#C9A227"/>
-  <!-- TONGUE (only animation) -->
-  <g id="frogTongue" style="animation:frog-tongue 6s ease-in-out infinite;transform-origin:50px 58px">
-    <path d="M44 58 Q50 72 56 58" stroke="#E05080" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <circle cx="44" cy="58" r="3.5" fill="#E05080"/>
-    <circle cx="56" cy="58" r="3.5" fill="#E05080"/>
-  </g>
-</svg>
-
 <!-- ════════════════════ JS ════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="/foro.css?v=1"/>
-<script src="/foro.js?v=1"></script>
+<script src="/foro.js?v=2"></script>
 <script>
 /* ── SUPABASE CONFIG — Rellena tus credenciales después de crear el proyecto ── */
 const SUPA_URL = 'https://dlqnrlenosemcsfyhltc.supabase.co';
@@ -2731,6 +2633,7 @@ let activeCat    = 'all';
 let editingId    = null;
 let activeAdmTab = 'articles';
 let ARTS         = []; // cache de artículos en memoria
+let ARTS_LOADED  = false; // true cuando la primera carga ha terminado (con o sin error)
 let GLOSSARY     = []; // cache de términos del glosario
 let COMMENTS     = []; // cache de comentarios
 let glosActiveCat= 'all';
@@ -2741,6 +2644,7 @@ const getArts = () => ARTS;
 // Carga artículos desde Supabase y los guarda en memoria
 async function loadArts() {
   const { data, error } = await db.from('articles').select('*').order('id', {ascending: false});
+  ARTS_LOADED = true;
   if (error) {
     console.error('Error cargando artículos:', error.message);
     const grid=document.getElementById('grid');
@@ -2885,7 +2789,16 @@ window.addEventListener('scroll',()=>{
 function toggleTheme(){
   const h=document.documentElement, dark=h.getAttribute('data-theme')==='dark';
   h.setAttribute('data-theme',dark?'light':'dark');
-  document.getElementById('themeBtn').innerHTML = dark
+  try{ localStorage.setItem('overton_theme',dark?'light':'dark'); }catch(e){}
+  syncThemeUI();
+}
+function syncThemeUI(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  const lbl=document.getElementById('themeMnlLbl');
+  if(lbl) lbl.textContent = dark ? 'Modo claro' : 'Modo oscuro';
+  const ico=document.querySelector('#themeMnl .mnl-theme-ico');
+  if(ico) ico.textContent = dark ? '☀' : '☾';
+  document.getElementById('themeBtn').innerHTML = !dark
     ? `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`
     : `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
 }
@@ -2909,7 +2822,7 @@ function goView(name){
   } else if(name==='directivas'){
     document.getElementById('view-blog').classList.remove('hide');
     setTabKey('directiva');
-    document.getElementById('secTitle').innerHTML='Directivas <em>de la UE</em>';
+    document.getElementById('secTitle').innerHTML='Directivas <em>y reglamentos</em>';
     if(secSubline) secSubline.style.display='none';
   } else if(name==='medioambiente'){
     document.getElementById('view-blog').classList.remove('hide');
@@ -2963,11 +2876,11 @@ function goView(name){
 const SEO_META={
   home:{     title:'El Despacho de Overton — Las leyes europeas te afectan. Aquí las entenderás.',  desc:'El TJUE decide sobre tus datos, tu trabajo y tus derechos. Te lo explicamos como si importara, porque importa. Debates, análisis y comunidad.'},
   sentencias:{title:'Sentencias del TJUE — El Despacho de Overton',                               desc:'Análisis y comentarios de las sentencias más relevantes del Tribunal de Justicia de la Unión Europea. Derecho europeo explicado con rigor.'},
-  directivas:{title:'Directivas de la Unión Europea — El Despacho de Overton',                    desc:'Análisis de las directivas europeas más importantes: DSA, DMA, AI Act, RGPD y más. Qué significan y cómo afectan a ciudadanos y empresas.'},
+  directivas:{title:'Directivas y reglamentos de la UE — El Despacho de Overton',                desc:'Directivas y reglamentos de la Unión Europea explicados: qué dicen, a quién obligan y cómo afectan a ciudadanos y empresas.'},
   medioambiente:{title:'Derecho Europeo de Medio Ambiente — El Despacho de Overton',              desc:'Normativa medioambiental de la UE: directivas, reglamentos y sentencias sobre clima, biodiversidad y sostenibilidad.'},
   opinion:{  title:'Opinión sobre Derecho Europeo — El Despacho de Overton',                      desc:'Artículos de opinión y análisis crítico sobre el derecho de la Unión Europea. Juristas y académicos especializados.'},
   glosario:{ title:'Glosario de Derecho Europeo — El Despacho de Overton',                        desc:'Diccionario y glosario de términos del derecho comunitario europeo. Definiciones claras de conceptos jurídicos de la UE.'},
-  comunidad:{title:'Comunidad — Debate sobre Derecho Europeo | El Despacho de Overton',           desc:'Únete al debate. Tu análisis puede cambiar cómo otros entienden Europa. No hace falta ser abogado. Hace falta pensar. Sin registro.'},
+  comunidad:{title:'Comunidad — Debate sobre Derecho Europeo | El Despacho de Overton',           desc:'Únete al debate. Tu análisis puede cambiar cómo otros entienden Europa. No hace falta ser abogado. Hace falta pensar. Leer es libre; para escribir basta con tu email.'},
   about:{    title:'Sobre El Despacho de Overton — Equipo y misión',                               desc:'Conoce al equipo de El Despacho de Overton: juristas y académicos especializados en derecho de la Unión Europea.'},
   otros:{    title:'Documentos y Análisis de Derecho Europeo — El Despacho de Overton',           desc:'Análisis, documentos e informes sobre derecho europeo en diversas materias.'},
   pregunta:{ title:'Pregunta del Día — Debate Jurídico Europeo | El Despacho de Overton',          desc:'Vota cada dos días en una nueva pregunta de Derecho de la UE: Bruselas I, Roma I y II, protección del consumidor y más. Análisis jurídico automático.'},
@@ -2996,6 +2909,8 @@ function updateSEOMeta(name){
   // Historia ya gestionada en goView() — no llamar replaceState/pushState aquí
 }
 
+function closeNotFound(){ document.getElementById('notFoundNotice')?.classList.add('hide'); }
+
 function scrollToGrid(){
   document.getElementById('gridAnchor').scrollIntoView({behavior:'smooth'});
 }
@@ -3008,6 +2923,21 @@ function setTab(el,key){
 function setTabKey(key){
   activeTab=key;
   activeCat='all'; // reset categoría al cambiar de sección
+  renderGrid();
+}
+
+/* ── BUSCADOR EN MÓVIL (BUG-045): el de la cabecera se oculta en pantallas estrechas ── */
+function mobileSearch(e){
+  if(e) e.preventDefault();
+  const v=(document.getElementById('srchMnl')?.value||'').trim();
+  document.getElementById('srchInput').value=v;
+  closeMobileMenu();
+  goView('home');
+  setTimeout(scrollToGrid,260);
+}
+function clearSearch(){
+  document.getElementById('srchInput').value='';
+  const m=document.getElementById('srchMnl'); if(m) m.value='';
   renderGrid();
 }
 
@@ -3037,6 +2967,15 @@ function buildChips(){
     s.onclick=()=>{ activeCat=cat; row.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); s.classList.add('on'); renderGrid(); };
     row.appendChild(s);
   };
+  const q=(document.getElementById('srchInput')?.value||'').trim();
+  if(q){
+    const s=document.createElement('button');
+    s.type='button'; s.className='chip chip-q';
+    s.textContent='✕ «'+q+'»';
+    s.title='Borrar búsqueda';
+    s.onclick=clearSearch;
+    row.appendChild(s);
+  }
   make('Todas las categorías','all');
   cats.forEach(c=>make(c,c));
 }
@@ -3053,6 +2992,17 @@ function updateStats(){
   set('stO', a.filter(x=>x.type==='otro'||x.type==='medioambiente').length);
   set('stOp',a.filter(x=>x.type==='opinion').length);
   set('stC', new Set(a.map(x=>x.cat)).size);
+  updateSectionLinks(a);
+}
+
+/* ── SECCIONES (BUG-001): solo se enlazan las que ya tienen análisis publicados.
+   Las vacías vuelven a aparecer solas en cuanto se publica algo en ellas. ── */
+function updateSectionLinks(published){
+  if(!ARTS_LOADED) return;
+  const types=new Set((published||[]).map(x=>x.type));
+  document.querySelectorAll('[data-sec-type]').forEach(el=>{
+    el.classList.toggle('hide', !loggedIn && !types.has(el.dataset.secType));
+  });
 }
 
 /* ── GRID ── */
@@ -3072,10 +3022,18 @@ function renderGrid(){
   });
   const grid=document.getElementById('grid');
   if(!filtered.length){
-    grid.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><p>No se encontraron artículos.<br>Prueba con otro filtro o búsqueda.</p></div>`;
+    if(!ARTS_LOADED){
+      grid.innerHTML=`<div class="empty"><p>Cargando análisis…</p></div>`;
+    } else if(q || activeCat!=='all'){
+      grid.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><p>No se encontraron artículos.<br>Prueba con otro filtro o búsqueda.</p></div>`;
+    } else if(activeTab!=='all'){
+      grid.innerHTML=`<div class="empty"><div class="empty-ico">📂</div><p>Todavía no hay análisis en esta sección.</p><button class="btn-gold empty-btn" onclick="goView('home');setTimeout(scrollToGrid,260)">Ver los últimos análisis</button></div>`;
+    } else {
+      grid.innerHTML=`<div class="empty"><div class="empty-ico">📂</div><p>Todavía no hay análisis publicados.</p></div>`;
+    }
     return;
   }
-  const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Directiva',medioambiente:'🌿 Medio Ambiente',opinion:'✍️ Opinión',otro:'📁 Otro'};
+  const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Legislación',medioambiente:'🌿 Medio Ambiente',opinion:'✍️ Opinión',otro:'📁 Otro'};
   const stripeClass={sentencia:'cs-s',directiva:'cs-d',medioambiente:'cs-ma',opinion:'cs-op',otro:'cs-o'};
   const badgeClass={sentencia:'b-s',directiva:'b-d',medioambiente:'b-ma',opinion:'b-op',otro:'b-o'};
   grid.innerHTML=filtered.map((a,i)=>{
@@ -3111,7 +3069,7 @@ let currentArtId = null;
 function openArt(id){
   const a=enContent('articles',getArts().find(x=>x.id===id)); if(!a) return;
   currentArtId = id;
-  const typeLabel={sentencia:'Sentencia TJUE',directiva:'Directiva UE',medioambiente:'Medio Ambiente UE',opinion:'Artículo de Opinión',otro:'Documento'};
+  const typeLabel={sentencia:'Sentencia TJUE',directiva:'Legislación UE',medioambiente:'Medio Ambiente UE',opinion:'Artículo de Opinión',otro:'Documento'};
   document.getElementById('mType').textContent=typeLabel[a.type]||a.type;
   document.getElementById('mCat').textContent=a.cat;
   document.getElementById('mTitle').textContent=a.title;
@@ -3588,14 +3546,14 @@ async function subscribeFromLanding(){
   const orig=btn?.textContent;
   if(btn){btn.disabled=true;btn.textContent='Enviando…';}
   const {error}=await db.from('subscribers').insert([{email}]);
-  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme gratis';}
+  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme';}
   if(error){
     if(error.code==='23505') showToast('Ya estás suscrito 👍');
     else showToast('Error al suscribir. Inténtalo de nuevo.','error');
     return;
   }
   document.getElementById('nlLandingEmail').value=''; document.getElementById('nlLandingConsent').checked=false;
-  showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
+  showToast('Suscripción guardada. Te escribiré cuando publique el próximo análisis.');
 }
 function scrollToNewsletter(){
   document.getElementById('view-newsletter').scrollIntoView({behavior:'smooth'});
@@ -3896,7 +3854,7 @@ function renderSaved(){
   const arts=getArts();
   const el=document.getElementById('savedList');
   if(!arts.length){ el.innerHTML='<p style="font-size:.83rem;color:var(--faint);text-align:center;padding:20px 0">Aún no hay artículos publicados.</p>'; return; }
-  const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Directiva',medioambiente:'🌿 Medio Ambiente',opinion:'✍️ Opinión',otro:'📁 Otro'};
+  const typeLabel={sentencia:'⚖️ Sentencia',directiva:'📜 Legislación',medioambiente:'🌿 Medio Ambiente',opinion:'✍️ Opinión',otro:'📁 Otro'};
   const statusBadge={draft:'<span style="font-size:.65rem;background:rgba(251,191,36,.15);color:#f59e0b;border:1px solid rgba(251,191,36,.3);border-radius:4px;padding:1px 6px;margin-left:6px">Borrador</span>',published:''};
   el.innerHTML=arts.map(a=>`
     <div class="saved-item">
@@ -4059,67 +4017,6 @@ function applyPhoto(){
   if(photo){ img.src=photo; img.style.display='block'; ph.style.display='none'; }
   else { img.style.display='none'; ph.style.display='flex'; }
 }
-
-/* ── FROG MASCOT ── */
-const frogLines=[
-  // Presentación
-  '¡Hola! Soy Lex, la rana jurista del Despacho 🐸⚖️',
-  '¡Pss! ¿Sabes algo sobre la UE? ¡Pregúntame! 🤓',
-  // Historia
-  'La UE nació del Tratado de Roma de 1957. ¡Ya llovió! 🏛️',
-  'El Tratado de Maastricht (1992) creó la ciudadanía europea 🇪🇺',
-  'La UE comenzó como una comunidad del carbón y el acero (CECA, 1951) ⚙️',
-  'El Tratado de Lisboa (2007) dio a la UE su estructura actual 📜',
-  'La Carta de los Derechos Fundamentales es legalmente vinculante desde 2009 📖',
-  'Los fundadores de la UE fueron Schuman, Adenauer y De Gasperi 🤝',
-  '27 países, un solo mercado. Fascinante, ¿no? ✨',
-  'El TJUE dicta más de 600 sentencias al año. ¡Yo las leo todas! 📜',
-  'El Parlamento Europeo tiene 720 diputados elegidos por los ciudadanos 🗳️',
-  'La Comisión Europea tiene un comisario por cada Estado miembro 🏢',
-  'El Consejo de la UE reúne a los ministros de los 27 estados 🤝',
-  'El Tribunal de Cuentas audita el presupuesto de la UE cada año 🔍',
-  'El BCE gestiona la política monetaria del euro desde 1998 💶',
-  'Hay 3 sedes del Parlamento: Estrasburgo, Bruselas y Luxemburgo 🏛️',
-  // Valores
-  'Los valores fundacionales de la UE son la dignidad, la libertad y la igualdad 🌟',
-  'La UE garantiza la libre circulación de personas, bienes, servicios y capital 🔄',
-  'El principio de subsidiariedad significa que la UE solo actúa cuando es necesario 📏',
-  'La UE tiene 24 idiomas oficiales. ¡Auch, los traductores! 🗣️',
-  'El Estado de Derecho es un valor irrenunciable de la UE ⚖️',
-  // Curiosidades
-  '¿Sabías que el himno de la UE es la Oda a la Alegría de Beethoven? 🎵',
-  'El día de Europa se celebra el 9 de mayo cada año 🎉',
-  'El euro lo usan 20 de los 27 países de la UE 💰',
-  'La UE es el mayor donante de ayuda humanitaria del mundo ❤️',
-  'El mercado interior de la UE es el más grande del mundo 🌍',
-  '¡El derecho europeo nos afecta a todos! 🇪🇺',
-  'Las directivas no muerden, te lo prometo 😄',
-  'Croac... digo, ¡buenos días! ☀️',
-  '¿Leíste el último análisis del Despacho? ¡Vale la pena! 💙',
-  'El Espacio Schengen permite viajar sin pasaporte en 27 países 🛫',
-  'La UE financia proyectos de investigación con Horizon Europe 🔬',
-  'Erasmus+ ha beneficiado a más de 10 millones de estudiantes 🎓',
-  'El RGPD europeo es el estándar global de protección de datos 🔒',
-  '¡Gracias por leer El Despacho de Overton! 💙',
-];
-let frogIdx=0;
-function frogClick(){
-  const tip=document.getElementById('frogTip');
-  tip.textContent=frogLines[frogIdx++ % frogLines.length];
-  tip.classList.add('show');
-  clearTimeout(frogClick._t);
-  frogClick._t=setTimeout(()=>tip.classList.remove('show'),4000);
-}
-setTimeout(()=>{
-  setInterval(()=>{
-    const tip=document.getElementById('frogTip');
-    if(!tip.classList.contains('show')){
-      tip.textContent='¡Pss! Haz clic en mí para saber más sobre la UE 👆';
-      tip.classList.add('show');
-      setTimeout(()=>tip.classList.remove('show'),3000);
-    }
-  }, 22000);
-}, 8000);
 
 /* ── TEAM ── */
 const K_TEAM = 'overton_team';
@@ -4802,42 +4699,6 @@ async function renderAdmComments(){ if(window.foroRenderAdmin) return foroRender
 /* ══════════════════════════════════════
    NEWSLETTER
 ══════════════════════════════════════ */
-async function subscribeEmail(){
-  const email=(document.getElementById('nlEmail')?.value||'').trim();
-  if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
-  if(!document.getElementById('nlConsent')?.checked){ showToast('Marca la casilla de consentimiento para suscribirte','error'); document.getElementById('nlConsent')?.focus(); return; }
-  const btn=document.querySelector('[onclick="subscribeEmail()"]');
-  const orig=btn?.textContent;
-  if(btn){btn.disabled=true;btn.textContent='Enviando…';}
-  const {error}=await db.from('subscribers').insert([{email}]);
-  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme';}
-  if(error){
-    if(error.code==='23505'){showToast('Este email ya está suscrito 👍');}
-    else{showToast('Error al suscribir. Inténtalo de nuevo.','error');}
-    return;
-  }
-  document.getElementById('nlEmail').value=''; document.getElementById('nlConsent').checked=false;
-  showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
-}
-
-async function subscribeEmailInline(){
-  const email=(document.getElementById('comNlEmail')?.value||'').trim();
-  if(!email||!email.includes('@')){showToast('Introduce un email válido','error');return;}
-  if(!document.getElementById('comNlConsent')?.checked){ showToast('Marca la casilla de consentimiento para suscribirte','error'); document.getElementById('comNlConsent')?.focus(); return; }
-  const btn=document.querySelector('[onclick="subscribeEmailInline()"]');
-  const orig=btn?.textContent;
-  if(btn){btn.disabled=true;btn.textContent='Enviando…';}
-  const {error}=await db.from('subscribers').insert([{email}]);
-  if(btn){btn.disabled=false;btn.textContent=orig||'Suscribirme';}
-  if(error){
-    if(error.code==='23505'){showToast('Este email ya está suscrito 👍');}
-    else{showToast('Error al suscribir. Inténtalo de nuevo.','error');}
-    return;
-  }
-  document.getElementById('comNlEmail').value=''; document.getElementById('comNlConsent').checked=false;
-  showToast('¡Suscripción confirmada! Nos vemos en tu bandeja 🎉');
-}
-
 /* Sincroniza el bloque de debate inline en Comunidad con el estado actual */
 function syncDebateInline(){
   // Leer pregunta del debate principal (ID correcto)
@@ -4921,24 +4782,9 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 
 /* ── CATEGORY NAV ── */
 
-/* ── FOOTER LIVE STATS ── */
-async function loadFooterStats(){
-  try{
-    const [arts,glos,subs]=await Promise.allSettled([
-      db.from('articles').select('id',{count:'exact',head:true}),
-      db.from('glossary').select('id',{count:'exact',head:true}),
-      db.from('subscribers').select('id',{count:'exact',head:true})
-    ]);
-    const v=r=>r.status==='fulfilled'?(r.value?.count??'—'):'—';
-    const el=id=>document.getElementById(id);
-    if(el('fStArts')) el('fStArts').textContent=v(arts);
-    if(el('fStGlos')) el('fStGlos').textContent=v(glos);
-    if(el('fStSubs')) el('fStSubs').textContent=v(subs);
-  }catch(e){}
-}
-
 /* ── INIT ── */
 (async function init(){
+  syncThemeUI();
   // ① Debate: SYNC, no depende de red — se ejecuta PRIMERO siempre
   loadDebate();
   syncDebateInline();
@@ -4963,6 +4809,13 @@ async function loadFooterStats(){
     _routerPush = false; // init siempre usa replaceState
     // 1. Sub-páginas estáticas setean sessionStorage antes de cargar /
     const ssView = sessionStorage.getItem('__overton_view__');
+    // 0. Vengo de 404.html (/?_404=1): limpiar la URL y, si la ruta no era una sección conocida, avisar
+    if(/[?&]_404=1(&|$)/.test(location.search)){
+      const qs=location.search.replace(/[?&]_404=1(?=&|$)/,'').replace(/^&/,'?');
+      history.replaceState(history.state,'',location.pathname+(qs==='?'?'':qs)+location.hash);
+      if(!ssView) document.getElementById('notFoundNotice')?.classList.remove('hide');
+    }
+    if(ssView && !VALID_VIEWS.includes(ssView)) sessionStorage.removeItem('__overton_view__');
     if(ssView && VALID_VIEWS.includes(ssView)){
       sessionStorage.removeItem('__overton_view__');
       goView(ssView);
@@ -4991,7 +4844,6 @@ async function loadFooterStats(){
     loadArts().catch(e=>console.warn('loadArts:',e)),
     loadGlossary().catch(e=>console.warn('loadGlossary:',e)),
     loadSponsors().catch(e=>console.warn('loadSponsors:',e)),
-    loadFooterStats().catch(e=>console.warn('loadFooterStats:',e)),
   ]);
   renderGrid();
   updateStats(); // antes solo se calculaba antes de cargar los artículos → siempre 0
@@ -5623,7 +5475,7 @@ cookieConsent.init();
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});
   });
 }
 </script>

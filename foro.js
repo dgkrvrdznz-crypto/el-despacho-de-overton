@@ -12,6 +12,13 @@
 (function(){
 'use strict';
 
+/* Escritura en el foro (BUG-014). Mientras el acceso por email no funcione
+   (falta configurar el SMTP y la URL de redirección en Supabase), el foro es
+   de solo lectura para el público; los administradores sí pueden escribir.
+   Cambia a true cuando el enlace de acceso llegue bien al correo. */
+var FORO_ESCRITURA = false;
+var MSG_LECTURA = 'El foro está en modo lectura mientras terminamos de configurar el acceso por email.';
+
 var PAGE = 20;
 var TOPICS = [
   ['all','Todos'],['sentencias','Sentencias'],['directivas','Directivas'],
@@ -42,6 +49,7 @@ function ago(d){ return window.timeAgo ? timeAgo(d) : ''; }
 function isInt(n){ return /^\d+$/.test(String(n)); }
 function artById(id){ try{ return (getArts()||[]).find(function(a){ return String(a.id)===String(id); }); }catch(e){ return null; } }
 function canPost(){ return !!(F.user && F.profile); }
+function writingOpen(){ return FORO_ESCRITURA || F.isAdmin; }
 function errMsg(error){
   var m = (error && (error.message||'')) || '';
   if(m.indexOf('RATE_LIMIT')>=0) return 'Vas muy rápido. Espera un poco antes de publicar de nuevo.';
@@ -90,6 +98,7 @@ function runPending(){
 }
 
 function requireLogin(after){
+  if(!writingOpen()){ toast(MSG_LECTURA); return false; }
   if(canPost()) return true;
   if(after) lsSet('foro_after_login', JSON.stringify(after));
   if(F.user && !F.profile) openAlias(); else openAuth();
@@ -153,10 +162,14 @@ function renderMe(){
   } else if(F.user){
     el.innerHTML = '<span>Te falta elegir un alias.</span> <button class="foro-link" id="foroAl">Elegir alias</button>';
     $('foroAl').onclick = openAlias;
+  } else if(!writingOpen()){
+    el.innerHTML = '<span>Leer es libre. La participación por escrito se abrirá pronto.</span>';
   } else {
     el.innerHTML = '<span>Leer es libre. Para escribir, </span><button class="foro-link" id="foroIn">entra con tu email</button>';
     $('foroIn').onclick = function(){ openAuth(); };
   }
+  var nb = $('foroNewBtn'); if(nb) nb.classList.toggle('foro-hide', !writingOpen());
+  var dc = $('foroDebateCta'); if(dc) dc.classList.toggle('foro-hide', !writingOpen());
 }
 
 /* Llamada desde goView('comunidad') */
@@ -209,7 +222,8 @@ function renderList(){
   $('foroMore').classList.toggle('foro-hide', !F.hasMore);
   if(!F.threads.length){
     list.innerHTML = '<div class="foro-empty"><strong>'+(F.topic==='all'?'Todavía no hay debates':'Todavía no hay debates en este tema')+'</strong>'+
-      'Abre el primero: una sentencia que te haya sorprendido, una directiva que no entiendas o una pregunta que el derecho no responde bien.</div>';
+      (writingOpen() ? 'Abre el primero: una sentencia que te haya sorprendido, una norma que no entiendas o una pregunta que el derecho no responde bien.'
+                     : '<span>'+MSG_LECTURA+'</span> <span>Mientras tanto, puedes escribirnos a</span> <a href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a>.')+'</div>';
     return;
   }
   list.innerHTML = F.threads.map(card).join('');
@@ -306,6 +320,7 @@ function renderThread(){
 }
 
 function composerHtml(){
+  if(!writingOpen()) return '<div class="foro-login-cta">'+MSG_LECTURA+'</div>';
   if(canPost()){
     return '<div class="foro-composer"><textarea class="foro-ta" id="foroReplyTa" maxlength="4000" placeholder="Tu argumento. Cita la norma o la sentencia si puedes."></textarea>'+
       '<div class="foro-row"><span class="foro-hint" id="foroReplyCount">0 / 4000</span><button class="btn-gold" id="foroReplySend" style="font-size:.82rem;padding:9px 22px">Responder →</button></div></div>';
@@ -544,6 +559,8 @@ window.foroArticleBlock = async function(artId){
     html = '<p>'+(t.reply_count ? t.reply_count+' '+(t.reply_count===1?'respuesta':'respuestas')+' en el debate.' : 'El debate está abierto y aún no tiene respuestas.')+'</p>'+
       (rr.data||[]).map(function(x){ return '<div class="foro-art-q" data-no-i18n><b>'+esc(alias(x))+':</b> '+esc(x.body)+'</div>'; }).join('')+
       '<button class="btn-gold" id="artForoGo" style="font-size:.8rem;padding:9px 20px;margin-top:6px">Ir al debate →</button>';
+  } else if(!writingOpen()){
+    html = '<p><span>'+MSG_LECTURA+'</span> <span>Si quieres comentar este análisis, escríbenos a</span> <a href="mailto:hola@eldespachodeoverton.es">hola@eldespachodeoverton.es</a>.</p>';
   } else {
     html = '<p>Nadie ha abierto todavía el debate sobre este artículo. ¿Qué opinas tú?</p>'+
       '<button class="btn-gold" id="artForoNew" style="font-size:.8rem;padding:9px 20px">Debatir esto →</button>';
@@ -566,6 +583,7 @@ function mountDebateCta(){
   var b = document.createElement('button');
   b.className = 'foro-debate-cta'; b.id = 'foroDebateCta';
   b.textContent = '💬 Argumenta tu voto en el foro';
+  if(!writingOpen()) b.classList.add('foro-hide');
   b.onclick = async function(){
     var q = (($('comDebateQ')||{}).textContent||'').trim();
     if(q.length < 8 || /Cargando/.test(q)) return;
