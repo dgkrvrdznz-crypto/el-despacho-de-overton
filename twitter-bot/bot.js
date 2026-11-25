@@ -139,8 +139,10 @@ function buildDist(available) {
 
 async function fetchGlossary(excludeIds) {
   const { data } = must(await db.from('glossary').select('*'), 'glossary');
-  const pool = (data ?? []).filter(g => !excludeIds.has(String(g.id)));
-  return pick(pool.length ? pool : (data ?? [])); // cooldown reset si todos usados
+  // Duplicados ocultos en la web (BUG-005): tampoco se publican.
+  const all = (data ?? []).filter(g => ![76, 77, 78, 83, 84, 86].includes(Number(g.id)));
+  const pool = all.filter(g => !excludeIds.has(String(g.id)));
+  return pick(pool.length ? pool : all); // cooldown reset si todos usados
 }
 
 async function fetchArticle(excludeIds) {

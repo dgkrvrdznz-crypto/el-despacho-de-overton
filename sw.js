@@ -1,24 +1,12 @@
-/* El Despacho de Overton — Service Worker v1 */
-const CACHE = 'overton-v3';
-const PRECACHE = [
-  '/',
-  '/sentencias/',
-  '/directivas/',
-  '/glosario/',
-  '/comunidad/',
-  '/medioambiente/',
-  '/opinion/',
-  '/otros/',
-  '/about/',
-  '/debate-del-dia/',
-  '/pregunta/',
-  '/manifest.json',
-  '/logo.png'
-];
+/* El Despacho de Overton — Service Worker v4
+   Siempre red primero: la copia guardada solo se usa si no hay conexión.
+   Así una versión vieja guardada en el navegador nunca puede tapar la nueva. */
+const CACHE = 'overton-v4';
+const PRECACHE = ['/', '/manifest.json', '/logo.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(PRECACHE)).catch(() => {}).then(() => self.skipWaiting())
   );
 });
 
@@ -31,17 +19,20 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  // No interceptar peticiones a Supabase (siempre red)
-  if (url.hostname.includes('supabase.co')) return;
-  // Cache-first para assets estáticos, network-first para HTML
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match('/'))
-    );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request))
-    );
-  }
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  // Solo nuestra web; Supabase, CDN, fuentes, etc. van directos a la red
+  if (url.origin !== self.location.origin) return;
+  e.respondWith(
+    fetch(req).then(res => {
+      if (res.ok && (req.mode === 'navigate' || PRECACHE.includes(url.pathname))) {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(req.mode === 'navigate' ? '/' : req, copy)).catch(() => {});
+      }
+      return res;
+    }).catch(() =>
+      caches.match(req).then(r => r || (req.mode === 'navigate' ? caches.match('/') : Response.error()))
+    )
+  );
 });
